@@ -1,4 +1,4 @@
-package com.agh.bsct.datacollector.test.library.output;
+package com.agh.bsct.datacollector.library.output;
 
 /**
  * Represents the possible output formats for the query result.

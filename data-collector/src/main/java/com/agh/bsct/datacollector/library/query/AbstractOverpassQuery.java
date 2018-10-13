@@ -1,13 +1,13 @@
-package com.agh.bsct.datacollector.test.library.query;
+package com.agh.bsct.datacollector.library.query;
 
 abstract class AbstractOverpassQuery {
-    protected com.agh.bsct.datacollector.test.library.query.OverpassQueryBuilder builder;
+    protected com.agh.bsct.datacollector.library.query.OverpassQueryBuilder builder;
 
     AbstractOverpassQuery() {
         this(new OverpassQueryBuilderImpl());
     }
 
-    AbstractOverpassQuery(com.agh.bsct.datacollector.test.library.query.OverpassQueryBuilder builder) {
+    AbstractOverpassQuery(com.agh.bsct.datacollector.library.query.OverpassQueryBuilder builder) {
         this.builder = builder;
     }
 

@@ -1,13 +1,14 @@
 package com.agh.bsct.datacollector.test;
 
-import com.agh.bsct.datacollector.test.adapter.OverpassQueryResult;
-import com.agh.bsct.datacollector.test.adapter.OverpassServiceProvider;
-import com.agh.bsct.datacollector.test.library.output.OutputFormat;
-import com.agh.bsct.datacollector.test.library.output.OutputModificator;
-import com.agh.bsct.datacollector.test.library.output.OutputOrder;
-import com.agh.bsct.datacollector.test.library.output.OutputVerbosity;
-import com.agh.bsct.datacollector.test.library.query.OverpassQuery;
+import com.agh.bsct.datacollector.library.adapter.OverpassQueryResult;
+import com.agh.bsct.datacollector.library.adapter.OverpassServiceProvider;
+import com.agh.bsct.datacollector.library.output.OutputFormat;
+import com.agh.bsct.datacollector.library.output.OutputModificator;
+import com.agh.bsct.datacollector.library.output.OutputOrder;
+import com.agh.bsct.datacollector.library.output.OutputVerbosity;
+import com.agh.bsct.datacollector.library.query.OverpassQuery;
 
+//TODO AK this is just simple class with example of how to query OSM API
 public class Test {
 
     public void run() {
@@ -25,7 +26,6 @@ public class Test {
                 .build();
 
         OverpassQueryResult interpret = interpret(query);
-        interpret.elements.size();
     }
 
     private OverpassQueryResult interpret(String query) {

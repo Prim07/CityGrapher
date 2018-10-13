@@ -1,4 +1,4 @@
-package com.agh.bsct.datacollector.test.adapter;
+package com.agh.bsct.datacollector.library.adapter;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

@@ -12,7 +12,7 @@ import org.springframework.context.annotation.ComponentScan;
 @EntityScan({"com.agh.bsct.datacollector"})
 public class DataCollector {
     public static void main(String[] args) {
-//        SpringApplication.run(DataCollector.class, args);
+        SpringApplication.run(DataCollector.class, args);
         Test test = new Test();
         test.run();
     }

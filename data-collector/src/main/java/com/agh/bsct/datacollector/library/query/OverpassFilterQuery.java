@@ -1,4 +1,4 @@
-package com.agh.bsct.datacollector.test.library.query;
+package com.agh.bsct.datacollector.library.query;
 
 
 import java.util.Set;
@@ -13,7 +13,7 @@ import java.util.Set;
 public class OverpassFilterQuery extends AbstractOverpassSubQuery {
     private boolean separateNext;
 
-    public OverpassFilterQuery(com.agh.bsct.datacollector.test.library.query.OverpassQuery parent) {
+    public OverpassFilterQuery(com.agh.bsct.datacollector.library.query.OverpassQuery parent) {
         super(parent);
         init();
     }

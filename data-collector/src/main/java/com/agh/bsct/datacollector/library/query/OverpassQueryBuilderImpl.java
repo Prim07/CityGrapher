@@ -1,4 +1,4 @@
-package com.agh.bsct.datacollector.test.library.query;
+package com.agh.bsct.datacollector.library.query;
 
 import java.util.Locale;
 import java.util.Set;

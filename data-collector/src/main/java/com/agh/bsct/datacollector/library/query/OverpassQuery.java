@@ -1,15 +1,15 @@
-package com.agh.bsct.datacollector.test.library.query;
+package com.agh.bsct.datacollector.library.query;
 
-import com.agh.bsct.datacollector.test.library.output.OutputFormat;
-import com.agh.bsct.datacollector.test.library.output.OutputModificator;
-import com.agh.bsct.datacollector.test.library.output.OutputOrder;
-import com.agh.bsct.datacollector.test.library.output.OutputVerbosity;
+import com.agh.bsct.datacollector.library.output.OutputFormat;
+import com.agh.bsct.datacollector.library.output.OutputModificator;
+import com.agh.bsct.datacollector.library.output.OutputOrder;
+import com.agh.bsct.datacollector.library.output.OutputVerbosity;
 
 import java.util.Locale;
 
-import static com.agh.bsct.datacollector.test.library.output.OutputModificator.CENTER;
-import static com.agh.bsct.datacollector.test.library.output.OutputOrder.QT;
-import static com.agh.bsct.datacollector.test.library.output.OutputVerbosity.BODY;
+import static com.agh.bsct.datacollector.library.output.OutputModificator.CENTER;
+import static com.agh.bsct.datacollector.library.output.OutputOrder.QT;
+import static com.agh.bsct.datacollector.library.output.OutputVerbosity.BODY;
 
 
 /**
