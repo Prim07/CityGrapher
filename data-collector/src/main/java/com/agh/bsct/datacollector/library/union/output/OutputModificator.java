@@ -1,4 +1,4 @@
-package com.agh.bsct.datacollector.library.output;
+package com.agh.bsct.datacollector.library.union.output;
 
 /**
  * Represents the possible output modificators for derived information

@@ -13,7 +13,7 @@ import java.util.Set;
 public class OverpassFilterQuery extends AbstractOverpassSubQuery {
     private boolean separateNext;
 
-    public OverpassFilterQuery(com.agh.bsct.datacollector.library.query.OverpassQuery parent) {
+    public OverpassFilterQuery(OverpassQuery parent) {
         super(parent);
         init();
     }
@@ -152,6 +152,21 @@ public class OverpassFilterQuery extends AbstractOverpassSubQuery {
         return this;
     }
 
+
+    /** This code is added to original code from github
+     * Adds a <i>["name"~value]</i> filter tag to the current query.
+     *
+     * @param name the filter name
+     * @param value the filter value
+     *
+     * @return the current query object
+     */
+    public OverpassFilterQuery tagLike(String name, String value) {
+        builder.equalsLike(name, value);
+
+        return this;
+    }
+
     /**
      * Adds a <i>["name"~{value1}|{value2}|{value3}|...|{valueN}]</i> filter tag to the current query
      * to add a filter matching for any of the given values.
@@ -251,6 +266,29 @@ public class OverpassFilterQuery extends AbstractOverpassSubQuery {
         return this;
     }
 
+    /*
+    * Here starts modifications of original code from github.
+    */
+
+    /**
+     * Appends given key value to the current query without applying separator.
+     * Convenient for adding some key at the end of the tag
+     *
+     * @param key the key value
+     *
+     * @return the current query object
+     */
+    //TODO AK is it really good method name? It's strictly with the: http://overpass-turbo.eu/s/Cyd in the way filter to add (area) in braces. Verify that method with docuemntation and eventually rename it from "Key" to sth else
+    public OverpassFilterQuery forKey(String key) {
+        builder.append("(" + key + ")");
+
+        return this;
+    }
+
+    /*
+     * Here ends modifications of original code from github.
+     */
+
     /**
      * Closes the current query with the characters <i>;&lt;;)</i> and returns the output as a string.
      *
@@ -258,7 +296,7 @@ public class OverpassFilterQuery extends AbstractOverpassSubQuery {
      */
     @Override
     public String build() {
-        builder.append(";<;)");
+        builder.append(";)");
 
         return builder.build();
     }

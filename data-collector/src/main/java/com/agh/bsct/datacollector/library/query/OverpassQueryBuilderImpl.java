@@ -90,6 +90,11 @@ class OverpassQueryBuilderImpl implements OverpassQueryBuilder {
     }
 
     @Override
+    public OverpassQueryBuilder equalsLike(String name, String value) {
+        return paramRel(name, "~", value);
+    }
+
+    @Override
     public OverpassQueryBuilder notEquals(String name, String value) {
         return paramRel(name, "!=", value);
     }

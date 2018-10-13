@@ -11,6 +11,7 @@ interface OverpassQueryBuilder {
     OverpassQueryBuilder standaloneParam(String name);
     OverpassQueryBuilder clause(String name, String value);
     OverpassQueryBuilder equals(String name, String value);
+    OverpassQueryBuilder equalsLike(String name, String value);
     OverpassQueryBuilder notEquals(String name, String value);
     OverpassQueryBuilder regexMatches(String name, String value);
     OverpassQueryBuilder regexDoesntMatch(String name, String value);

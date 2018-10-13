@@ -1,15 +1,16 @@
 package com.agh.bsct.datacollector.library.query;
 
-import com.agh.bsct.datacollector.library.output.OutputFormat;
-import com.agh.bsct.datacollector.library.output.OutputModificator;
-import com.agh.bsct.datacollector.library.output.OutputOrder;
-import com.agh.bsct.datacollector.library.output.OutputVerbosity;
+import com.agh.bsct.datacollector.library.union.Recurse;
+import com.agh.bsct.datacollector.library.union.output.OutputFormat;
+import com.agh.bsct.datacollector.library.union.output.OutputModificator;
+import com.agh.bsct.datacollector.library.union.output.OutputOrder;
+import com.agh.bsct.datacollector.library.union.output.OutputVerbosity;
 
 import java.util.Locale;
 
-import static com.agh.bsct.datacollector.library.output.OutputModificator.CENTER;
-import static com.agh.bsct.datacollector.library.output.OutputOrder.QT;
-import static com.agh.bsct.datacollector.library.output.OutputVerbosity.BODY;
+import static com.agh.bsct.datacollector.library.union.output.OutputModificator.CENTER;
+import static com.agh.bsct.datacollector.library.union.output.OutputOrder.QT;
+import static com.agh.bsct.datacollector.library.union.output.OutputVerbosity.BODY;
 
 
 /**
@@ -120,6 +121,55 @@ public class OverpassQuery extends AbstractOverpassQuery {
 
         return this;
     }
+
+    /*
+     * Here starts modifications of original code from github.
+     */
+
+    /**
+     * Appends the recurse to output
+     *
+     * @param recurse recurse up or down
+     * @return the current OverpassQuery object
+     */
+    public OverpassQuery output(Recurse recurse) {
+        builder.append(";").append(recurse.toString());
+        return this;
+    }
+
+    /**
+     * Appends a <i>;</i> character and the print (out) action to the query.
+     *
+     * @param outputVerbosity degree of output verbosity (see {@link OutputVerbosity })
+     */
+    public OverpassQuery output(OutputVerbosity outputVerbosity) {
+        builder.append(String.format("; out %s",
+                outputVerbosity.toString().toLowerCase()
+                )
+        );
+
+        return this;
+    }
+
+    /**
+     * Appends a <i>;</i> character and the print (out) action to the query.
+     *
+     * @param outputVerbosity degree of output verbosity (see {@link OutputVerbosity })
+     * @param outputOrder       sort order (see {@link OutputOrder })
+     */
+    public OverpassQuery output(OutputVerbosity outputVerbosity, OutputOrder outputOrder) {
+        builder.append(String.format("; out %s %s",
+                outputVerbosity.toString().toLowerCase(),
+                outputOrder.toString().toLowerCase()
+                )
+        );
+
+        return this;
+    }
+
+    /*
+     * Here ends modifications of original code from github.
+     */
 
     /**
      * Closes the current query with the character <i>;</i> and returns the output as a string.
