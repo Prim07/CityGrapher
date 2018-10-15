@@ -1,14 +1,14 @@
 package com.agh.bsct.datacollector.library.query;
 
-abstract class AbstractOverpassSubQuery extends com.agh.bsct.datacollector.library.query.AbstractOverpassQuery {
-    private com.agh.bsct.datacollector.library.query.OverpassQuery parent;
+abstract class AbstractOverpassSubQuery extends AbstractOverpassQuery {
+    private OverpassQuery parent;
 
-    public AbstractOverpassSubQuery(com.agh.bsct.datacollector.library.query.OverpassQuery parent) {
+    public AbstractOverpassSubQuery(OverpassQuery parent) {
         super();
         this.parent = parent;
     }
 
-    AbstractOverpassSubQuery(com.agh.bsct.datacollector.library.query.OverpassQuery parent, com.agh.bsct.datacollector.library.query.OverpassQueryBuilder builder) {
+    AbstractOverpassSubQuery(OverpassQuery parent, OverpassQueryBuilder builder) {
         super(builder);
         this.parent = parent;
     }

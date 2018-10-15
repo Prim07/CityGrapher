@@ -1,6 +1,7 @@
 package com.agh.bsct.datacollector;
 
-import com.agh.bsct.datacollector.test.Test;
+import com.agh.bsct.datacollector.library.adapter.OverpassQueryResult;
+import com.agh.bsct.datacollector.services.OSMCityService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -13,7 +14,6 @@ import org.springframework.context.annotation.ComponentScan;
 public class DataCollector {
     public static void main(String[] args) {
         SpringApplication.run(DataCollector.class, args);
-        Test test = new Test();
-        test.run();
+        OverpassQueryResult bochnia = new OSMCityService().getCityData("Bochnia");
     }
 }
