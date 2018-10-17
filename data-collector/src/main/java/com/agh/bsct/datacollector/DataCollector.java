@@ -14,6 +14,7 @@ import org.springframework.context.annotation.ComponentScan;
 public class DataCollector {
     public static void main(String[] args) {
         SpringApplication.run(DataCollector.class, args);
-        OverpassQueryResult bochnia = new OSMCityService().getCityData("Bochnia");
+        OverpassQueryResult cityData = new OSMCityService().getCityData("Rzeszów");
+        System.out.println(cityData.elements.size());
     }
 }
