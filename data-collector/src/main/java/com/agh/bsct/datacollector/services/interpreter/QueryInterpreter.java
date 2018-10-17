@@ -7,7 +7,7 @@ import java.net.SocketTimeoutException;
 
 public class QueryInterpreter {
 
-    private Integer EXCEPTION_COUNTER = 3;
+    private Integer exceptionCounter = 3;
 
     public OverpassQueryResult interpret(String query) {
         try {
