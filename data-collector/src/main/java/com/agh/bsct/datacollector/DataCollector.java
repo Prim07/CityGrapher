@@ -1,7 +1,5 @@
 package com.agh.bsct.datacollector;
 
-import com.agh.bsct.datacollector.library.adapter.OverpassQueryResult;
-import com.agh.bsct.datacollector.services.OSMCityService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
