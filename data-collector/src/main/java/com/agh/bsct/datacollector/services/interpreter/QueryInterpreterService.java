@@ -2,10 +2,12 @@ package com.agh.bsct.datacollector.services.interpreter;
 
 import com.agh.bsct.datacollector.library.adapter.OverpassQueryResult;
 import com.agh.bsct.datacollector.library.adapter.OverpassServiceProvider;
+import org.springframework.stereotype.Service;
 
 import java.net.SocketTimeoutException;
 
-public class QueryInterpreter {
+@Service
+public class QueryInterpreterService {
 
     private Integer exceptionCounter = 3;
 
@@ -14,8 +16,8 @@ public class QueryInterpreter {
             return OverpassServiceProvider.get().interpreter(query).execute().body();
 
         } catch (SocketTimeoutException e) {
-            EXCEPTION_COUNTER--;
-            return (EXCEPTION_COUNTER > 0)
+            exceptionCounter--;
+            return (exceptionCounter > 0)
                     ? interpret(query)
                     : new OverpassQueryResult();
         } catch (Exception e) {
