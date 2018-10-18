@@ -26,6 +26,9 @@ public class OverpassQueryResult {
         public Tags tags = new Tags();
 
         public static class Tags {
+            @SerializedName("area")
+            public String area;
+            
             @SerializedName("type")
             public String type;
 
