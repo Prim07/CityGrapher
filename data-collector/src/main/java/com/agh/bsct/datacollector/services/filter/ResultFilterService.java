@@ -1,15 +1,18 @@
 package com.agh.bsct.datacollector.services.filter;
 
+import com.agh.bsct.datacollector.library.adapter.OverpassQueryResult;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ResultFilterService {
 
-    public void removeAreaTags() {
+    public OverpassQueryResult removeAreaTags(OverpassQueryResult queryResult) {
         //TODO implement
+        return new OverpassQueryResult();
     }
 
-    public void joinRoads() {
+    public OverpassQueryResult joinRoads(OverpassQueryResult removedAreaTagsQueryResult) {
         //TODO implement
+        return new OverpassQueryResult();
     }
 }

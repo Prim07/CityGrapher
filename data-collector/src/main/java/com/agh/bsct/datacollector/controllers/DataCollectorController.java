@@ -22,7 +22,6 @@ public class DataCollectorController {
         this.osmCityService = osmCityService;
     }
 
-
     @GetMapping(DATA_COLLECTOR_PATH + GET_CITY_GRAPH_PATH)
     @ResponseBody
     public ObjectNode getCityGraph(@RequestParam(name = "city") String city) {

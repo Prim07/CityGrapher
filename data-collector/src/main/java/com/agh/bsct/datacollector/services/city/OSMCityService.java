@@ -25,13 +25,12 @@ public class OSMCityService {
         this.graphService = graphService;
     }
 
-    //TODO tutaj znajduje się tylko "wydmuszka" - należy zweryfikować i ew. zmieniać typy zwracane i przyjmowane w argumentach
     public ObjectNode getCityData(String cityName) {
         String query = queryForCityProvider.getQueryForCity(cityName);
         OverpassQueryResult interpretedQuery = queryInterpreterService.interpret(query);
-        resultFilterService.removeAreaTags();
-        resultFilterService.joinRoads();
-        return graphService.createGraph();
+        OverpassQueryResult removedAreaTagsQueryResult = resultFilterService.removeAreaTags(interpretedQuery);
+        OverpassQueryResult joinedRoadsQueryResults = resultFilterService.joinRoads(removedAreaTagsQueryResult);
+        return graphService.createGraph(joinedRoadsQueryResults);
     }
 
 }
