@@ -1,29 +1,16 @@
-package com.agh.bsct.datacollector.services;
+package com.agh.bsct.datacollector.services.city;
 
-import com.agh.bsct.datacollector.library.adapter.OverpassQueryResult;
 import com.agh.bsct.datacollector.library.query.OverpassQuery;
 import com.agh.bsct.datacollector.library.union.Recurse;
 import com.agh.bsct.datacollector.library.union.output.OutputFormat;
 import com.agh.bsct.datacollector.library.union.output.OutputOrder;
 import com.agh.bsct.datacollector.library.union.output.OutputVerbosity;
-import com.agh.bsct.datacollector.services.interpreter.QueryInterpreter;
+import org.springframework.stereotype.Service;
 
-//TODO AK autowire via constructor here
-public class OSMCityService {
+@Service
+public class QueryForCityProvider {
 
-    private QueryInterpreter queryInterpreter;
-
-    public OSMCityService() {
-        this.queryInterpreter = new QueryInterpreter();
-    }
-
-    public OverpassQueryResult getCityData(String cityName) {
-        String query = getQueryForCity(cityName);
-        return queryInterpreter.interpret(query);
-
-    }
-
-    private String getQueryForCity(String cityName) {
+    public String getQueryForCity(String cityName) {
         String wayTypes = getWayTypesForEveryCity();
 
         return new OverpassQuery()

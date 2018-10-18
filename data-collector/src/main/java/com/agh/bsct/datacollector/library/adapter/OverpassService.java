@@ -6,5 +6,5 @@ import retrofit2.http.Query;
 
 public interface OverpassService {
     @GET("/api/interpreter")
-    Call<OverpassQueryResult> interpreter(@Query("data") String data);
+    Call<OverpassQueryResult> interpreter(@Query(value = "data", encoded = true) String data);
 }
