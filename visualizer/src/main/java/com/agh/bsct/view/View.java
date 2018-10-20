@@ -1,12 +1,11 @@
 package com.agh.bsct.view;
 
+import com.agh.bsct.view.config.PathsConstants;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import static com.agh.bsct.view.config.PathsConstants.FXML_ROOT_PATH;
 
 public class View extends Application {
 
@@ -19,7 +18,7 @@ public class View extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource(FXML_ROOT_PATH));
+        Parent root = FXMLLoader.load(getClass().getResource(PathsConstants.MAP_VIEW_ROOT_PATH));
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(new Scene(root, SCENE_WIDTH, SCENE_HEIGHT));
         primaryStage.show();
