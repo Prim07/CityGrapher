@@ -10,8 +10,8 @@ import static com.agh.bsct.view.config.PathsConstants.FXML_ROOT_PATH;
 
 public class View extends Application {
 
-    private static final int SCENE_HEIGHT = 600;
-    private static final int SCENE_WIDTH = 800;
+    private static final int SCENE_WIDTH = 1500;
+    private static final int SCENE_HEIGHT = 844;
 
     public static void main(String[] args) {
         launch(args);
