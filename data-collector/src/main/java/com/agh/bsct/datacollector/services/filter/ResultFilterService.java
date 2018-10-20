@@ -9,10 +9,10 @@ import java.util.Iterator;
 public class ResultFilterService {
 
     public OverpassQueryResult removeAreaTags(OverpassQueryResult queryResult) {
-        Iterator<OverpassQueryResult.Element> iterator = queryResult.elements.iterator();
+        var iterator = queryResult.elements.iterator();
         while (iterator.hasNext()) {
-            String area = iterator.next().tags.area;
-            if (area != null && area.equals("yes")) {
+            var area = iterator.next().tags.area;
+            if ("yes".equals(area)) {
                 iterator.remove();
             }
         }
