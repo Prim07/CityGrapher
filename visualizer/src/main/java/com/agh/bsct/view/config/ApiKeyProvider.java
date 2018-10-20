@@ -14,7 +14,7 @@ public class ApiKeyProvider {
     private static final String KEY_FILE_NOT_FOUND_MESSAGE = "missing-key-file";
 
     public static String getApiKey() {
-        File file = getFileWithApiKey();
+        var file = getFileWithApiKey();
         try {
             return new String(Files.readAllBytes(file.toPath()));
         } catch (IOException e) {
