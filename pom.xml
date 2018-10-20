@@ -11,6 +11,7 @@
     <modules>
         <module>data-collector</module>
         <module>algorithm</module>
+        <module>visualizer</module>
     </modules>
 
     <dependencies>
