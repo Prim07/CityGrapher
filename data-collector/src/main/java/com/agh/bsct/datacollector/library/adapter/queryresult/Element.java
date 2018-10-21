@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Element {
 
@@ -49,7 +51,9 @@ public class Element {
         return nodes;
     }
 
-    public ArrayList getNodesAsArrayList() {
-        return new ArrayList<>(Arrays.asList(nodes));
+    public List<Long> getNodesAsArrayList() {
+        return (nodes == null)
+                ? new ArrayList<>()
+                : Arrays.stream(nodes).boxed().collect(Collectors.toList());
     }
 }
