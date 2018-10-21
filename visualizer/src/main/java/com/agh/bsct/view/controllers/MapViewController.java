@@ -28,12 +28,13 @@ public class MapViewController implements Initializable, MapComponentInitialized
 
     private GoogleMap map;
     private GeocodingService geocodingService;
-    private StringProperty address = new SimpleStringProperty();
+    private StringProperty address;
 
     private MarkerFactory markerFactory;
 
     public MapViewController() {
         this.markerFactory = new MarkerFactory();
+        this.address = new SimpleStringProperty();
     }
 
     @Override
@@ -52,12 +53,12 @@ public class MapViewController implements Initializable, MapComponentInitialized
 
         map = mapView.createMap(mapOptions);
 
-        Marker exampleMarker = markerFactory.getMarker(47.6197, -122.3231);
+        Marker exampleMarker = markerFactory.getMarker(50.061696, 19.937398);
         map.addMarker(exampleMarker);
     }
 
     private void initializeMapProperties(MapOptions mapOptions) {
-        mapOptions.center(new LatLong(47.6097, -122.3331))
+        mapOptions.center(new LatLong(50.061696, 19.937398))
                 .mapType(MapTypeIdEnum.ROADMAP)
                 .overviewMapControl(false)
                 .panControl(false)
@@ -75,10 +76,10 @@ public class MapViewController implements Initializable, MapComponentInitialized
 
     private void handleGeocodedResults(GeocodingResult[] results, GeocoderStatus status) {
         if (status == GeocoderStatus.ZERO_RESULTS) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "No matching address found");
+            var alert = new Alert(Alert.AlertType.ERROR, "No matching address found");
             alert.show();
         } else if (results.length > 1) {
-            Alert alert = new Alert(Alert.AlertType.WARNING, "Multiple results found, showing the first one.");
+            var alert = new Alert(Alert.AlertType.WARNING, "Multiple results found, showing the first one.");
             alert.show();
             var latLong = new LatLong(results[0].getGeometry().getLocation().getLatitude(), results[0].getGeometry().getLocation().getLongitude());
             map.setCenter(latLong);

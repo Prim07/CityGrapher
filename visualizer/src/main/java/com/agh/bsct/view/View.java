@@ -19,9 +19,9 @@ public class View extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource(PathsConstants.MAP_VIEW_ROOT_PATH));
+        Parent mapViewParent = FXMLLoader.load(getClass().getResource(PathsConstants.MAP_VIEW_ROOT_PATH));
         primaryStage.setTitle(WINDOW_TITLE);
-        primaryStage.setScene(new Scene(root, SCENE_WIDTH, SCENE_HEIGHT));
+        primaryStage.setScene(new Scene(mapViewParent, SCENE_WIDTH, SCENE_HEIGHT));
         primaryStage.show();
     }
 
