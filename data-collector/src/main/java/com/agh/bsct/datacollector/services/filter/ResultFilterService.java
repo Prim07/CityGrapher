@@ -1,17 +1,19 @@
 package com.agh.bsct.datacollector.services.filter;
 
-import com.agh.bsct.datacollector.library.adapter.OverpassQueryResult;
+import com.agh.bsct.datacollector.library.adapter.queryresult.Element;
+import com.agh.bsct.datacollector.library.adapter.queryresult.OverpassQueryResult;
 import org.springframework.stereotype.Service;
 
-import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ResultFilterService {
 
     public OverpassQueryResult removeAreaTags(OverpassQueryResult queryResult) {
-        var iterator = queryResult.elements.iterator();
+        var iterator = queryResult.getElements().iterator();
         while (iterator.hasNext()) {
-            var area = iterator.next().tags.area;
+            var area = iterator.next().getTags().getArea();
             if ("yes".equals(area)) {
                 iterator.remove();
             }
@@ -21,7 +23,9 @@ public class ResultFilterService {
     }
 
     public OverpassQueryResult joinRoads(OverpassQueryResult removedAreaTagsQueryResult) {
-        //TODO implement
+        List<Element> elements = removedAreaTagsQueryResult.getElements().stream()
+                .filter(element -> element.getType().equals("way"))
+                .collect(Collectors.toList());
         return new OverpassQueryResult();
     }
 }

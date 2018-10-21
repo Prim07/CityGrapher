@@ -1,6 +1,6 @@
 package com.agh.bsct.datacollector.services.city;
 
-import com.agh.bsct.datacollector.library.adapter.OverpassQueryResult;
+import com.agh.bsct.datacollector.library.adapter.queryresult.OverpassQueryResult;
 import com.agh.bsct.datacollector.services.filter.ResultFilterService;
 import com.agh.bsct.datacollector.services.graph.GraphService;
 import com.agh.bsct.datacollector.services.interpreter.QueryInterpreterService;
