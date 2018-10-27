@@ -15,8 +15,10 @@ public class ResultFilterService {
     public OverpassQueryResult removeAreaTags(OverpassQueryResult queryResult) {
         var iterator = queryResult.getElements().iterator();
         while (iterator.hasNext()) {
-            var area = iterator.next().getTags().getArea();
-            if ("yes".equals(area)) {
+            var element = iterator.next();
+            var area = element.getTags().getArea();
+            var type = element.getType();
+            if ("yes".equals(area) || type.equals("area")) {
                 iterator.remove();
             }
         }
