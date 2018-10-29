@@ -8,6 +8,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+
 @Service
 public class OSMCityService {
 
@@ -29,8 +32,8 @@ public class OSMCityService {
         String query = queryForCityProvider.getQueryForCity(cityName);
         OverpassQueryResult interpretedQuery = queryInterpreterService.interpret(query);
         OverpassQueryResult removedAreaTagsQueryResult = resultFilterService.removeAreaTags(interpretedQuery);
-        OverpassQueryResult joinedRoadsQueryResults = resultFilterService.joinRoads(removedAreaTagsQueryResult);
-        return graphService.createGraph(joinedRoadsQueryResults);
+        HashMap<String, LinkedList<Long>> streetNameToNodes = resultFilterService.joinRoads(removedAreaTagsQueryResult);
+        return graphService.createGraph(streetNameToNodes);
     }
 
 }
