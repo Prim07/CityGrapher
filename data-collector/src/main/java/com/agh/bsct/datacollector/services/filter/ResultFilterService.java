@@ -13,17 +13,13 @@ import java.util.List;
 public class ResultFilterService {
 
     public OverpassQueryResult removeAreaTags(OverpassQueryResult queryResult) {
-        var iterator = queryResult.getElements().iterator();
-        while (iterator.hasNext()) {
-            var element = iterator.next();
-            var area = element.getTags().getArea();
-            var type = element.getType();
-            if ("yes".equals(area) || type.equals("area")) {
-                iterator.remove();
-            }
-        }
+        queryResult.getElements().removeIf(this::shouldElementBeRemoved);
 
         return queryResult;
+    }
+
+    private boolean shouldElementBeRemoved(Element element) {
+        return "yes".equals(element.getTags().getArea()) || "area".equals(element.getType());
     }
 
     public OverpassQueryResult joinRoads(OverpassQueryResult queryResult) {
