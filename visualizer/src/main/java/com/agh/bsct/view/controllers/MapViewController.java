@@ -2,12 +2,15 @@ package com.agh.bsct.view.controllers;
 
 import com.agh.bsct.view.config.ApiKeyProvider;
 import com.agh.bsct.view.controllers.factories.MarkerFactory;
+import com.agh.bsct.view.controllers.factories.PolylineFactory;
 import com.lynden.gmapsfx.GoogleMapView;
 import com.lynden.gmapsfx.MapComponentInitializedListener;
 import com.lynden.gmapsfx.javascript.object.*;
 import com.lynden.gmapsfx.service.geocoding.GeocoderStatus;
 import com.lynden.gmapsfx.service.geocoding.GeocodingResult;
 import com.lynden.gmapsfx.service.geocoding.GeocodingService;
+import com.lynden.gmapsfx.shapes.Polyline;
+import com.lynden.gmapsfx.shapes.PolylineOptions;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
@@ -31,9 +34,11 @@ public class MapViewController implements Initializable, MapComponentInitialized
     private StringProperty address;
 
     private MarkerFactory markerFactory;
+    private PolylineFactory polylineFactory;
 
     public MapViewController() {
         this.markerFactory = new MarkerFactory();
+        this.polylineFactory = new PolylineFactory();
         this.address = new SimpleStringProperty();
     }
 
@@ -55,6 +60,10 @@ public class MapViewController implements Initializable, MapComponentInitialized
 
         Marker exampleMarker = markerFactory.getMarker(50.061696, 19.937398);
         map.addMarker(exampleMarker);
+
+        Polyline examplePolyline = polylineFactory.getPolyline(50.011295, 19.724855, 50.073872, 19.931467);
+        map.addMapShape(examplePolyline);
+
     }
 
     private void initializeMapProperties(MapOptions mapOptions) {
