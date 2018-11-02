@@ -5,5 +5,9 @@ import java.util.List;
 public class CityData {
     private List<Node> nodes;
     private List<Street> streets;
-    private List<Crossing> crossings;
+    private List<Node> crossings;
+
+    public List<Street> getStreets() {
+        return streets;
+    }
 }
