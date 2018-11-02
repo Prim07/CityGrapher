@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.LinkedHashSet;
 
 @Service
 public class GraphService {
@@ -17,7 +17,7 @@ public class GraphService {
         this.graphParser = graphParser;
     }
 
-    public ObjectNode createGraph(HashMap<String, LinkedList<Long>> streetNameToNodes) {
+    public ObjectNode createGraph(HashMap<String, LinkedHashSet<Long>> streetNameToNodes) {
         //TODO implement
         return graphParser.parseToJson(streetNameToNodes);
     }

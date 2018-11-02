@@ -25,10 +25,11 @@ public class ResultFilterService {
         return queryResult;
     }
 
-    public HashMap<String, LinkedList<Long>> joinRoads(OverpassQueryResult queryResult) {
+    public HashMap<String, LinkedHashSet<Long>> joinRoads(OverpassQueryResult queryResult) {
         HashMap<String, List<List<Long>>> streetNameToListOfNodes = getStreetNameToListOfNodes(queryResult);
-
-        return getMapStreetNameToNodes(streetNameToListOfNodes, new HashMap<>());
+        HashMap<String, LinkedList<Long>> streetNameToNodes =
+                getMapStreetNameToNodes(streetNameToListOfNodes, new HashMap<>());
+        return getMapWithoutDuplicateNodes(streetNameToNodes);
     }
 
     private HashMap<String, List<List<Long>>> getStreetNameToListOfNodes(OverpassQueryResult queryResult) {
@@ -57,7 +58,15 @@ public class ResultFilterService {
         for (Map.Entry<String, List<List<Long>>> currentStreetNameToNodesPart : streetNameToListOfNodes.entrySet()) {
             List<List<Long>> currentEntryListOfNodes = currentStreetNameToNodesPart.getValue();
 
-            LinkedList<Long> orderedJoinedNodes = getOrderedJoinedNodes(currentEntryListOfNodes);
+            LinkedList<Long> orderedJoinedNodes = initializeOrderedJoinedNodesWithFirstPart(currentEntryListOfNodes);
+
+            var maxNumberOfIterations = currentEntryListOfNodes.size();
+            var iterationsCounter = 0;
+
+            while (isNextIterationAvailable(currentEntryListOfNodes, maxNumberOfIterations, iterationsCounter)) {
+                iterationsCounter++;
+                orderedJoinedNodes = joinNewNodesPartToOrderedJoinedNodes(currentEntryListOfNodes, orderedJoinedNodes);
+            }
 
             String streetName = currentStreetNameToNodesPart.getKey();
 
@@ -71,20 +80,7 @@ public class ResultFilterService {
         return streetNameToNodes;
     }
 
-    private LinkedList<Long> getOrderedJoinedNodes(List<List<Long>> currentEntryListOfNodes) {
-        LinkedList<Long> orderedJoinedNodes = initializeOrderedJoinedNodes(currentEntryListOfNodes);
-
-        var maxNumberOfIterations = currentEntryListOfNodes.size();
-        var iterationsCounter = 0;
-
-        while (isNextIterationAvailable(currentEntryListOfNodes, maxNumberOfIterations, iterationsCounter)) {
-            iterationsCounter++;
-            orderedJoinedNodes = joinNewNodesPartToOrderedJoinedNodes(currentEntryListOfNodes, orderedJoinedNodes);
-        }
-        return orderedJoinedNodes;
-    }
-
-    private LinkedList<Long> initializeOrderedJoinedNodes(List<List<Long>> currentEntryListOfNodes) {
+    private LinkedList<Long> initializeOrderedJoinedNodesWithFirstPart(List<List<Long>> currentEntryListOfNodes) {
         var orderedJoinedNodes = new LinkedList<Long>();
         orderedJoinedNodes.addAll(currentEntryListOfNodes.get(0));
         currentEntryListOfNodes.remove(0);
@@ -104,9 +100,10 @@ public class ResultFilterService {
                                                                   LinkedList<Long> orderedNodes) {
         Long firstJoinedNodeId = orderedNodes.get(0);
         Long lastJoinedNodeId = orderedNodes.get(orderedNodes.size() - 1);
+        var currentEntryListOfNodesIterator = currentEntryListOfNodes.iterator();
 
-        for (int i = 0; i < currentEntryListOfNodes.size(); ++i) {
-            List<Long> candidateNodes = currentEntryListOfNodes.get(i);
+        while (currentEntryListOfNodesIterator.hasNext()) {
+            List<Long> candidateNodes = currentEntryListOfNodesIterator.next();
             Long firstCandidateNodeToJoinId = candidateNodes.get(0);
             Long lastCandidateNodeToJoinId = candidateNodes.get(candidateNodes.size() - 1);
 
@@ -122,7 +119,7 @@ public class ResultFilterService {
                 continue;
             }
 
-            currentEntryListOfNodes.remove(i);
+            currentEntryListOfNodesIterator.remove();
         }
 
         return orderedNodes;
@@ -130,10 +127,9 @@ public class ResultFilterService {
 
     private LinkedList<Long> joinNodesConnectedInFirstPositions(LinkedList<Long> orderedJoinedNodes,
                                                                 List<Long> candidateNodesToJoin) {
-        var candidateNodesToJoinCopy = new ArrayList<>(candidateNodesToJoin);
-        Collections.reverse(candidateNodesToJoinCopy);
+        Collections.reverse(candidateNodesToJoin);
         var orderedJoinedNodesCopy = new LinkedList<>(orderedJoinedNodes);
-        orderedJoinedNodes = new LinkedList<>(candidateNodesToJoinCopy);
+        orderedJoinedNodes = new LinkedList<>(candidateNodesToJoin);
         orderedJoinedNodes.addAll(orderedJoinedNodesCopy);
         return orderedJoinedNodes;
         //TODO AK niby kod to samo robi, ale zwraca lekko różne wyniki. Sprawdziłbym też inne metody join...
@@ -157,9 +153,8 @@ public class ResultFilterService {
 
     private LinkedList<Long> joinNodesConnectedInLastPositions(LinkedList<Long> orderedJoinedNodes,
                                                                List<Long> candidateNodesToJoin) {
-        var candidateNodesToJoinCopy = new ArrayList<>(candidateNodesToJoin);
-        Collections.reverse(candidateNodesToJoinCopy);
-        orderedJoinedNodes.addAll(candidateNodesToJoinCopy);
+        Collections.reverse(candidateNodesToJoin);
+        orderedJoinedNodes.addAll(candidateNodesToJoin);
         return orderedJoinedNodes;
     }
 
@@ -170,5 +165,13 @@ public class ResultFilterService {
         remainingStreetNameToListOfNodes.put(streetName + NEXT_PART_OF_STREET_POSTFIX, currentEntryListOfNodes);
         streetNameToNodes = getMapStreetNameToNodes(remainingStreetNameToListOfNodes, streetNameToNodes);
         return streetNameToNodes;
+    }
+
+    private HashMap<String, LinkedHashSet<Long>> getMapWithoutDuplicateNodes(
+            HashMap<String, LinkedList<Long>> streetNameToListOfNodes) {
+        var streetNameToSetOfNodes = new HashMap<String, LinkedHashSet<Long>>();
+        streetNameToListOfNodes.forEach((streetName, listOfNodes) ->
+                streetNameToSetOfNodes.put(streetName, new LinkedHashSet<Long>(listOfNodes)));
+        return streetNameToSetOfNodes;
     }
 }

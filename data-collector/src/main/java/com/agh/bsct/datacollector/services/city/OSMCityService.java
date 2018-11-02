@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.LinkedHashSet;
 
 @Service
 public class OSMCityService {
@@ -32,7 +32,8 @@ public class OSMCityService {
         String query = queryForCityProvider.getQueryForCity(cityName);
         OverpassQueryResult interpretedQuery = queryInterpreterService.interpret(query);
         OverpassQueryResult removedAreaTagsQueryResult = resultFilterService.removeAreaTags(interpretedQuery);
-        HashMap<String, LinkedList<Long>> streetNameToNodes = resultFilterService.joinRoads(removedAreaTagsQueryResult);
+        HashMap<String, LinkedHashSet<Long>> streetNameToNodes =
+                resultFilterService.joinRoads(removedAreaTagsQueryResult);
         return graphService.createGraph(streetNameToNodes);
     }
 
