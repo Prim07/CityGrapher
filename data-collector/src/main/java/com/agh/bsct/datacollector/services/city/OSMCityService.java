@@ -1,5 +1,6 @@
 package com.agh.bsct.datacollector.services.city;
 
+import com.agh.bsct.datacollector.entities.citydata.Street;
 import com.agh.bsct.datacollector.library.adapter.queryresult.OverpassQueryResult;
 import com.agh.bsct.datacollector.services.filter.ResultFilterService;
 import com.agh.bsct.datacollector.services.graph.GraphService;
@@ -8,8 +9,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Service
 public class OSMCityService {
@@ -32,9 +32,8 @@ public class OSMCityService {
         String query = queryForCityProvider.getQueryForCity(cityName);
         OverpassQueryResult interpretedQuery = queryInterpreterService.interpret(query);
         OverpassQueryResult removedAreaTagsQueryResult = resultFilterService.removeAreaTags(interpretedQuery);
-        HashMap<String, LinkedHashSet<Long>> streetNameToNodes =
-                resultFilterService.joinRoads(removedAreaTagsQueryResult);
-        return graphService.createGraph(streetNameToNodes);
+        Set<Street> streets = resultFilterService.joinRoads(removedAreaTagsQueryResult);
+        return graphService.createGraph(streets);
     }
 
 }
