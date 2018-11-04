@@ -1,4 +1,4 @@
-package com.agh.bsct.datacollector.services.filter;
+package com.agh.bsct.datacollector.services.result.joiner;
 
 import com.agh.bsct.datacollector.entities.citydata.Street;
 import com.agh.bsct.datacollector.library.adapter.queryresult.Element;
@@ -9,22 +9,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class ResultFilterService {
+public class StreetsJoinerService {
 
     private static final String WAY_TYPE = "way";
     private static final String NEXT_PART_OF_STREET_POSTFIX = "_part";
 
-    public OverpassQueryResult removeAreaTags(OverpassQueryResult queryResult) {
-        queryResult.getElements().removeIf(this::shouldElementBeRemoved);
-
-        return queryResult;
-    }
-
-    private boolean shouldElementBeRemoved(Element element) {
-        return "yes".equals(element.getTags().getArea()) || "area".equals(element.getType());
-    }
-
-    public Set<Street> joinRoads(OverpassQueryResult queryResult) {
+    public Set<Street> joinStreets(OverpassQueryResult queryResult) {
         Map<String, Set<Street>> streetNameToStreets = getStreetNameToStreets(queryResult);
         Set<Street> streets = getStreets(streetNameToStreets, new HashSet<>());
         return getStreetsWithoutDuplicateNodes(streets);
