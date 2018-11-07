@@ -16,4 +16,12 @@ public class CityData {
     public List<Street> getStreets() {
         return streets;
     }
+
+    public List<Node> getNodes() {
+        return nodes;
+    }
+
+    public List<Node> getCrossings() {
+        return crossings;
+    }
 }

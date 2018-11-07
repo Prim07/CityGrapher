@@ -2,6 +2,7 @@ package com.agh.bsct.datacollector.entities.citydata;
 
 public class Node {
     private Long id;
+
     private Double lon;
     private Double lat;
 
@@ -13,5 +14,13 @@ public class Node {
 
     public Long getId() {
         return id;
+    }
+
+    public Double getLon() {
+        return lon;
+    }
+
+    public Double getLat() {
+        return lat;
     }
 }
