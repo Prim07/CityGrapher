@@ -7,6 +7,12 @@ public class CityData {
     private List<Street> streets;
     private List<Node> crossings;
 
+    public CityData(List<Node> nodes, List<Street> streets, List<Node> crossings) {
+        this.nodes = nodes;
+        this.streets = streets;
+        this.crossings = crossings;
+    }
+
     public List<Street> getStreets() {
         return streets;
     }
