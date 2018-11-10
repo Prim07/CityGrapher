@@ -51,8 +51,8 @@ public class CityDataService {
         List<Long> crossingsIds = getCrossingIds(nodeIdToOccurrencesInStreetCount);
         List<Street> streetsAfterSplitting = getStreetsSeparatedOnCrossings(streets, crossingsIds);
         List<Node> nodes = mapToNodes(overpassQueryResult);
-        List<Node> crossings = getCrossingsNodes(crossingsIds, nodes);
-        return new CityData(nodes, streetsAfterSplitting, crossings);
+        nodes = updateNodesWithCrossingInformation(crossingsIds, nodes);
+        return new CityData(nodes, streetsAfterSplitting);
     }
 
     private Map<Long, Integer> getNodeIdToOccurrencesInStreetCountMap(Set<Street> streets) {
@@ -106,7 +106,7 @@ public class CityDataService {
     private ArrayList<List<Long>> getInitializedWithEmptyLists(int size) {
         var splitStreetsNodes = new ArrayList<List<Long>>(size);
         for (int i = 0; i < size; i++) {
-            splitStreetsNodes.add(new ArrayList<>());
+            splitStreetsNodes.add(i, new ArrayList<>());
         }
         return splitStreetsNodes;
     }
@@ -139,17 +139,13 @@ public class CityDataService {
                     .collect(Collectors.toList());
     }
 
-    private List<Node> getCrossingsNodes(List<Long> crossingsIds, List<Node> nodes) {
-        return crossingsIds.stream()
-                .map(id -> getCrossingNode(nodes, id))
-                .collect(Collectors.toList());
-    }
-
-    private Node getCrossingNode(List<Node> nodes, Long id) {
-        return nodes.stream()
-                .filter(node -> id.equals(node.getId()))
-                .findAny()
-                .orElseThrow(() -> new IllegalStateException("Incorrect candidate ID for crossing" + id));
+    private List<Node> updateNodesWithCrossingInformation(List<Long> crossingsIds, List<Node> nodes) {
+        nodes.stream().forEach(node -> {
+            if (crossingsIds.contains(node.getId())) {
+                node.setCrossing(true);
+            }
+        });
+        return nodes;
     }
 
 }
