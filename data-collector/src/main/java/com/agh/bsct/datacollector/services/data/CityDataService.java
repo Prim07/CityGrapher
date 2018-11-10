@@ -51,7 +51,7 @@ public class CityDataService {
         List<Long> crossingsIds = getCrossingIds(nodeIdToOccurrencesInStreetCount);
         List<Street> streetsAfterSplitting = getStreetsSeparatedOnCrossings(streets, crossingsIds);
         List<Node> nodes = mapToNodes(overpassQueryResult);
-        nodes = updateNodesWithCrossingInformation(crossingsIds, nodes);
+        updateWithCrossingInformation(nodes, crossingsIds);
         return new CityData(nodes, streetsAfterSplitting);
     }
 
@@ -139,7 +139,7 @@ public class CityDataService {
                     .collect(Collectors.toList());
     }
 
-    private List<Node> updateNodesWithCrossingInformation(List<Long> crossingsIds, List<Node> nodes) {
+    private List<Node> updateWithCrossingInformation(List<Node> nodes, List<Long> crossingsIds) {
         nodes.stream().forEach(node -> {
             if (crossingsIds.contains(node.getId())) {
                 node.setCrossing(true);

@@ -5,10 +5,9 @@ public class Node {
 
     private Double lon;
     private Double lat;
+    private boolean isCrossing;
 
-    boolean isCrossing;
-
-    public Node(Long id, Double lon, Double lat, boolean isCrossing) {
+    private Node(Long id, Double lon, Double lat, boolean isCrossing) {
         this.id = id;
         this.lon = lon;
         this.lat = lat;
