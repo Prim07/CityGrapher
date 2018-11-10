@@ -58,13 +58,12 @@ public class DataParser {
     private ArrayList<ObjectNode> addNodes(CityData cityData, ObjectMapper objectMapper) {
         ArrayList<ObjectNode> jsonNodes = new ArrayList<>();
         List<Node> nodes = cityData.getNodes();
-        List<Node> crossing = cityData.getCrossings();
         for (Node node : nodes) {
             ObjectNode jsonNode = objectMapper.createObjectNode();
             jsonNode.put(ID_KEY, node.getId());
             jsonNode.put(LATITUDE_KEY, node.getLat());
             jsonNode.put(LONGITUDE_KEY, node.getLon());
-            jsonNode.put(JUNCTION_KEY, crossing.contains(node));
+            jsonNode.put(JUNCTION_KEY, node.isCrossing());
             jsonNode.put(HOSPITAL_KEY, false);
             jsonNodes.add(jsonNode);
         }
