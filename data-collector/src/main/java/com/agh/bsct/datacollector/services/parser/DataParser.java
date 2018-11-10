@@ -19,7 +19,7 @@ public class DataParser {
     private static final String NODES_KEY = "nodes";
     private static final String LATITUDE_KEY = "lat";
     private static final String LONGITUDE_KEY = "lon";
-    private static final String JUNCTION_KEY = "junction";
+    private static final String JUNCTION_KEY = "crossing";
     private static final String HOSPITAL_KEY = "hospital";
     private static final String WAYS_KEY = "ways";
 
