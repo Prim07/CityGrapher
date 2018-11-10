@@ -51,7 +51,7 @@ public class CityDataService {
         List<Long> crossingsIds = getCrossingIds(nodeIdToOccurrencesInStreetCount);
         List<Street> streetsAfterSplitting = getStreetsSeparatedOnCrossings(streets, crossingsIds);
         List<Node> nodes = mapToNodes(overpassQueryResult);
-        List<Node> crossings = getCrossings(crossingsIds, nodes);
+        List<Node> crossings = getCrossingsNodes(crossingsIds, nodes);
         return new CityData(nodes, streetsAfterSplitting, crossings);
     }
 
@@ -69,18 +69,6 @@ public class CityDataService {
                 .filter(this::isNodesOccurrenceGreaterThanOne)
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
-        //TODO PP remove commented section if above proposal is 100% working
-        /*
-        // find crossing ids (nodes with occurrences greater than 1)
-        List<Long> crossingsIds = new ArrayList<>();
-
-        for (Map.Entry<Long, Integer> entry : nodeIdToOccurrencesInStreetCount.entrySet()) {
-            Integer occurrencesInStreets = entry.getValue();
-            Long nodeId = entry.getKey();
-            if (occurrencesInStreets > 1)
-                crossingsIds.add(nodeId);
-        }
-        return crossingsIds;*/
     }
 
     private boolean isNodesOccurrenceGreaterThanOne(Map.Entry<Long, Integer> entry) {
@@ -110,27 +98,34 @@ public class CityDataService {
     }
 
     private List<Street> splitStreet(Street street, List<Long> middleNodeIds) {
-        //prepare list of nodes for each street
-        var listOfSplitStreetsNodes = new ArrayList<List<Long>>();
+        ArrayList<List<Long>> listOfSplitStreetsNodes = getInitializedWithEmptyLists(middleNodeIds.size() + 1);
+        splitNodesOfBaseStreet(street, middleNodeIds, listOfSplitStreetsNodes);
+        return mapToStreets(street, listOfSplitStreetsNodes);
+    }
 
-        //initialize list of nodes
-        for (int i = 0; i < middleNodeIds.size() + 1; i++)
-            listOfSplitStreetsNodes.add(new ArrayList<>());
+    private ArrayList<List<Long>> getInitializedWithEmptyLists(int size) {
+        var splitStreetsNodes = new ArrayList<List<Long>>(size);
+        for (int i = 0; i < size; i++) {
+            splitStreetsNodes.add(new ArrayList<>());
+        }
+        return splitStreetsNodes;
+    }
 
-        //split nodes of base street
-        int streetPartId = 0;
+    private void splitNodesOfBaseStreet(Street street, List<Long> middleNodeIds,
+                                        ArrayList<List<Long>> listOfSplitStreetsNodes) {
+        var streetPartId = 0;
         for (Long nodeId : street.getNodesIds()) {
             if (middleNodeIds.contains(nodeId)) {
                 listOfSplitStreetsNodes.get(streetPartId).add(nodeId);
                 listOfSplitStreetsNodes.get(streetPartId + 1).add(nodeId);
                 streetPartId++;
-            } else
+            } else {
                 listOfSplitStreetsNodes.get(streetPartId).add(nodeId);
+            }
         }
+    }
 
-        //prepare Street objects
-
-        //return list of Streets
+    private List<Street> mapToStreets(Street street, ArrayList<List<Long>> listOfSplitStreetsNodes) {
         return listOfSplitStreetsNodes
                 .stream()
                 .map(nodeIds -> new Street(street.getName(), nodeIds))
@@ -144,7 +139,7 @@ public class CityDataService {
                     .collect(Collectors.toList());
     }
 
-    private List<Node> getCrossings(List<Long> crossingsIds, List<Node> nodes) {
+    private List<Node> getCrossingsNodes(List<Long> crossingsIds, List<Node> nodes) {
         return crossingsIds.stream()
                 .map(id -> getCrossingNode(nodes, id))
                 .collect(Collectors.toList());
