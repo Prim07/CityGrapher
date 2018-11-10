@@ -47,29 +47,44 @@ public class CityDataService {
     }
 
     private CityData updateCrossings(Set<Street> streets, OverpassQueryResult overpassQueryResult) {
-
         Map<Long, Integer> nodeIdToOccurrencesInStreetCount = getNodeIdToOccurrencesInStreetCountMap(streets);
-
         List<Long> crossingsIds = getCrossingIds(nodeIdToOccurrencesInStreetCount);
-
         List<Street> streetsAfterSplitting = getStreetsSeparatedOnCrossings(streets, crossingsIds);
+        List<Node> nodes = mapToNodes(overpassQueryResult);
+        List<Node> crossings = getCrossings(crossingsIds, nodes);
+        return new CityData(nodes, streetsAfterSplitting, crossings);
+    }
 
-        //prepare list of all nodes (for CityData object)
-        List<Node> nodes = overpassQueryResult.getElements().stream()
-                .filter(element -> NODE_TYPE.equals(element.getType()))
-                .map(element -> new Node(element.getId(), element.getLon(), element.getLat()))
+    private Map<Long, Integer> getNodeIdToOccurrencesInStreetCountMap(Set<Street> streets) {
+        Map<Long, Integer> nodeIdsToOccurrencesInStreets = new HashMap<>();
+        streets.stream()
+                .map(Street::getNodesIds)
+                .flatMap(Collection::stream)
+                .forEach(nodeId -> nodeIdsToOccurrencesInStreets.merge(nodeId, 1, (a, b) -> a + b));
+        return nodeIdsToOccurrencesInStreets;
+    }
+
+    private List<Long> getCrossingIds(Map<Long, Integer> nodeIdToOccurrencesInStreetCount) {
+        return nodeIdToOccurrencesInStreetCount.entrySet().stream()
+                .filter(this::isNodesOccurrenceGreaterThanOne)
+                .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
+        //TODO PP remove commented section if above proposal is 100% working
+        /*
+        // find crossing ids (nodes with occurrences greater than 1)
+        List<Long> crossingsIds = new ArrayList<>();
 
-        //prepare list of all crossings (for CityData object)
-        List<Node> crossing = crossingsIds.stream()
-                .map(id -> nodes
-                        .stream()
-                        .filter(node -> id.equals(node.getId()))
-                        .collect(Collectors.toList())
-                        .get(0))
-                .collect(Collectors.toList());
+        for (Map.Entry<Long, Integer> entry : nodeIdToOccurrencesInStreetCount.entrySet()) {
+            Integer occurrencesInStreets = entry.getValue();
+            Long nodeId = entry.getKey();
+            if (occurrencesInStreets > 1)
+                crossingsIds.add(nodeId);
+        }
+        return crossingsIds;*/
+    }
 
-        return new CityData(nodes, streetsAfterSplitting, crossing);
+    private boolean isNodesOccurrenceGreaterThanOne(Map.Entry<Long, Integer> entry) {
+        return entry.getValue() > 1;
     }
 
     private List<Street> getStreetsSeparatedOnCrossings(Set<Street> streets, List<Long> crossingsIds) {
@@ -92,38 +107,6 @@ public class CityDataService {
         }
 
         return streetsSeparatedOnCrossings;
-    }
-
-    private List<Long> getCrossingIds(Map<Long, Integer> nodeIdToOccurrencesInStreetCount) {
-        return nodeIdToOccurrencesInStreetCount.entrySet().stream()
-                .filter(this::isNodesOccurrenceGreaterThanOne)
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
-        //TODO remove commented section if above is 100% working
-        /*
-        // find crossing ids (nodes with occurrences greater than 1)
-        List<Long> crossingsIds = new ArrayList<>();
-
-        for (Map.Entry<Long, Integer> entry : nodeIdToOccurrencesInStreetCount.entrySet()) {
-            Integer occurrencesInStreets = entry.getValue();
-            Long nodeId = entry.getKey();
-            if (occurrencesInStreets > 1)
-                crossingsIds.add(nodeId);
-        }
-        return crossingsIds;*/
-    }
-
-    private boolean isNodesOccurrenceGreaterThanOne(Map.Entry<Long, Integer> entry) {
-        return entry.getValue() > 1;
-    }
-
-    private Map<Long, Integer> getNodeIdToOccurrencesInStreetCountMap(Set<Street> streets) {
-        Map<Long, Integer> nodeIdsToOccurrencesInStreets = new HashMap<>();
-        streets.stream()
-                .map(Street::getNodesIds)
-                .flatMap(Collection::stream)
-                .forEach(nodeId -> nodeIdsToOccurrencesInStreets.merge(nodeId, 1, (a, b) -> a + b));
-        return nodeIdsToOccurrencesInStreets;
     }
 
     private List<Street> splitStreet(Street street, List<Long> middleNodeIds) {
@@ -152,6 +135,26 @@ public class CityDataService {
                 .stream()
                 .map(nodeIds -> new Street(street.getName(), nodeIds))
                 .collect(Collectors.toList());
+    }
+
+    private List<Node> mapToNodes(OverpassQueryResult overpassQueryResult) {
+        return overpassQueryResult.getElements().stream()
+                    .filter(element -> NODE_TYPE.equals(element.getType()))
+                    .map(element -> new Node(element.getId(), element.getLon(), element.getLat()))
+                    .collect(Collectors.toList());
+    }
+
+    private List<Node> getCrossings(List<Long> crossingsIds, List<Node> nodes) {
+        return crossingsIds.stream()
+                .map(id -> getCrossingNode(nodes, id))
+                .collect(Collectors.toList());
+    }
+
+    private Node getCrossingNode(List<Node> nodes, Long id) {
+        return nodes.stream()
+                .filter(node -> id.equals(node.getId()))
+                .findAny()
+                .orElseThrow(() -> new IllegalStateException("Incorrect candidate ID for crossing" + id));
     }
 
 }
