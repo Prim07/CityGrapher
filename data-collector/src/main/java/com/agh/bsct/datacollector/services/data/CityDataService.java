@@ -139,13 +139,12 @@ public class CityDataService {
                     .collect(Collectors.toList());
     }
 
-    private List<Node> updateWithCrossingInformation(List<Node> nodes, List<Long> crossingsIds) {
-        nodes.stream().forEach(node -> {
+    private void updateWithCrossingInformation(List<Node> nodes, List<Long> crossingsIds) {
+        nodes.forEach(node -> {
             if (crossingsIds.contains(node.getId())) {
                 node.setCrossing(true);
             }
         });
-        return nodes;
     }
 
 }
