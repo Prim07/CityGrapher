@@ -38,8 +38,7 @@ public class DataParser {
     public ObjectNode parseToJson(CityData cityData) {
         var objectMapper = new ObjectMapper();
         ArrayList<ObjectNode> jsonStreets = addStreets(cityData, objectMapper);
-        ArrayList<ObjectNode> jsonNodes = addNodes(cityData, objectMapper);
-        return mapToObjectNode(objectMapper, jsonStreets, jsonNodes);
+        return mapToObjectNode(objectMapper, jsonStreets);
     }
 
     private ArrayList<ObjectNode> addStreets(CityData cityData, ObjectMapper objectMapper) {
@@ -48,18 +47,20 @@ public class DataParser {
         for (Street street : streets) {
             ObjectNode jsonStreet = objectMapper.createObjectNode();
             jsonStreet.put(ID_KEY, streets.indexOf(street));
-            ArrayNode jsonNodeIds = objectMapper.valueToTree(street.getNodesIds());
-            jsonStreet.putArray(NODES_KEY).addAll(jsonNodeIds);
+            var streetNodesIds = street.getNodesIds();
+            var nodes = cityData.getNodes();
+            ArrayList<ObjectNode> jsonNodes = addNodes(streetNodesIds, nodes, objectMapper);
+            jsonStreet.putArray(NODES_KEY).addAll(jsonNodes);
             jsonStreets.add(jsonStreet);
         }
         return jsonStreets;
     }
 
-    private ArrayList<ObjectNode> addNodes(CityData cityData, ObjectMapper objectMapper) {
+    private ArrayList<ObjectNode> addNodes(List<Long> streetNodesIds, List<Node> nodes, ObjectMapper objectMapper) {
         ArrayList<ObjectNode> jsonNodes = new ArrayList<>();
-        List<Node> nodes = cityData.getNodes();
-        for (Node node : nodes) {
+        for (Long nodeId : streetNodesIds) {
             ObjectNode jsonNode = objectMapper.createObjectNode();
+            Node node = getNodeWithGivenId(nodeId, nodes);
             jsonNode.put(ID_KEY, node.getId());
             jsonNode.put(LATITUDE_KEY, node.getLat());
             jsonNode.put(LONGITUDE_KEY, node.getLon());
@@ -70,14 +71,18 @@ public class DataParser {
         return jsonNodes;
     }
 
-    private ObjectNode mapToObjectNode(ObjectMapper objectMapper, ArrayList<ObjectNode> jsonStreets, ArrayList<ObjectNode> jsonNodes) {
+    private Node getNodeWithGivenId(Long nodeId, List<Node> nodes) {
+        return nodes.stream()
+                .filter(node -> node.getId().equals(nodeId))
+                .findAny()
+                .orElseThrow(() -> new IllegalStateException("Cannot find Node with given id"));
+    }
+
+    private ObjectNode mapToObjectNode(ObjectMapper objectMapper, ArrayList<ObjectNode> jsonStreets) {
         ObjectNode jsonBase = objectMapper.createObjectNode();
 
         ArrayNode allJsonStreets = objectMapper.valueToTree(jsonStreets);
         jsonBase.putArray(WAYS_KEY).addAll(allJsonStreets);
-
-        ArrayNode allJsonNodes = objectMapper.valueToTree(jsonNodes);
-        jsonBase.putArray(NODES_KEY).addAll(allJsonNodes);
 
         return jsonBase;
     }
