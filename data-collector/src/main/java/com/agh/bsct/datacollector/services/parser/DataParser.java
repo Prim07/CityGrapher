@@ -23,25 +23,21 @@ public class DataParser {
     private static final String HOSPITAL_KEY = "hospital";
     private static final String WAYS_KEY = "ways";
 
-    //TODO simple example, build here JSON object representing parser
-    public ObjectNode parseToJson(GraphData graphData) {
-        //TODO implement when parser in GraphService.returnGraphAsObjectNode is ready
-        ObjectNode objectNode = new ObjectMapper().createObjectNode();
-        for (var edge : graphData.getEdges()) {
-            Street street = edge.getStreet();
-            objectNode.put(street.getName(), street.getNodesIds().toString());
-
-        }
-        return objectNode;
+    public ObjectNode parseToJson(GraphData graphData, List<Node> hospitals) {
+        return parseToJson(graphData.toCityData(), hospitals);
     }
 
     public ObjectNode parseToJson(CityData cityData) {
+        return parseToJson(cityData, new ArrayList<>());
+    }
+
+    private ObjectNode parseToJson(CityData cityData, List<Node> hospitals) {
         var objectMapper = new ObjectMapper();
-        ArrayList<ObjectNode> jsonStreets = addStreets(cityData, objectMapper);
+        ArrayList<ObjectNode> jsonStreets = addStreets(cityData, hospitals, objectMapper);
         return mapToObjectNode(objectMapper, jsonStreets);
     }
 
-    private ArrayList<ObjectNode> addStreets(CityData cityData, ObjectMapper objectMapper) {
+    private ArrayList<ObjectNode> addStreets(CityData cityData, List<Node> hospitals, ObjectMapper objectMapper) {
         var jsonStreets = new ArrayList<ObjectNode>();
         List<Street> streets = cityData.getStreets();
         for (Street street : streets) {
@@ -49,14 +45,17 @@ public class DataParser {
             jsonStreet.put(ID_KEY, streets.indexOf(street));
             var streetNodesIds = street.getNodesIds();
             var nodes = cityData.getNodes();
-            ArrayList<ObjectNode> jsonNodes = addNodes(streetNodesIds, nodes, objectMapper);
+            ArrayList<ObjectNode> jsonNodes = addNodes(streetNodesIds, nodes, hospitals, objectMapper);
             jsonStreet.putArray(NODES_KEY).addAll(jsonNodes);
             jsonStreets.add(jsonStreet);
         }
         return jsonStreets;
     }
 
-    private ArrayList<ObjectNode> addNodes(List<Long> streetNodesIds, List<Node> nodes, ObjectMapper objectMapper) {
+    private ArrayList<ObjectNode> addNodes(List<Long> streetNodesIds,
+                                           List<Node> nodes,
+                                           List<Node> hospitals,
+                                           ObjectMapper objectMapper) {
         ArrayList<ObjectNode> jsonNodes = new ArrayList<>();
         for (Long nodeId : streetNodesIds) {
             ObjectNode jsonNode = objectMapper.createObjectNode();
@@ -65,7 +64,7 @@ public class DataParser {
             jsonNode.put(LATITUDE_KEY, node.getLat());
             jsonNode.put(LONGITUDE_KEY, node.getLon());
             jsonNode.put(JUNCTION_KEY, node.isCrossing());
-            jsonNode.put(HOSPITAL_KEY, false);
+            jsonNode.put(HOSPITAL_KEY, hospitals.contains(node));
             jsonNodes.add(jsonNode);
         }
         return jsonNodes;

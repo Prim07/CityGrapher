@@ -29,7 +29,8 @@ public class OSMCityService {
     public ObjectNode getCityGraph(String cityName) {
         var cityData = cityDataService.getCityData(cityName);
         var graphData = graphService.getGraphData(cityData);
-        return dataParser.parseToJson(graphData);
+        var hospitalNodes = graphService.runAlgorithmAndCalculateHospitalNodes(graphData);
+        return dataParser.parseToJson(graphData, hospitalNodes);
     }
 
 }
