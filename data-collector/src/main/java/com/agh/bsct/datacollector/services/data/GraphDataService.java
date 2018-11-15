@@ -17,6 +17,9 @@ import static java.lang.Math.*;
 @Service
 public class GraphDataService {
 
+    private static final int EARTH_RADIUS = 6372800;
+    private static final int DEFAULT_NODE_WEIGHT = 1;
+
     public GraphData getGraphData(CityData cityData) {
         List<Edge> edges = calculateEdgeWeights(cityData.getStreets(), cityData.getNodes());
         List<Crossing> crossings = calculateNodeWeights(cityData.getNodes());
@@ -47,8 +50,6 @@ public class GraphDataService {
     }
 
     private double calculateDistance(Node startNode, Node endNode) {
-        final int earthRadius = 6372800;
-
         double startLat = startNode.getLat();
         double endLat = endNode.getLat();
         double startLon = startNode.getLon();
@@ -59,19 +60,20 @@ public class GraphDataService {
         double latRad = toRadians(endLat - startLat);
         double lonRad = toRadians(endLon - startLon);
 
-        return 2.0 * earthRadius * asin(sqrt(pow(sin(latRad / 2), 2) + cos(startLatRad) * cos(endLatRad) * pow(sin(lonRad / 2), 2)));
+        return 2.0 * EARTH_RADIUS * asin(sqrt(pow(sin(latRad / 2), 2) + cos(startLatRad) * cos(endLatRad) * pow(sin(lonRad / 2), 2)));
     }
 
     private Node getNodeWithId(Long nodeId, List<Node> nodes) {
         return nodes.stream()
                 .filter(node -> node.getId().equals(nodeId))
                 .findAny()
-                .orElseThrow(() -> new IllegalStateException("Cannot find Node with given id"));
+                .orElseThrow(() -> new IllegalStateException("Cannot find Node with given id: " + nodeId));
     }
 
     private List<Crossing> calculateNodeWeights(List<Node> nodes) {
+        //TODO sprawdzić czas wykonania i porównać z czymś szybszym, np. zwykłym forem
         return nodes.stream()
-                .map((node -> new Crossing(node, 1)))
+                .map((node -> new Crossing(node, DEFAULT_NODE_WEIGHT)))
                 .collect(Collectors.toList());
     }
 
