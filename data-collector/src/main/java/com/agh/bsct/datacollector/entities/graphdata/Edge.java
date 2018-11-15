@@ -5,9 +5,9 @@ import com.agh.bsct.datacollector.entities.citydata.Street;
 public class Edge {
 
     private Street street;
-    private Integer weight;
+    private double weight;
 
-    public Edge(Street street, Integer weight) {
+    public Edge(Street street, double weight) {
         this.street = street;
         this.weight = weight;
     }
