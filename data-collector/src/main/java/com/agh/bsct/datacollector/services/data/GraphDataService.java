@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.*;
@@ -18,7 +19,14 @@ import static java.lang.Math.*;
 public class GraphDataService {
 
     private static final int EARTH_RADIUS = 6372800;
-    private static final int DEFAULT_NODE_WEIGHT = 1;
+    private static final int NODE_WEIGHT_MIN = 50;
+    private static final int NODE_WEIGHT_MAX = 1000;
+
+    private final Random random;
+
+    public GraphDataService() {
+        this.random = new Random();
+    }
 
     public GraphData getGraphData(CityData cityData) {
         List<Edge> edges = calculateEdgeWeights(cityData.getStreets(), cityData.getNodes());
@@ -74,8 +82,12 @@ public class GraphDataService {
     private List<Crossing> calculateNodeWeights(List<Node> nodes) {
         //TODO sprawdzić czas wykonania i porównać z czymś szybszym, np. zwykłym forem
         return nodes.stream()
-                .map((node -> new Crossing(node, DEFAULT_NODE_WEIGHT)))
+                .map(this::getCrossingWithRandomNodeWeight)
                 .collect(Collectors.toList());
+    }
+
+    private Crossing getCrossingWithRandomNodeWeight(Node node) {
+        return new Crossing(node, random.nextInt((NODE_WEIGHT_MAX - NODE_WEIGHT_MIN) + 1) + NODE_WEIGHT_MIN);
     }
 
     public List<Node> runAlgorithmAndCalculateHospitalNodes(GraphData graphData) {
