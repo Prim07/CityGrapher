@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.*;
@@ -18,7 +19,10 @@ import static java.lang.Math.*;
 public class GraphDataService {
 
     private static final int EARTH_RADIUS = 6372800;
-    private static final int DEFAULT_NODE_WEIGHT = 1;
+    private static final int NODE_WEIGHT_MIN = 50;
+    private static final int NODE_WEIGHT_MAX = 1000;
+
+    private static final Random random = new Random();
 
     public GraphData getGraphData(CityData cityData) {
         List<Edge> edges = calculateEdgeWeights(cityData.getStreets(), cityData.getNodes());
@@ -31,8 +35,8 @@ public class GraphDataService {
 
         for (Street street : streets) {
             double weight = 0;
-
             List<Long> nodesIds = street.getNodesIds();
+
             for (int i = 0; i < nodesIds.size() - 1; i++) {
                 Long startNodeId = nodesIds.get(i);
                 Long endNodeId = nodesIds.get(i + 1);
@@ -60,7 +64,8 @@ public class GraphDataService {
         double latRad = toRadians(endLat - startLat);
         double lonRad = toRadians(endLon - startLon);
 
-        return 2.0 * EARTH_RADIUS * asin(sqrt(pow(sin(latRad / 2), 2) + cos(startLatRad) * cos(endLatRad) * pow(sin(lonRad / 2), 2)));
+        return 2.0 * EARTH_RADIUS
+                * asin(sqrt(pow(sin(latRad / 2), 2) + cos(startLatRad) * cos(endLatRad) * pow(sin(lonRad / 2), 2)));
     }
 
     private Node getNodeWithId(Long nodeId, List<Node> nodes) {
@@ -73,8 +78,12 @@ public class GraphDataService {
     private List<Crossing> calculateNodeWeights(List<Node> nodes) {
         //TODO sprawdzić czas wykonania i porównać z czymś szybszym, np. zwykłym forem
         return nodes.stream()
-                .map((node -> new Crossing(node, DEFAULT_NODE_WEIGHT)))
+                .map(this::getCrossingWithRandomNodeWeight)
                 .collect(Collectors.toList());
+    }
+
+    private Crossing getCrossingWithRandomNodeWeight(Node node) {
+        return new Crossing(node, random.nextInt((NODE_WEIGHT_MAX - NODE_WEIGHT_MIN) + 1) + NODE_WEIGHT_MIN);
     }
 
     public List<Node> runAlgorithmAndCalculateHospitalNodes(GraphData graphData) {
