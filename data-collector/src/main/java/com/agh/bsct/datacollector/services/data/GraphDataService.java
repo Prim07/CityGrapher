@@ -60,7 +60,8 @@ public class GraphDataService {
         double latRad = toRadians(endLat - startLat);
         double lonRad = toRadians(endLon - startLon);
 
-        return 2.0 * EARTH_RADIUS * asin(sqrt(pow(sin(latRad / 2), 2) + cos(startLatRad) * cos(endLatRad) * pow(sin(lonRad / 2), 2)));
+        return 2.0 * EARTH_RADIUS
+                * asin(sqrt(pow(sin(latRad / 2), 2) + cos(startLatRad) * cos(endLatRad) * pow(sin(lonRad / 2), 2)));
     }
 
     private Node getNodeWithId(Long nodeId, List<Node> nodes) {
