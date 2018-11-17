@@ -22,7 +22,7 @@ public class GraphDataService {
     private static final int NODE_WEIGHT_MIN = 50;
     private static final int NODE_WEIGHT_MAX = 1000;
 
-    private final Random random = new Random();
+    private static final Random random = new Random();
 
     public GraphData getGraphData(CityData cityData) {
         List<Edge> edges = calculateEdgeWeights(cityData.getStreets(), cityData.getNodes());
