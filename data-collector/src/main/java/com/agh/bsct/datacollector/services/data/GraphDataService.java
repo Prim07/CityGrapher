@@ -31,8 +31,8 @@ public class GraphDataService {
 
         for (Street street : streets) {
             double weight = 0;
-
             List<Long> nodesIds = street.getNodesIds();
+
             for (int i = 0; i < nodesIds.size() - 1; i++) {
                 Long startNodeId = nodesIds.get(i);
                 Long endNodeId = nodesIds.get(i + 1);
