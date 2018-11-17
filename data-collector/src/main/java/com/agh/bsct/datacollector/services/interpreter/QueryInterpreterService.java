@@ -1,7 +1,7 @@
 package com.agh.bsct.datacollector.services.interpreter;
 
-import com.agh.bsct.datacollector.library.adapter.OverpassQueryResult;
 import com.agh.bsct.datacollector.library.adapter.OverpassServiceProvider;
+import com.agh.bsct.datacollector.library.adapter.queryresult.OverpassQueryResult;
 import org.springframework.stereotype.Service;
 
 import java.net.SocketTimeoutException;

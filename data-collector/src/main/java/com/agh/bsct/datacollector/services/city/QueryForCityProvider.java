@@ -37,8 +37,8 @@ public class QueryForCityProvider {
                 .append("trunk_link").append("|")
                 .append("primary_link").append("|")
                 .append("secondary_link").append("|")
-                .append("secondary_link").append("|")
                 .append("unclassified").append("|")
+                .append("service").append("|")
                 .append("bus_guideway")
                 .toString();
     }
