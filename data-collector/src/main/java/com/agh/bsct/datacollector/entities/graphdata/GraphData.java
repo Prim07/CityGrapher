@@ -23,4 +23,12 @@ public class GraphData {
                                     .map(Edge::getStreet)
                                     .collect(Collectors.toList()));
     }
+
+    public List<Edge> getEdges() {
+        return edges;
+    }
+
+    public List<Crossing> getCrossings() {
+        return crossings;
+    }
 }

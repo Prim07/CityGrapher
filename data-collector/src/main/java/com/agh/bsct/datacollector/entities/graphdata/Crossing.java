@@ -16,4 +16,8 @@ public class Crossing {
         return node;
     }
 
+    public Integer getWeight() {
+        return weight;
+    }
+
 }

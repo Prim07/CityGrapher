@@ -15,4 +15,8 @@ public class Edge {
     public Street getStreet() {
         return street;
     }
+
+    public double getWeight() {
+        return weight;
+    }
 }
