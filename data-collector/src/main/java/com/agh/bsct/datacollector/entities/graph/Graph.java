@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class Graph {
 
-    private Map<GraphNode, List<GraphEdge>> nodeToEdgedIncidenceMap = new HashMap<>();
+    private Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap = new HashMap<>();
 
     public Graph(GraphData graphData) {
         var edges = graphData.getEdges();
@@ -34,20 +34,20 @@ public class Graph {
                 lastNode = new GraphNode(lastNodeId, lastCrossing.getWeight());
             }
 
-            var firstNodeEdges = nodeToEdgedIncidenceMap.computeIfAbsent(firstNode, node -> new ArrayList<>());
+            var firstNodeEdges = nodeToEdgesIncidenceMap.computeIfAbsent(firstNode, node -> new ArrayList<>());
             firstNodeEdges.add(new GraphEdge(lastNode, edgeWeight));
 
-            var lastNodeEdges = nodeToEdgedIncidenceMap.computeIfAbsent(lastNode, node -> new ArrayList<>());
+            var lastNodeEdges = nodeToEdgesIncidenceMap.computeIfAbsent(lastNode, node -> new ArrayList<>());
             lastNodeEdges.add(new GraphEdge(firstNode, edgeWeight));
         }
     }
 
-    public Map<GraphNode, List<GraphEdge>> getNodeToEdgedIncidenceMap() {
-        return nodeToEdgedIncidenceMap;
+    public Map<GraphNode, List<GraphEdge>> getNodeToEdgesIncidenceMap() {
+        return nodeToEdgesIncidenceMap;
     }
 
     private GraphNode getNodeForId(Long nodeId) {
-        return nodeToEdgedIncidenceMap.keySet().stream()
+        return nodeToEdgesIncidenceMap.keySet().stream()
                 .filter(graphNode -> graphNode.getId().equals(nodeId))
                 .findAny()
                 .orElse(null);

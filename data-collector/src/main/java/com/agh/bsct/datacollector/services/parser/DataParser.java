@@ -90,9 +90,9 @@ public class DataParser {
                 .orElseThrow(() -> new IllegalStateException("Cannot find GraphNode with given id"));
     }
 
-    private void boxObjectNodesWithName(ObjectNode jsonBase, ArrayList<ObjectNode> jsonObjects, String name) {
+    private void boxObjectNodesWithName(ObjectNode jsonBase, ArrayList<ObjectNode> jsonObjects) {
         ArrayNode jsonObjectsArrayNode = objectMapper.valueToTree(jsonObjects);
-        jsonBase.putArray(name).addAll(jsonObjectsArrayNode);
+        jsonBase.putArray(DataParser.EDGES_KEY).addAll(jsonObjectsArrayNode);
     }
 
     private ObjectNode boxObjectNodesWithName(ArrayList<ObjectNode> jsonObjects, String name) {
@@ -104,22 +104,21 @@ public class DataParser {
     }
 
     private ArrayList<ObjectNode> getIncidenceMapParsedToObjectNodes(Graph graph) {
-        var incidenceMap = graph.getNodeToEdgedIncidenceMap();
+        var incidenceMap = graph.getNodeToEdgesIncidenceMap();
 
         ArrayList<ObjectNode> jsonIncidenceMapElements = new ArrayList<>();
 
         for (Map.Entry<GraphNode, List<GraphEdge>> entry : incidenceMap.entrySet()) {
-            var jsonIncidenceMapElement = objectMapper.createObjectNode();
-
             var startNode = entry.getKey();
             var jsonStartNode = objectMapper.createObjectNode();
             jsonStartNode.put(ID_KEY, startNode.getId());
             jsonStartNode.put(WEIGHT_KEY, startNode.getWeight());
-            jsonIncidenceMapElement.putPOJO(NODE_KEY, jsonStartNode);
 
             ArrayList<ObjectNode> jsonEdges = getEdgesParsedToObjectNodes(entry);
-            boxObjectNodesWithName(jsonIncidenceMapElement, jsonEdges, EDGES_KEY);
 
+            var jsonIncidenceMapElement = objectMapper.createObjectNode();
+            jsonIncidenceMapElement.putPOJO(NODE_KEY, jsonStartNode);
+            boxObjectNodesWithName(jsonIncidenceMapElement, jsonEdges);
             jsonIncidenceMapElements.add(jsonIncidenceMapElement);
         }
         return jsonIncidenceMapElements;
@@ -130,16 +129,14 @@ public class DataParser {
 
         var jsonEdges = new ArrayList<ObjectNode>();
         for (GraphEdge graphEdge : edges) {
-            var jsonEdge = objectMapper.createObjectNode();
-
             var endNode = graphEdge.getEndGraphNode();
             var jsonEndNode = objectMapper.createObjectNode();
             jsonEndNode.put(ID_KEY, endNode.getId());
             jsonEndNode.put(WEIGHT_KEY, endNode.getWeight());
+
+            var jsonEdge = objectMapper.createObjectNode();
             jsonEdge.putPOJO(NODE_KEY, jsonEndNode);
-
             jsonEdge.put(WEIGHT_KEY, graphEdge.getWeight());
-
             jsonEdges.add(jsonEdge);
         }
 

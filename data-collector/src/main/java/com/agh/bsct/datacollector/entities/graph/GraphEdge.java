@@ -3,10 +3,10 @@ package com.agh.bsct.datacollector.entities.graph;
 public class GraphEdge {
 
     /*
-     * W klasie GraphEdge nie ma początkowego node'a,
-     * ponieważ jest ona używana jako element mapy nodeToEdgedIncidenceMap w klasie Graph.
-     * Kluczem e tej mapie jest node początkowy.
-     * Mamy kuleczkę (klucz) do której doczepiamy wykałaczki z kuleczkami na końcu(GraphEdge tylko z nodem końcowym).
+     * In GraphEdge there's no start node,
+     * because the class is used only as an element of nodeToEdgedIncidenceMap in Graph class.
+     * Start node is the key of the map.
+     * It's like a ball (key) to which we want to add sticks with balls at the end (GraphEdges with end nodes).
      */
 
     private GraphNode endGraphNode;
