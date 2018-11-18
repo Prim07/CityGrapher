@@ -1,6 +1,7 @@
 package com.agh.bsct.datacollector.entities.graph;
 
 import com.agh.bsct.datacollector.entities.graphdata.Crossing;
+import com.agh.bsct.datacollector.entities.graphdata.Edge;
 import com.agh.bsct.datacollector.entities.graphdata.GraphData;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public class Graph {
         var edges = graphData.getEdges();
         var crossings = graphData.getCrossings();
 
-        for(com.agh.bsct.datacollector.entities.graphdata.Edge edge : edges) {
+        for(Edge edge : edges) {
             var edgeNodeIds = edge.getStreet().getNodesIds();
             var edgeWeight = edge.getWeight();
 

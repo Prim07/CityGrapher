@@ -126,8 +126,8 @@ public class DataParser {
 
     private ArrayList<ObjectNode> getEdgesParsedToObjectNodes(Map.Entry<GraphNode, List<GraphEdge>> entry) {
         var edges = entry.getValue();
-
         var jsonEdges = new ArrayList<ObjectNode>();
+
         for (GraphEdge graphEdge : edges) {
             var endNode = graphEdge.getEndGraphNode();
             var jsonEndNode = objectMapper.createObjectNode();
