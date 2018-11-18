@@ -28,7 +28,7 @@ public class StreetsJoinerService {
         while (iterator.hasNext()) {
             Element currentElement = iterator.next();
             if (isCorrectWay(currentElement)) {
-                String name = setStreetName(currentElement);
+                String name = getStreetName(currentElement);
                 if (!streetNameToStreets.containsKey(name)) {
                     streetNameToStreets.put(name, new HashSet<>());
                 }
@@ -43,12 +43,9 @@ public class StreetsJoinerService {
         return streetNameToStreets;
     }
 
-    private String setStreetName(Element currentElement) {
+    private String getStreetName(Element currentElement) {
         var name = currentElement.getTags().getName();
-        if (name == null) {
-            name = UNNAMED_STREET_NAME;
-        }
-        return name;
+        return (name == null) ? UNNAMED_STREET_NAME : name;
     }
 
     private boolean isCorrectWay(Element currentElement) {

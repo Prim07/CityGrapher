@@ -3,8 +3,9 @@ package com.agh.bsct.datacollector.services.parser;
 import com.agh.bsct.datacollector.entities.citydata.CityData;
 import com.agh.bsct.datacollector.entities.citydata.Node;
 import com.agh.bsct.datacollector.entities.citydata.Street;
-import com.agh.bsct.datacollector.entities.graph.Edge;
 import com.agh.bsct.datacollector.entities.graph.Graph;
+import com.agh.bsct.datacollector.entities.graph.GraphEdge;
+import com.agh.bsct.datacollector.entities.graph.GraphNode;
 import com.agh.bsct.datacollector.entities.graphdata.GraphData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -41,16 +42,16 @@ public class DataParser {
     }
 
     public ObjectNode parseToJson(Graph graph) {
-        ArrayList<ObjectNode> jsonIncidenceMapElements = addIncidenceMap(graph);
-        return mapToObjectNode(objectMapper.createObjectNode(), jsonIncidenceMapElements, GRAPH_KEY);
+        ArrayList<ObjectNode> jsonIncidenceMapElements = getIncidenceMapParsedToObjectNodes(graph);
+        return boxObjectNodesWithName(jsonIncidenceMapElements, GRAPH_KEY);
     }
 
     private ObjectNode parseToJson(CityData cityData, List<Node> hospitals) {
-        ArrayList<ObjectNode> jsonStreets = addStreets(cityData, hospitals);
-        return mapToObjectNode(objectMapper.createObjectNode(), jsonStreets, WAYS_KEY);
+        ArrayList<ObjectNode> jsonStreets = getStreetsParsedToObjectNodes(cityData, hospitals);
+        return boxObjectNodesWithName(jsonStreets, WAYS_KEY);
     }
 
-    private ArrayList<ObjectNode> addStreets(CityData cityData, List<Node> hospitals) {
+    private ArrayList<ObjectNode> getStreetsParsedToObjectNodes(CityData cityData, List<Node> hospitals) {
         var jsonStreets = new ArrayList<ObjectNode>();
         List<Street> streets = cityData.getStreets();
         for (Street street : streets) {
@@ -58,16 +59,16 @@ public class DataParser {
             jsonStreet.put(ID_KEY, streets.indexOf(street));
             var streetNodesIds = street.getNodesIds();
             var nodes = cityData.getNodes();
-            ArrayList<ObjectNode> jsonNodes = addNodes(streetNodesIds, nodes, hospitals);
+            ArrayList<ObjectNode> jsonNodes = getNodesParsedToObjectNodes(streetNodesIds, nodes, hospitals);
             jsonStreet.putArray(NODES_KEY).addAll(jsonNodes);
             jsonStreets.add(jsonStreet);
         }
         return jsonStreets;
     }
 
-    private ArrayList<ObjectNode> addNodes(List<Long> streetNodesIds,
-                                           List<Node> nodes,
-                                           List<Node> hospitals) {
+    private ArrayList<ObjectNode> getNodesParsedToObjectNodes(List<Long> streetNodesIds,
+                                                              List<Node> nodes,
+                                                              List<Node> hospitals) {
         ArrayList<ObjectNode> jsonNodes = new ArrayList<>();
         for (Long nodeId : streetNodesIds) {
             ObjectNode jsonNode = objectMapper.createObjectNode();
@@ -86,56 +87,62 @@ public class DataParser {
         return nodes.stream()
                 .filter(node -> node.getId().equals(nodeId))
                 .findAny()
-                .orElseThrow(() -> new IllegalStateException("Cannot find Node with given id"));
+                .orElseThrow(() -> new IllegalStateException("Cannot find GraphNode with given id"));
     }
 
-    private ObjectNode mapToObjectNode(ObjectNode jsonBase, ArrayList<ObjectNode> jsonObjects, String name) {
-
+    private void boxObjectNodesWithName(ObjectNode jsonBase, ArrayList<ObjectNode> jsonObjects, String name) {
         ArrayNode jsonObjectsArrayNode = objectMapper.valueToTree(jsonObjects);
+        jsonBase.putArray(name).addAll(jsonObjectsArrayNode);
+    }
+
+    private ObjectNode boxObjectNodesWithName(ArrayList<ObjectNode> jsonObjects, String name) {
+        ArrayNode jsonObjectsArrayNode = objectMapper.valueToTree(jsonObjects);
+        ObjectNode jsonBase = objectMapper.createObjectNode();
         jsonBase.putArray(name).addAll(jsonObjectsArrayNode);
 
         return jsonBase;
     }
 
-    private ArrayList<ObjectNode> addIncidenceMap(Graph graph) {
-        var incidenceMap = graph.getIncidenceMap();
+    private ArrayList<ObjectNode> getIncidenceMapParsedToObjectNodes(Graph graph) {
+        var incidenceMap = graph.getNodeToEdgedIncidenceMap();
 
         ArrayList<ObjectNode> jsonIncidenceMapElements = new ArrayList<>();
 
-        for (Map.Entry<com.agh.bsct.datacollector.entities.graph.Node, List<Edge>> entry : incidenceMap.entrySet()) {
-            var mapElement = objectMapper.createObjectNode();
+        for (Map.Entry<GraphNode, List<GraphEdge>> entry : incidenceMap.entrySet()) {
+            var jsonIncidenceMapElement = objectMapper.createObjectNode();
 
             var startNode = entry.getKey();
             var jsonStartNode = objectMapper.createObjectNode();
             jsonStartNode.put(ID_KEY, startNode.getId());
             jsonStartNode.put(WEIGHT_KEY, startNode.getWeight());
-            mapElement.put(NODE_KEY, jsonStartNode);
+            jsonIncidenceMapElement.putPOJO(NODE_KEY, jsonStartNode);
 
-            ArrayList<ObjectNode> jsonEdges = addEdges(entry);
-            mapToObjectNode(mapElement, jsonEdges, EDGES_KEY);
+            ArrayList<ObjectNode> jsonEdges = getEdgesParsedToObjectNodes(entry);
+            boxObjectNodesWithName(jsonIncidenceMapElement, jsonEdges, EDGES_KEY);
 
-            jsonIncidenceMapElements.add(mapElement);
+            jsonIncidenceMapElements.add(jsonIncidenceMapElement);
         }
         return jsonIncidenceMapElements;
     }
 
-    private ArrayList<ObjectNode> addEdges(Map.Entry<com.agh.bsct.datacollector.entities.graph.Node, List<Edge>> entry) {
+    private ArrayList<ObjectNode> getEdgesParsedToObjectNodes(Map.Entry<GraphNode, List<GraphEdge>> entry) {
         var edges = entry.getValue();
 
         var jsonEdges = new ArrayList<ObjectNode>();
-        for (Edge edge : edges) {
+        for (GraphEdge graphEdge : edges) {
             var jsonEdge = objectMapper.createObjectNode();
 
-            var endNode = edge.getEndNode();
+            var endNode = graphEdge.getEndGraphNode();
             var jsonEndNode = objectMapper.createObjectNode();
             jsonEndNode.put(ID_KEY, endNode.getId());
             jsonEndNode.put(WEIGHT_KEY, endNode.getWeight());
-            jsonEdge.put(NODE_KEY, jsonEndNode);
+            jsonEdge.putPOJO(NODE_KEY, jsonEndNode);
 
-            jsonEdge.put(WEIGHT_KEY, edge.getWeight());
+            jsonEdge.put(WEIGHT_KEY, graphEdge.getWeight());
 
             jsonEdges.add(jsonEdge);
         }
+
         return jsonEdges;
     }
 }

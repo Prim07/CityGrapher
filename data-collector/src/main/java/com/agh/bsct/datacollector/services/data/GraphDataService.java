@@ -73,7 +73,7 @@ public class GraphDataService {
         return nodes.stream()
                 .filter(node -> node.getId().equals(nodeId))
                 .findAny()
-                .orElseThrow(() -> new IllegalStateException("Cannot find Node with given id: " + nodeId));
+                .orElseThrow(() -> new IllegalStateException("Cannot find GraphNode with given id: " + nodeId));
     }
 
     private List<Crossing> calculateNodeWeights(List<Node> nodes) {
@@ -87,7 +87,7 @@ public class GraphDataService {
         return new Crossing(node, random.nextInt((NODE_WEIGHT_MAX - NODE_WEIGHT_MIN) + 1) + NODE_WEIGHT_MIN);
     }
 
-    public List<Node> runAlgorithmAndCalculateHospitalNodes(ObjectNode parsedGraph) {
+    public List<Node> runAlgorithmAndCalculateHospitalNodes(ObjectNode jsonGraph) {
         //TODO impl
         return new ArrayList<>();
     }

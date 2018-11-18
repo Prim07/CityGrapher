@@ -10,54 +10,54 @@ import java.util.Map;
 
 public class Graph {
 
-    private Map<Node, List<Edge>> incidenceMap = new HashMap<>();
+    private Map<GraphNode, List<GraphEdge>> nodeToEdgedIncidenceMap = new HashMap<>();
 
     public Graph(GraphData graphData) {
         var edges = graphData.getEdges();
-        var crossing = graphData.getCrossings();
+        var crossings = graphData.getCrossings();
 
         for(com.agh.bsct.datacollector.entities.graphdata.Edge edge : edges) {
             var edgeNodeIds = edge.getStreet().getNodesIds();
             var edgeWeight = edge.getWeight();
 
             var firstNodeId = edgeNodeIds.get(0);
-            var firstNode = getNodeWithGivenId(firstNodeId);
+            var firstNode = getNodeForId(firstNodeId);
             if (firstNode == null) {
-                var firstCrossing = getCrossingWithGivenId(crossing, firstNodeId);
-                firstNode = new Node(firstNodeId, firstCrossing.getWeight());
+                var firstCrossing = getCrossingWithId(crossings, firstNodeId);
+                firstNode = new GraphNode(firstNodeId, firstCrossing.getWeight());
             }
 
             var lastNodeId = edgeNodeIds.get(edgeNodeIds.size()-1);
-            var lastNode = getNodeWithGivenId(lastNodeId);
+            var lastNode = getNodeForId(lastNodeId);
             if (lastNode == null) {
-                var lastCrossing = getCrossingWithGivenId(crossing, lastNodeId);
-                lastNode = new Node(lastNodeId, lastCrossing.getWeight());
+                var lastCrossing = getCrossingWithId(crossings, lastNodeId);
+                lastNode = new GraphNode(lastNodeId, lastCrossing.getWeight());
             }
 
-            var firstNodeEdges = incidenceMap.computeIfAbsent(firstNode, k -> new ArrayList<>());
-            firstNodeEdges.add(new Edge(lastNode, edgeWeight));
+            var firstNodeEdges = nodeToEdgedIncidenceMap.computeIfAbsent(firstNode, node -> new ArrayList<>());
+            firstNodeEdges.add(new GraphEdge(lastNode, edgeWeight));
 
-            var lastNodeEdges = incidenceMap.computeIfAbsent(lastNode, k -> new ArrayList<>());
-            lastNodeEdges.add(new Edge(firstNode, edgeWeight));
+            var lastNodeEdges = nodeToEdgedIncidenceMap.computeIfAbsent(lastNode, node -> new ArrayList<>());
+            lastNodeEdges.add(new GraphEdge(firstNode, edgeWeight));
         }
     }
 
-    public Map<Node, List<Edge>> getIncidenceMap() {
-        return incidenceMap;
+    public Map<GraphNode, List<GraphEdge>> getNodeToEdgedIncidenceMap() {
+        return nodeToEdgedIncidenceMap;
     }
 
-    private Node getNodeWithGivenId(Long nodeId) {
-        return incidenceMap.keySet().stream()
-                .filter(node -> node.getId().equals(nodeId))
+    private GraphNode getNodeForId(Long nodeId) {
+        return nodeToEdgedIncidenceMap.keySet().stream()
+                .filter(graphNode -> graphNode.getId().equals(nodeId))
                 .findAny()
                 .orElse(null);
     }
 
-    private Crossing getCrossingWithGivenId(List<Crossing> crossings, Long nodeId) {
+    private Crossing getCrossingWithId(List<Crossing> crossings, Long nodeId) {
         return crossings.stream()
                 .filter(crossing -> crossing.getNode().getId().equals(nodeId))
                 .findAny()
-                .orElseThrow(() -> new IllegalStateException("Cannot find Node with given id: " + nodeId));
+                .orElseThrow(() -> new IllegalStateException("Cannot find Crossing for GraphNode with given id: " + nodeId));
     }
 
 }

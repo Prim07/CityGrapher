@@ -65,22 +65,26 @@ public class CityDataService {
     }
 
     private Set<Long> getCrossingIds(Map<Long, Integer> nodeIdToOccurrencesInStreetCount, Set<Street> streets) {
-        Set<Long> crossingIds =  nodeIdToOccurrencesInStreetCount.entrySet().stream()
+        Set<Long> crossingsIds = nodeIdToOccurrencesInStreetCount.entrySet().stream()
                 .filter(this::isNodesOccurrenceGreaterThanOne)
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toSet());
 
+        addFirstAndLastNodeForEachStreet(streets, crossingsIds);
+
+        return crossingsIds;
+    }
+
+    private void addFirstAndLastNodeForEachStreet(Set<Street> streets, Set<Long> crossingsIds) {
         for(Street street :streets) {
-            var nodeIds = street.getNodesIds();
+            var nodesIds = street.getNodesIds();
 
-            var firstNodeId = nodeIds.get(0);
-            var lastNodeId = nodeIds.get(nodeIds.size()-1);
+            var firstNodeId = nodesIds.get(0);
+            var lastNodeId = nodesIds.get(nodesIds.size() - 1);
 
-            crossingIds.add(firstNodeId);
-            crossingIds.add(lastNodeId);
+            crossingsIds.add(firstNodeId);
+            crossingsIds.add(lastNodeId);
         }
-
-        return crossingIds;
     }
 
     private boolean isNodesOccurrenceGreaterThanOne(Map.Entry<Long, Integer> entry) {

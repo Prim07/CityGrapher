@@ -1,11 +1,11 @@
 package com.agh.bsct.datacollector.entities.graph;
 
-public class Node {
+public class GraphNode {
 
     private long id;
     private int weight;
 
-    Node(Long id, Integer weight) {
+    GraphNode(Long id, Integer weight) {
         this.id = id;
         this.weight = weight;
     }

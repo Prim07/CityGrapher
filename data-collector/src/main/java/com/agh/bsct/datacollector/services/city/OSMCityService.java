@@ -30,9 +30,9 @@ public class OSMCityService {
     public ObjectNode getCityGraph(String cityName) {
         var cityData = cityDataService.getCityData(cityName);
         var graphData = graphService.getGraphData(cityData);
-        var parsedGraph = dataParser.parseToJson(new Graph(graphData));
+        var jsonGraph = dataParser.parseToJson(new Graph(graphData));
         //TODO AK wystawić tutaj algorithmService, który będzie się łączył z modułem Algorithm i koniecznie zmienić nazwę metody
-        var hospitalNodes = graphService.runAlgorithmAndCalculateHospitalNodes(parsedGraph);
+        var hospitalNodes = graphService.runAlgorithmAndCalculateHospitalNodes(jsonGraph);
         return dataParser.parseToJson(graphData, hospitalNodes);
     }
 
