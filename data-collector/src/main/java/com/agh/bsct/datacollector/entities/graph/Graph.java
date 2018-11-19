@@ -1,7 +1,6 @@
 package com.agh.bsct.datacollector.entities.graph;
 
 import com.agh.bsct.datacollector.entities.graphdata.Crossing;
-import com.agh.bsct.datacollector.entities.graphdata.Edge;
 import com.agh.bsct.datacollector.entities.graphdata.GraphData;
 
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ public class Graph {
         var edges = graphData.getEdges();
         var crossings = graphData.getCrossings();
 
-        for(Edge edge : edges) {
+        for(var edge : edges) {
             var edgeNodeIds = edge.getStreet().getNodesIds();
             var edgeWeight = edge.getWeight();
 
@@ -58,7 +57,8 @@ public class Graph {
         return crossings.stream()
                 .filter(crossing -> crossing.getNode().getId().equals(nodeId))
                 .findAny()
-                .orElseThrow(() -> new IllegalStateException("Cannot find Crossing for GraphNode with given id: " + nodeId));
+                .orElseThrow(() -> new IllegalStateException("Cannot find Crossing for GraphNode with given id: "
+                                                            + nodeId));
     }
 
 }

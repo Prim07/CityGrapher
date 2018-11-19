@@ -90,7 +90,7 @@ public class DataParser {
                 .orElseThrow(() -> new IllegalStateException("Cannot find GraphNode with given id"));
     }
 
-    private void boxObjectNodesWithName(ObjectNode jsonBase, ArrayList<ObjectNode> jsonObjects) {
+    private void boxObjectNodesIntoEdgesArray(ObjectNode jsonBase, ArrayList<ObjectNode> jsonObjects) {
         ArrayNode jsonObjectsArrayNode = objectMapper.valueToTree(jsonObjects);
         jsonBase.putArray(DataParser.EDGES_KEY).addAll(jsonObjectsArrayNode);
     }
@@ -105,7 +105,6 @@ public class DataParser {
 
     private ArrayList<ObjectNode> getIncidenceMapParsedToObjectNodes(Graph graph) {
         var incidenceMap = graph.getNodeToEdgesIncidenceMap();
-
         ArrayList<ObjectNode> jsonIncidenceMapElements = new ArrayList<>();
 
         for (Map.Entry<GraphNode, List<GraphEdge>> entry : incidenceMap.entrySet()) {
@@ -118,9 +117,10 @@ public class DataParser {
 
             var jsonIncidenceMapElement = objectMapper.createObjectNode();
             jsonIncidenceMapElement.putPOJO(NODE_KEY, jsonStartNode);
-            boxObjectNodesWithName(jsonIncidenceMapElement, jsonEdges);
+            boxObjectNodesIntoEdgesArray(jsonIncidenceMapElement, jsonEdges);
             jsonIncidenceMapElements.add(jsonIncidenceMapElement);
         }
+
         return jsonIncidenceMapElements;
     }
 
