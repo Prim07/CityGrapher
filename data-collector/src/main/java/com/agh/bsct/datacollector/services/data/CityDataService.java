@@ -48,7 +48,7 @@ public class CityDataService {
 
     private CityData updateCrossings(Set<Street> streets, OverpassQueryResult overpassQueryResult) {
         Map<Long, Integer> nodeIdToOccurrencesInStreetCount = getNodeIdToOccurrencesInStreetCountMap(streets);
-        List<Long> crossingsIds = getCrossingIds(nodeIdToOccurrencesInStreetCount);
+        Set<Long> crossingsIds = getCrossingIds(nodeIdToOccurrencesInStreetCount, streets);
         List<Street> streetsAfterSplitting = getStreetsSeparatedOnCrossings(streets, crossingsIds);
         List<Node> nodes = mapToNodes(overpassQueryResult);
         updateWithCrossingInformation(nodes, crossingsIds);
@@ -64,18 +64,34 @@ public class CityDataService {
         return nodeIdsToOccurrencesInStreets;
     }
 
-    private List<Long> getCrossingIds(Map<Long, Integer> nodeIdToOccurrencesInStreetCount) {
-        return nodeIdToOccurrencesInStreetCount.entrySet().stream()
+    private Set<Long> getCrossingIds(Map<Long, Integer> nodeIdToOccurrencesInStreetCount, Set<Street> streets) {
+        Set<Long> crossingsIds = nodeIdToOccurrencesInStreetCount.entrySet().stream()
                 .filter(this::isNodesOccurrenceGreaterThanOne)
                 .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
+
+        addFirstAndLastNodeForEachStreet(streets, crossingsIds);
+
+        return crossingsIds;
+    }
+
+    private void addFirstAndLastNodeForEachStreet(Set<Street> streets, Set<Long> crossingsIds) {
+        for(Street street :streets) {
+            var nodesIds = street.getNodesIds();
+
+            var firstNodeId = nodesIds.get(0);
+            var lastNodeId = nodesIds.get(nodesIds.size() - 1);
+
+            crossingsIds.add(firstNodeId);
+            crossingsIds.add(lastNodeId);
+        }
     }
 
     private boolean isNodesOccurrenceGreaterThanOne(Map.Entry<Long, Integer> entry) {
         return entry.getValue() > 1;
     }
 
-    private List<Street> getStreetsSeparatedOnCrossings(Set<Street> streets, List<Long> crossingsIds) {
+    private List<Street> getStreetsSeparatedOnCrossings(Set<Street> streets, Set<Long> crossingsIds) {
         var streetsSeparatedOnCrossings = new ArrayList<Street>();
 
         for (Street street : streets) {
@@ -139,7 +155,7 @@ public class CityDataService {
                     .collect(Collectors.toList());
     }
 
-    private void updateWithCrossingInformation(List<Node> nodes, List<Long> crossingsIds) {
+    private void updateWithCrossingInformation(List<Node> nodes, Set<Long> crossingsIds) {
         nodes.forEach(node -> {
             if (crossingsIds.contains(node.getId())) {
                 node.setCrossing(true);

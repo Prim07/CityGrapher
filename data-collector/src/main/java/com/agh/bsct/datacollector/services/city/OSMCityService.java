@@ -1,5 +1,6 @@
 package com.agh.bsct.datacollector.services.city;
 
+import com.agh.bsct.datacollector.entities.graph.Graph;
 import com.agh.bsct.datacollector.services.data.CityDataService;
 import com.agh.bsct.datacollector.services.data.GraphDataService;
 import com.agh.bsct.datacollector.services.parser.DataParser;
@@ -29,8 +30,9 @@ public class OSMCityService {
     public ObjectNode getCityGraph(String cityName) {
         var cityData = cityDataService.getCityData(cityName);
         var graphData = graphService.getGraphData(cityData);
+        var jsonGraph = dataParser.parseToJson(new Graph(graphData));
         //TODO AK wystawić tutaj algorithmService, który będzie się łączył z modułem Algorithm i koniecznie zmienić nazwę metody
-        var hospitalNodes = graphService.runAlgorithmAndCalculateHospitalNodes(graphData);
+        var hospitalNodes = graphService.runAlgorithmAndCalculateHospitalNodes(jsonGraph);
         return dataParser.parseToJson(graphData, hospitalNodes);
     }
 

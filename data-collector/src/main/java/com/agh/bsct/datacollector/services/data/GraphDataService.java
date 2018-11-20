@@ -6,6 +6,7 @@ import com.agh.bsct.datacollector.entities.citydata.Street;
 import com.agh.bsct.datacollector.entities.graphdata.Crossing;
 import com.agh.bsct.datacollector.entities.graphdata.Edge;
 import com.agh.bsct.datacollector.entities.graphdata.GraphData;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -72,7 +73,7 @@ public class GraphDataService {
         return nodes.stream()
                 .filter(node -> node.getId().equals(nodeId))
                 .findAny()
-                .orElseThrow(() -> new IllegalStateException("Cannot find Node with given id: " + nodeId));
+                .orElseThrow(() -> new IllegalStateException("Cannot find GraphNode with given id: " + nodeId));
     }
 
     private List<Crossing> calculateNodeWeights(List<Node> nodes) {
@@ -86,7 +87,7 @@ public class GraphDataService {
         return new Crossing(node, random.nextInt((NODE_WEIGHT_MAX - NODE_WEIGHT_MIN) + 1) + NODE_WEIGHT_MIN);
     }
 
-    public List<Node> runAlgorithmAndCalculateHospitalNodes(GraphData graphData) {
+    public List<Node> runAlgorithmAndCalculateHospitalNodes(ObjectNode jsonGraph) {
         //TODO impl
         return new ArrayList<>();
     }

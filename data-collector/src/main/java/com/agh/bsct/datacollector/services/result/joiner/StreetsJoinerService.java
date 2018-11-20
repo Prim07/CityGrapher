@@ -13,6 +13,7 @@ public class StreetsJoinerService {
 
     private static final String WAY_TYPE = "way";
     private static final String NEXT_PART_OF_STREET_POSTFIX = "_part";
+    private static final String UNNAMED_STREET_NAME = "unnamed";
 
     public Set<Street> joinStreets(OverpassQueryResult queryResult) {
         Map<String, Set<Street>> streetNameToStreets = getStreetNameToStreets(queryResult);
@@ -27,7 +28,7 @@ public class StreetsJoinerService {
         while (iterator.hasNext()) {
             Element currentElement = iterator.next();
             if (isCorrectWay(currentElement)) {
-                var name = currentElement.getTags().getName();
+                String name = getStreetName(currentElement);
                 if (!streetNameToStreets.containsKey(name)) {
                     streetNameToStreets.put(name, new HashSet<>());
                 }
@@ -42,9 +43,13 @@ public class StreetsJoinerService {
         return streetNameToStreets;
     }
 
+    private String getStreetName(Element currentElement) {
+        var name = currentElement.getTags().getName();
+        return (name == null) ? UNNAMED_STREET_NAME : name;
+    }
+
     private boolean isCorrectWay(Element currentElement) {
-        return WAY_TYPE.equals(currentElement.getType())
-                && currentElement.getTags().getName() != null;
+        return WAY_TYPE.equals(currentElement.getType());
     }
 
     private Set<Street> getStreets(Map<String, Set<Street>> streetNameToStreets, Set<Street> streets) {
