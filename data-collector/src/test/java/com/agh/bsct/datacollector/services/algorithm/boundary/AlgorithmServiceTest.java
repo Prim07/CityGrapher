@@ -23,6 +23,16 @@ class AlgorithmServiceTest {
     @Test
     void shouldResultBeNotNull() {
         String result = algorithmService.run("Bochnia");
+
         Assert.assertNotNull(result);
+    }
+
+    @Test
+    void shouldResultReturnProperValue() {
+        String expected = "Hello, Algorithm!";
+
+        String result = algorithmService.run("Bochnia");
+
+        Assert.assertEquals(expected, result);
     }
 }
