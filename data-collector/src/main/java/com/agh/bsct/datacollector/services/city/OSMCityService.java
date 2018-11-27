@@ -36,4 +36,8 @@ public class OSMCityService {
         return dataParser.parseToJson(graphData, hospitalNodes);
     }
 
+    //TODO AK same as in TODO comment above exampleCallAlgorithm method in DataCollectorController
+    public String getAlgorithmData(String city) {
+        return city;
+    }
 }
