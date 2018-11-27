@@ -15,7 +15,7 @@ public class AlgorithmController {
 
     @RequestMapping(method = RequestMethod.GET, value = ALGORITHM_PATH + "{id}")
     @ResponseBody
-    public String run(@PathVariable("id") String id) {
+    public String run(@PathVariable(value = "id") String id) {
         return "Hello, Algorithm! " + id;
     }
 
