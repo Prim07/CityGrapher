@@ -1,6 +1,7 @@
 package com.agh.bsct.datacollector.services.city;
 
 import com.agh.bsct.datacollector.entities.graph.Graph;
+import com.agh.bsct.datacollector.services.algorithm.boundary.AlgorithmService;
 import com.agh.bsct.datacollector.services.data.CityDataService;
 import com.agh.bsct.datacollector.services.data.GraphDataService;
 import com.agh.bsct.datacollector.services.parser.DataParser;
@@ -13,12 +14,17 @@ public class OSMCityService {
 
     private GraphDataService graphService;
     private CityDataService cityDataService;
+    private AlgorithmService algorithmService;
     private DataParser dataParser;
 
     @Autowired
-    public OSMCityService(GraphDataService graphService, CityDataService cityDataService, DataParser dataParser) {
+    public OSMCityService(GraphDataService graphService,
+                          CityDataService cityDataService,
+                          AlgorithmService algorithmService,
+                          DataParser dataParser) {
         this.graphService = graphService;
         this.cityDataService = cityDataService;
+        this.algorithmService = algorithmService;
         this.dataParser = dataParser;
     }
 
@@ -38,6 +44,6 @@ public class OSMCityService {
 
     //TODO AK same as in TODO comment above exampleCallAlgorithm method in DataCollectorController
     public String getAlgorithmData(String city) {
-        return city;
+        return algorithmService.run(city);
     }
 }
