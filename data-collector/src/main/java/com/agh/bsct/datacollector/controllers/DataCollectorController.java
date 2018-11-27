@@ -17,6 +17,7 @@ public class DataCollectorController {
     private static final String DATA_COLLECTOR_PATH = "/dataCollector";
     private static final String GET_CITY_GRAPH_PATH = "/cityGraph";
     private static final String GET_CITY_DATA_PATH = "/cityData";
+    private static final String EXAMPLE_CALL_ALGORITHM_PATH = "/exampleCallAlgorithm";
 
     private final OSMCityService osmCityService;
 
@@ -35,6 +36,13 @@ public class DataCollectorController {
     @ResponseBody
     public ObjectNode getCityData(@RequestParam(name = "city") String city) {
         return osmCityService.getCityData(city);
+    }
+
+    //TODO delete this endpoint or change its path when clear how to call algorithm
+    @GetMapping(DATA_COLLECTOR_PATH + EXAMPLE_CALL_ALGORITHM_PATH)
+    @ResponseBody
+    public String exampleCallAlgorithm(@RequestParam(name = "city") String city) {
+        return osmCityService.getAlgorithmData(city);
     }
 
 }
