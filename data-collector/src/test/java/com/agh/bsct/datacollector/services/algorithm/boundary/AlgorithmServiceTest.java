@@ -1,5 +1,6 @@
 package com.agh.bsct.datacollector.services.algorithm.boundary;
 
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
@@ -17,5 +18,11 @@ class AlgorithmServiceTest {
     @Test
     void shouldCallAlgorithmEndpoint() {
         algorithmService.run("Bochnia");
+    }
+
+    @Test
+    void shouldResultBeNotNull() {
+        String result = algorithmService.run("Bochnia");
+        Assert.assertNotNull(result);
     }
 }
