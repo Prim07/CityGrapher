@@ -25,9 +25,4 @@ public class AlgorithmTaskRepository {
         idToTask.remove(id);
     }
 
-    public void printAllElements() {
-        System.out.println("Printing: ");
-        idToTask.forEach((key, value) -> System.out.println(key + ": " + value.getId()));
-        System.out.println("=============================================================");
-    }
 }
