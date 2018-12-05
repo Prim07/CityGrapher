@@ -20,11 +20,12 @@ import java.util.concurrent.TimeUnit;
 public class GuavaLoadingCache implements AlgorithmResultCache {
 
     private AlgorithmTaskRepository algorithmTaskRepository;
-    private LoadingCache<String, AlgorithmTask> idToTaskCache = getInitializedLoadingCache();
+    private LoadingCache<String, AlgorithmTask> idToTaskCache;
 
     @Autowired
     public GuavaLoadingCache(AlgorithmTaskRepository algorithmTaskRepository) {
         this.algorithmTaskRepository = algorithmTaskRepository;
+        this.idToTaskCache = getInitializedLoadingCache();
     }
 
     @Override
