@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(JUnitPlatform.class)
 class AlgorithmServiceTest {
+
     private AlgorithmService algorithmService;
 
     @BeforeEach
