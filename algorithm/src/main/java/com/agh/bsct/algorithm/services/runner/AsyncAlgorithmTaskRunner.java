@@ -12,17 +12,13 @@ public class AsyncAlgorithmTaskRunner {
     public void run(AlgorithmTask algorithmTask) {
         //TODO implement here calculating and logic and remove below fake log calculations
         try {
-            setStatus(algorithmTask, AlgorithmCalculationStatus.CALCULATING);
+            algorithmTask.setStatus(AlgorithmCalculationStatus.CALCULATING);
             Thread.sleep(2000);
-            setStatus(algorithmTask, AlgorithmCalculationStatus.SUCCESS);
+            algorithmTask.setStatus(AlgorithmCalculationStatus.SUCCESS);
         } catch (InterruptedException e) {
             e.printStackTrace();
-            setStatus(algorithmTask, AlgorithmCalculationStatus.FAILED);
+            algorithmTask.setStatus(AlgorithmCalculationStatus.FAILED);
         }
-    }
-
-    private void setStatus(AlgorithmTask algorithmTask, AlgorithmCalculationStatus status) {
-        algorithmTask.setStatus(status);
     }
 
 }
