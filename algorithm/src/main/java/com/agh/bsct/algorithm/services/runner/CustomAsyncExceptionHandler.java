@@ -13,8 +13,8 @@ public class CustomAsyncExceptionHandler implements AsyncUncaughtExceptionHandle
     public void handleUncaughtException(@NonNull Throwable throwable,
                                         @NonNull Method method,
                                         @NonNull Object... objects) {
-        System.out.println("Exception message - " + throwable.getMessage());
-        System.out.println("Method name - " + method.getName());
-        Arrays.stream(objects).forEach(o -> System.out.println("Param - " + o));
+        System.err.println("Exception message - " + throwable.getMessage());
+        System.err.println("Method name - " + method.getName());
+        Arrays.stream(objects).forEach(o -> System.err.println("Param - " + o));
     }
 }
