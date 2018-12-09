@@ -4,6 +4,8 @@ package com.agh.bsct.datacollector.controllers;
 import com.agh.bsct.datacollector.services.city.OSMCityService;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,21 +30,32 @@ public class DataCollectorController {
 
     @GetMapping(DATA_COLLECTOR_PATH + GET_CITY_GRAPH_PATH)
     @ResponseBody
-    public ObjectNode getCityGraph(@RequestParam(name = "city") String city) {
-        return osmCityService.getCityGraph(city);
+    public ResponseEntity<ObjectNode> getCityGraph(@RequestParam(name = "city") String city) {
+        ObjectNode cityGraph = osmCityService.getCityGraph(city);
+        return getSuccessfulResponseWithObjectNode(cityGraph);
     }
 
     @GetMapping(DATA_COLLECTOR_PATH + GET_CITY_DATA_PATH)
     @ResponseBody
-    public ObjectNode getCityData(@RequestParam(name = "city") String city) {
-        return osmCityService.getCityData(city);
+    public ResponseEntity<ObjectNode> getCityData(@RequestParam(name = "city") String city) {
+        ObjectNode cityData = osmCityService.getCityData(city);
+        return getSuccessfulResponseWithObjectNode(cityData);
     }
 
     //TODO delete this endpoint or change its path when clear how to call algorithm
     @GetMapping(DATA_COLLECTOR_PATH + EXAMPLE_CALL_ALGORITHM_PATH)
     @ResponseBody
-    public String exampleCallAlgorithm(@RequestParam(name = "city") String city) {
-        return osmCityService.getAlgorithmData(city);
+    public ResponseEntity<String> exampleCallAlgorithm(@RequestParam(name = "city") String city) {
+        String algorithmData = osmCityService.getAlgorithmData(city);
+        return getSuccessfulResponseWithString(algorithmData);
+    }
+
+    private ResponseEntity<ObjectNode> getSuccessfulResponseWithObjectNode(ObjectNode cityData) {
+        return ResponseEntity.status(HttpStatus.OK).body(cityData);
+    }
+
+    private ResponseEntity<String> getSuccessfulResponseWithString(String algorithmData) {
+        return ResponseEntity.status(HttpStatus.OK).body(algorithmData);
     }
 
 }
