@@ -32,14 +32,14 @@ public class DataCollectorController {
     @ResponseBody
     public ResponseEntity<ObjectNode> getCityGraph(@RequestParam(name = "city") String city) {
         ObjectNode cityGraph = osmCityService.getCityGraph(city);
-        return getSuccessfulResponseWithObjectNode(cityGraph);
+        return ResponseEntity.status(HttpStatus.OK).body(cityGraph);
     }
 
     @GetMapping(DATA_COLLECTOR_PATH + GET_CITY_DATA_PATH)
     @ResponseBody
     public ResponseEntity<ObjectNode> getCityData(@RequestParam(name = "city") String city) {
         ObjectNode cityData = osmCityService.getCityData(city);
-        return getSuccessfulResponseWithObjectNode(cityData);
+        return ResponseEntity.status(HttpStatus.OK).body(cityData);
     }
 
     //TODO delete this endpoint or change its path when clear how to call algorithm
@@ -47,14 +47,6 @@ public class DataCollectorController {
     @ResponseBody
     public ResponseEntity<String> exampleCallAlgorithm(@RequestParam(name = "city") String city) {
         String algorithmData = osmCityService.getAlgorithmData(city);
-        return getSuccessfulResponseWithString(algorithmData);
-    }
-
-    private ResponseEntity<ObjectNode> getSuccessfulResponseWithObjectNode(ObjectNode cityData) {
-        return ResponseEntity.status(HttpStatus.OK).body(cityData);
-    }
-
-    private ResponseEntity<String> getSuccessfulResponseWithString(String algorithmData) {
         return ResponseEntity.status(HttpStatus.OK).body(algorithmData);
     }
 
