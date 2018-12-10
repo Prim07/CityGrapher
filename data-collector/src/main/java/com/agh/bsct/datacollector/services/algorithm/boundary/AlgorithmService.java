@@ -1,5 +1,6 @@
 package com.agh.bsct.datacollector.services.algorithm.boundary;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -19,11 +20,11 @@ public class AlgorithmService {
         this.restTemplate = new RestTemplateBuilder().build();
     }
 
-    public String run(String cityName) {
-        var uri = new DefaultUriBuilderFactory().builder().path(ALGORITHM_PATH)
-                .queryParam(CITY_PARAM_NAME, cityName)
+    public ObjectNode run(String cityName, ObjectNode jsonGraph) {
+        var uri = new DefaultUriBuilderFactory(ALGORITHM_PATH).builder()
                 .build()
                 .toString();
-        return restTemplate.getForObject(uri, String.class);
+        //TODO AK tutaj albo WCZEŚNIEJ (nie wiem, jak jest OOP bardziej) złożyć nowy ObjectNode zawierający 2 pola: cityName i jsonGraph
+        return restTemplate.postForObject(uri, jsonGraph, ObjectNode.class);
     }
 }

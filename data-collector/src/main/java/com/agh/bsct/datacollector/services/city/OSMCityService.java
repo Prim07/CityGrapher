@@ -5,6 +5,7 @@ import com.agh.bsct.datacollector.services.algorithm.boundary.AlgorithmService;
 import com.agh.bsct.datacollector.services.data.CityDataService;
 import com.agh.bsct.datacollector.services.data.GraphDataService;
 import com.agh.bsct.datacollector.services.parser.DataParser;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,13 +38,14 @@ public class OSMCityService {
         var cityData = cityDataService.getCityData(cityName);
         var graphData = graphService.getGraphData(cityData);
         var jsonGraph = dataParser.parseToJson(new Graph(graphData));
-        //TODO AK wystawić tutaj algorithmService, który będzie się łączył z modułem Algorithm i koniecznie zmienić nazwę metody
+        return algorithmService.run(cityName, jsonGraph);
+        /* TODO poniższa część kodu kiedyś miała sens, ale teraz musi przejść w nowe miejsce, jeszcze nie do koca wiadomo, gdzie
         var hospitalNodes = graphService.runAlgorithmAndCalculateHospitalNodes(jsonGraph);
-        return dataParser.parseToJson(graphData, hospitalNodes);
+        return dataParser.parseToJson(graphData, hospitalNodes); */
     }
 
     //TODO AK same as in TODO comment above exampleCallAlgorithm method in DataCollectorController
-    public String getAlgorithmData(String city) {
-        return algorithmService.run(city);
+    public ObjectNode getAlgorithmData(String city) {
+        return algorithmService.run(city, new ObjectNode(JsonNodeFactory.instance));
     }
 }

@@ -41,7 +41,7 @@ public class DataCollectorController {
     //TODO delete this endpoint or change its path when clear how to call algorithm
     @GetMapping(DATA_COLLECTOR_PATH + EXAMPLE_CALL_ALGORITHM_PATH)
     @ResponseBody
-    public String exampleCallAlgorithm(@RequestParam(name = "city") String city) {
+    public ObjectNode exampleCallAlgorithm(@RequestParam(name = "city") String city) {
         return osmCityService.getAlgorithmData(city);
     }
 
