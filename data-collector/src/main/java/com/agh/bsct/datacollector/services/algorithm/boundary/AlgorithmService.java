@@ -27,4 +27,12 @@ public class AlgorithmService {
         //TODO AK tutaj albo WCZEŚNIEJ (nie wiem, jak jest OOP bardziej) złożyć nowy ObjectNode zawierający 2 pola: cityName i jsonGraph
         return restTemplate.postForObject(uri, jsonGraph, ObjectNode.class);
     }
+
+    public ObjectNode getResult(String taskId) {
+        var uri = new DefaultUriBuilderFactory(ALGORITHM_PATH).builder()
+                .path(taskId)
+                .build()
+                .toString();
+        return restTemplate.getForObject(uri, ObjectNode.class);
+    }
 }

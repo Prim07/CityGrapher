@@ -48,4 +48,9 @@ public class OSMCityService {
     public ObjectNode getAlgorithmData(String city) {
         return algorithmService.run(city, new ObjectNode(JsonNodeFactory.instance));
     }
+
+    public ObjectNode getMappedAlgorithmResult(String taskId) {
+        ObjectNode result = algorithmService.getResult(taskId);
+        return result;
+    }
 }
