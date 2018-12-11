@@ -1,7 +1,7 @@
 package com.agh.bsct.algorithm.services.runner;
 
 import com.agh.bsct.algorithm.entities.graph.Graph;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.agh.bsct.api.entities.algorithmresult.AlgorithmResultDTO;
 
 import java.util.Optional;
 
@@ -9,9 +9,8 @@ public class AlgorithmTask {
 
     private final String id;
     private AlgorithmCalculationStatus status;
-    //TODO tutaj musimy używać nie ObjectNode, a jakiejś sparsowanej encji - tak samo, jak w przypadku DataCollector było GraphData
     private Graph graphData;
-    private Optional<ObjectNode> jsonResult = Optional.empty();
+    private Optional<AlgorithmResultDTO> algorithmResultDTO = Optional.empty();
 
     AlgorithmTask(String id, Graph graphData) {
         this.id = id;
@@ -23,23 +22,23 @@ public class AlgorithmTask {
         return id;
     }
 
-    public AlgorithmCalculationStatus getStatus() {
-        return status;
-    }
-
-    public Optional<ObjectNode> getJsonResult() {
-        return jsonResult;
-    }
-
     public Graph getGraphData() {
         return graphData;
+    }
+
+    public AlgorithmCalculationStatus getStatus() {
+        return status;
     }
 
     public void setStatus(AlgorithmCalculationStatus status) {
         this.status = status;
     }
 
-    public void setJsonResult(ObjectNode jsonResult) {
-        this.jsonResult = Optional.ofNullable(jsonResult);
+    public Optional<AlgorithmResultDTO> getAlgorithmResultDTO() {
+        return algorithmResultDTO;
+    }
+
+    public void setAlgorithmResultDTO(AlgorithmResultDTO algorithmResultDTO) {
+        this.algorithmResultDTO = Optional.ofNullable(algorithmResultDTO);
     }
 }

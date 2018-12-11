@@ -76,8 +76,8 @@ public class AlgorithmController {
         return objectMapper.createObjectNode()
                 .put("taskId", task.getId())
                 .put("currentStatus", task.getStatus().toString())
-                .putPOJO("result", task.getJsonResult().isPresent()
-                        ? task.getJsonResult().get()
+                .putPOJO("result", task.getAlgorithmResultDTO().isPresent()
+                        ? task.getAlgorithmResultDTO().get()
                         : objectMapper.createObjectNode());
     }
 
