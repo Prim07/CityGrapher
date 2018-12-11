@@ -2,19 +2,22 @@ package com.agh.bsct.algorithm.services.runner;
 
 import com.agh.bsct.algorithm.entities.graph.Graph;
 import com.agh.bsct.api.entities.algorithmresult.AlgorithmResultDTO;
+import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
 
 import java.util.Optional;
 
 public class AlgorithmTask {
 
     private final String id;
+    private final GraphDataDTO graphDataDTO;
     private AlgorithmCalculationStatus status;
-    private Graph graphData;
+    private Graph graph;
     private AlgorithmResultDTO algorithmResultDTO;
 
-    AlgorithmTask(String id, Graph graphData) {
+    AlgorithmTask(String id, GraphDataDTO graphDataDTO, Graph graph) {
         this.id = id;
-        this.graphData = graphData;
+        this.graphDataDTO = graphDataDTO;
+        this.graph = graph;
         this.status = AlgorithmCalculationStatus.NOT_STARTED;
     }
 
@@ -22,8 +25,12 @@ public class AlgorithmTask {
         return id;
     }
 
-    public Graph getGraphData() {
-        return graphData;
+    public GraphDataDTO getGraphDataDTO() {
+        return graphDataDTO;
+    }
+
+    public Graph getGraph() {
+        return graph;
     }
 
     public AlgorithmCalculationStatus getStatus() {

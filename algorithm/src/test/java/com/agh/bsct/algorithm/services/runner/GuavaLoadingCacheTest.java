@@ -1,6 +1,7 @@
 package com.agh.bsct.algorithm.services.runner;
 
-import com.agh.bsct.algorithm.entities.graph.Graph;
+import com.agh.bsct.algorithm.controllers.mapper.GraphDataMapper;
+import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,14 +15,14 @@ import java.util.concurrent.ExecutionException;
 class GuavaLoadingCacheTest {
 
     private AlgorithmResultCache algorithmResultCache;
-    //TODO AK change it as in service
-    private Graph graph;
+    private GraphDataDTO graphDataDTO;
 
     @BeforeEach
     void setUp() {
         var algorithmTaskRepository = new AlgorithmTaskRepository();
-        this.algorithmResultCache = new GuavaLoadingCache(algorithmTaskRepository);
-        this.graph = new Graph(Collections.emptyMap());
+        var graphDataMapper = new GraphDataMapper();
+        this.algorithmResultCache = new GuavaLoadingCache(algorithmTaskRepository, graphDataMapper);
+        this.graphDataDTO = new GraphDataDTO(Collections.emptyList(), Collections.emptyList());
     }
 
     @Test
@@ -66,7 +67,7 @@ class GuavaLoadingCacheTest {
     private AlgorithmTask tryCreateNewTask() {
         AlgorithmTask task = null;
         try {
-            task = algorithmResultCache.createNewTask(graph);
+            task = algorithmResultCache.createNewTask(graphDataDTO);
         } catch (ExecutionException e) {
             e.printStackTrace();
         }

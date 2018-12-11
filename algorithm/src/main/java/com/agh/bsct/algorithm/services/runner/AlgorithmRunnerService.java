@@ -1,6 +1,6 @@
 package com.agh.bsct.algorithm.services.runner;
 
-import com.agh.bsct.algorithm.entities.graph.Graph;
+import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +19,8 @@ public class AlgorithmRunnerService {
         this.asyncAlgorithmTaskRunner = asyncAlgorithmTaskRunner;
     }
 
-    public String run(Graph graph) throws ExecutionException {
-        AlgorithmTask algorithmTask = algorithmResultCache.createNewTask(graph);
+    public String run(GraphDataDTO graphDataDTO) throws ExecutionException {
+        AlgorithmTask algorithmTask = algorithmResultCache.createNewTask(graphDataDTO);
         asyncAlgorithmTaskRunner.run(algorithmTask);
         return algorithmTask.getId();
     }

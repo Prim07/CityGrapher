@@ -1,7 +1,6 @@
 package com.agh.bsct.algorithm.controllers;
 
 import com.agh.bsct.algorithm.controllers.config.PathsConstants;
-import com.agh.bsct.algorithm.controllers.mapper.GraphDataMapper;
 import com.agh.bsct.algorithm.services.runner.AlgorithmCalculationStatus;
 import com.agh.bsct.algorithm.services.runner.AlgorithmRunnerService;
 import com.agh.bsct.algorithm.services.runner.AlgorithmTask;
@@ -25,12 +24,9 @@ public class AlgorithmController {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private AlgorithmRunnerService algorithmRunnerService;
-    private GraphDataMapper graphDataMapper;
-
     @Autowired
-    public AlgorithmController(AlgorithmRunnerService algorithmRunnerService, GraphDataMapper graphDataMapper) {
+    public AlgorithmController(AlgorithmRunnerService algorithmRunnerService) {
         this.algorithmRunnerService = algorithmRunnerService;
-        this.graphDataMapper = graphDataMapper;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = ALGORITHM_PATH + "{id}")
@@ -53,8 +49,7 @@ public class AlgorithmController {
     @ResponseBody
     public ResponseEntity<ObjectNode> run(@RequestBody GraphDataDTO graphDataDTO) {
         try {
-            var graph = graphDataMapper.mapToGraph(graphDataDTO);
-            String taskId = algorithmRunnerService.run(graph);
+            String taskId = algorithmRunnerService.run(graphDataDTO);
             return getSuccessfulResponseWithUriToTask(taskId);
         } catch (ExecutionException e) {
             e.printStackTrace();
