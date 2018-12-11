@@ -1,9 +1,11 @@
 package com.agh.bsct.algorithm.controllers;
 
 import com.agh.bsct.algorithm.controllers.config.PathsConstants;
+import com.agh.bsct.algorithm.controllers.mapper.GraphDataMapper;
 import com.agh.bsct.algorithm.services.runner.AlgorithmCalculationStatus;
 import com.agh.bsct.algorithm.services.runner.AlgorithmRunnerService;
 import com.agh.bsct.algorithm.services.runner.AlgorithmTask;
+import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.cache.CacheLoader;
@@ -23,10 +25,12 @@ public class AlgorithmController {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private AlgorithmRunnerService algorithmRunnerService;
+    private GraphDataMapper graphDataMapper;
 
     @Autowired
-    public AlgorithmController(AlgorithmRunnerService algorithmRunnerService) {
+    public AlgorithmController(AlgorithmRunnerService algorithmRunnerService, GraphDataMapper graphDataMapper) {
         this.algorithmRunnerService = algorithmRunnerService;
+        this.graphDataMapper = graphDataMapper;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = ALGORITHM_PATH + "{id}")
@@ -47,9 +51,10 @@ public class AlgorithmController {
 
     @RequestMapping(method = RequestMethod.POST, value = ALGORITHM_PATH)
     @ResponseBody
-    public ResponseEntity<ObjectNode> run(@RequestBody ObjectNode graphData) {
+    public ResponseEntity<ObjectNode> run(@RequestBody GraphDataDTO graphDataDTO) {
         try {
-            String taskId = algorithmRunnerService.run(graphData);
+            var graph = graphDataMapper.mapToGraph(graphDataDTO);
+            String taskId = algorithmRunnerService.run(graph);
             return getSuccessfulResponseWithUriToTask(taskId);
         } catch (ExecutionException e) {
             e.printStackTrace();

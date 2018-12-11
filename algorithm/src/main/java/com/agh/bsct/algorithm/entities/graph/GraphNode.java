@@ -5,7 +5,7 @@ public class GraphNode {
     private long id;
     private int weight;
 
-    GraphNode(Long id, Integer weight) {
+    public GraphNode(Long id, Integer weight) {
         this.id = id;
         this.weight = weight;
     }

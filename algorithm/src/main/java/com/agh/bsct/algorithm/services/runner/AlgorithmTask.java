@@ -1,5 +1,6 @@
 package com.agh.bsct.algorithm.services.runner;
 
+import com.agh.bsct.algorithm.entities.graph.Graph;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.util.Optional;
@@ -9,10 +10,10 @@ public class AlgorithmTask {
     private final String id;
     private AlgorithmCalculationStatus status;
     //TODO tutaj musimy używać nie ObjectNode, a jakiejś sparsowanej encji - tak samo, jak w przypadku DataCollector było GraphData
-    private ObjectNode graphData;
+    private Graph graphData;
     private Optional<ObjectNode> jsonResult = Optional.empty();
 
-    public AlgorithmTask(String id, ObjectNode graphData) {
+    AlgorithmTask(String id, Graph graphData) {
         this.id = id;
         this.graphData = graphData;
         this.status = AlgorithmCalculationStatus.NOT_STARTED;
@@ -30,7 +31,7 @@ public class AlgorithmTask {
         return jsonResult;
     }
 
-    public ObjectNode getGraphData() {
+    public Graph getGraphData() {
         return graphData;
     }
 

@@ -1,6 +1,6 @@
 package com.agh.bsct.algorithm.services.runner;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.agh.bsct.algorithm.entities.graph.Graph;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -29,9 +29,9 @@ public class GuavaLoadingCache implements AlgorithmResultCache {
     }
 
     @Override
-    public AlgorithmTask createNewTask(ObjectNode graphData) {
+    public AlgorithmTask createNewTask(Graph graph) {
         String id = UUID.randomUUID().toString();
-        AlgorithmTask algorithmTask = new AlgorithmTask(id, graphData);
+        AlgorithmTask algorithmTask = new AlgorithmTask(id, graph);
         algorithmTaskRepository.put(id, algorithmTask);
         return algorithmTask;
     }

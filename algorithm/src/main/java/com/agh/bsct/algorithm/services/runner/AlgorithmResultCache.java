@@ -1,12 +1,12 @@
 package com.agh.bsct.algorithm.services.runner;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.agh.bsct.algorithm.entities.graph.Graph;
 
 import java.util.concurrent.ExecutionException;
 
 public interface AlgorithmResultCache {
 
-    AlgorithmTask createNewTask(ObjectNode graphData) throws ExecutionException;
+    AlgorithmTask createNewTask(Graph graph) throws ExecutionException;
 
     AlgorithmTask getTask(String id) throws ExecutionException;
 

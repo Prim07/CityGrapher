@@ -1,6 +1,6 @@
 package com.agh.bsct.algorithm.services.runner;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.agh.bsct.algorithm.entities.graph.Graph;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +19,8 @@ public class AlgorithmRunnerService {
         this.asyncAlgorithmTaskRunner = asyncAlgorithmTaskRunner;
     }
 
-    public String run(ObjectNode graphData) throws ExecutionException {
-        AlgorithmTask algorithmTask = algorithmResultCache.createNewTask(graphData);
+    public String run(Graph graph) throws ExecutionException {
+        AlgorithmTask algorithmTask = algorithmResultCache.createNewTask(graph);
         asyncAlgorithmTaskRunner.run(algorithmTask);
         return algorithmTask.getId();
     }
