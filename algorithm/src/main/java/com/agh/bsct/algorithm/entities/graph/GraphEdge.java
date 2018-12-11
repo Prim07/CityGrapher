@@ -1,4 +1,4 @@
-package com.agh.bsct.datacollector.entities.graph;
+package com.agh.bsct.algorithm.entities.graph;
 
 public class GraphEdge {
 
@@ -11,7 +11,7 @@ public class GraphEdge {
     private GraphNode endGraphNode;
     private double weight;
 
-    GraphEdge(GraphNode endGraphNode, double weight) {
+    public GraphEdge(GraphNode endGraphNode, double weight) {
         this.endGraphNode = endGraphNode;
         this.weight = weight;
     }

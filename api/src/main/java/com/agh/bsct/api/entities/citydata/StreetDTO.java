@@ -1,10 +1,10 @@
-package com.agh.bsct.datacollector.entities.citydata;
+package com.agh.bsct.api.entities.citydata;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Street {
+public class StreetDTO {
 
     private static final String NAME_TAG = "name";
 
@@ -12,7 +12,7 @@ public class Street {
     private Map<String, String> overpassTagNameToValue = new HashMap<>();
 
 
-    public Street(String streetName, List<Long> nodesIds) {
+    public StreetDTO(String streetName, List<Long> nodesIds) {
         setName(streetName);
         this.nodesIds = nodesIds;
     }

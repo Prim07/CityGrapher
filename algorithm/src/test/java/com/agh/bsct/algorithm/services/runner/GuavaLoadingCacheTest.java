@@ -1,27 +1,28 @@
 package com.agh.bsct.algorithm.services.runner;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.agh.bsct.algorithm.controllers.mapper.GraphDataMapper;
+import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
+import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 
 @RunWith(JUnitPlatform.class)
 class GuavaLoadingCacheTest {
 
     private AlgorithmResultCache algorithmResultCache;
-    //TODO AK change it as in service
-    private ObjectNode graphData;
+    private GraphDataDTO graphDataDTO;
 
     @BeforeEach
     void setUp() {
         var algorithmTaskRepository = new AlgorithmTaskRepository();
-        this.algorithmResultCache = new GuavaLoadingCache(algorithmTaskRepository);
-        this.graphData = new ObjectMapper().createObjectNode();
+        var graphDataMapper = new GraphDataMapper();
+        this.algorithmResultCache = new GuavaLoadingCache(algorithmTaskRepository, graphDataMapper);
+        this.graphDataDTO = new GraphDataDTO(Collections.emptyList(), Collections.emptyList());
     }
 
     @Test
@@ -66,7 +67,7 @@ class GuavaLoadingCacheTest {
     private AlgorithmTask tryCreateNewTask() {
         AlgorithmTask task = null;
         try {
-            task = algorithmResultCache.createNewTask(graphData);
+            task = algorithmResultCache.createNewTask(graphDataDTO);
         } catch (ExecutionException e) {
             e.printStackTrace();
         }

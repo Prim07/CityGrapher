@@ -4,6 +4,7 @@ import com.agh.bsct.algorithm.controllers.config.PathsConstants;
 import com.agh.bsct.algorithm.services.runner.AlgorithmCalculationStatus;
 import com.agh.bsct.algorithm.services.runner.AlgorithmRunnerService;
 import com.agh.bsct.algorithm.services.runner.AlgorithmTask;
+import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.cache.CacheLoader;
@@ -47,9 +48,9 @@ public class AlgorithmController {
 
     @RequestMapping(method = RequestMethod.POST, value = ALGORITHM_PATH)
     @ResponseBody
-    public ResponseEntity<ObjectNode> run(@RequestBody ObjectNode graphData) {
+    public ResponseEntity<ObjectNode> run(@RequestBody GraphDataDTO graphDataDTO) {
         try {
-            String taskId = algorithmRunnerService.run(graphData);
+            String taskId = algorithmRunnerService.run(graphDataDTO);
             return getSuccessfulResponseWithUriToTask(taskId);
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -68,12 +69,17 @@ public class AlgorithmController {
     }
 
     private ObjectNode mapToResponseJson(AlgorithmTask task) {
-        return objectMapper.createObjectNode()
-                .put("taskId", task.getId())
-                .put("currentStatus", task.getStatus().toString())
-                .putPOJO("result", task.getJsonResult().isPresent()
-                        ? task.getJsonResult().get()
-                        : objectMapper.createObjectNode());
+        ObjectNode response = objectMapper.createObjectNode();
+        response.put("taskId", task.getId());
+        response.put("currentStatus", task.getStatus().toString());
+        if (task.getAlgorithmResultDTO().isPresent()) {
+            response.putPOJO("result", task.getAlgorithmResultDTO().get());
+            response.putPOJO("graphData", task.getGraphDataDTO());
+        } else {
+            response.putPOJO("result", objectMapper.createObjectNode());
+            response.putPOJO("graphData", objectMapper.createObjectNode());
+        }
+        return response;
     }
 
     private ResponseEntity<ObjectNode> getSuccessfulResponseWithUriToTask(String taskId) {

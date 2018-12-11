@@ -1,6 +1,7 @@
 package com.agh.bsct.algorithm.services.runner;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.agh.bsct.algorithm.controllers.mapper.GraphDataMapper;
+import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -21,17 +22,20 @@ public class GuavaLoadingCache implements AlgorithmResultCache {
 
     private AlgorithmTaskRepository algorithmTaskRepository;
     private LoadingCache<String, AlgorithmTask> idToTaskCache;
+    private GraphDataMapper graphDataMapper;
 
     @Autowired
-    public GuavaLoadingCache(AlgorithmTaskRepository algorithmTaskRepository) {
+    public GuavaLoadingCache(AlgorithmTaskRepository algorithmTaskRepository, GraphDataMapper graphDataMapper) {
         this.algorithmTaskRepository = algorithmTaskRepository;
+        this.graphDataMapper = graphDataMapper;
         this.idToTaskCache = getInitializedLoadingCache();
     }
 
     @Override
-    public AlgorithmTask createNewTask(ObjectNode graphData) {
-        String id = UUID.randomUUID().toString();
-        AlgorithmTask algorithmTask = new AlgorithmTask(id, graphData);
+    public AlgorithmTask createNewTask(GraphDataDTO graphDataDTO) {
+        var id = UUID.randomUUID().toString();
+        var graph = graphDataMapper.mapToGraph(graphDataDTO);
+        AlgorithmTask algorithmTask = new AlgorithmTask(id, graphDataDTO, graph);
         algorithmTaskRepository.put(id, algorithmTask);
         return algorithmTask;
     }

@@ -1,17 +1,17 @@
-package com.agh.bsct.datacollector.entities.citydata;
+package com.agh.bsct.api.entities.citydata;
 
-public class Node {
+public class GeographicalNodeDTO {
 
     private Long id;
     private Double lon;
     private Double lat;
     private boolean isCrossing;
 
-    public Node(Long id, Double lon, Double lat) {
+    public GeographicalNodeDTO(Long id, Double lon, Double lat) {
         this(id, lon, lat, false);
     }
 
-    private Node(Long id, Double lon, Double lat, boolean isCrossing) {
+    private GeographicalNodeDTO(Long id, Double lon, Double lat, boolean isCrossing) {
         this.id = id;
         this.lon = lon;
         this.lat = lat;

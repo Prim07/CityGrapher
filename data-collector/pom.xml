@@ -36,6 +36,12 @@
             <version>2.4.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.agh.bsct</groupId>
+            <artifactId>api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
 
