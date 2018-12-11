@@ -35,7 +35,7 @@ public class CityDataService {
         this.streetsJoinerService = streetsJoinerService;
     }
 
-    public CityDataDTO getCityData(String cityName) {
+    public CityDataDTO getCityDataDTO(String cityName) {
         String query = queryForCityProvider.getQueryForCity(cityName);
 
         OverpassQueryResult interpretedQuery = queryInterpreterService.interpret(query);

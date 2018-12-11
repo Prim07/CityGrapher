@@ -25,7 +25,7 @@ public class GraphDataService {
 
     private static final Random random = new Random();
 
-    public GraphDataDTO getGraphData(CityDataDTO cityData) {
+    public GraphDataDTO getGraphDataDTO(CityDataDTO cityData) {
         List<EdgeDTO> edges = calculateEdgeWeights(cityData.getStreets(), cityData.getGeographicalNodes());
         List<NodeDTO> crossings = calculateNodeWeights(cityData.getGeographicalNodes());
         return new GraphDataDTO(edges, crossings);
