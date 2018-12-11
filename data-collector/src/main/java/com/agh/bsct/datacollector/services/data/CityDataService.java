@@ -1,8 +1,8 @@
 package com.agh.bsct.datacollector.services.data;
 
-import com.agh.bsct.datacollector.entities.citydata.CityData;
-import com.agh.bsct.datacollector.entities.citydata.Node;
-import com.agh.bsct.datacollector.entities.citydata.Street;
+import com.agh.bsct.api.entities.citydata.CityDataDTO;
+import com.agh.bsct.api.entities.citydata.NodeDTO;
+import com.agh.bsct.api.entities.citydata.StreetDTO;
 import com.agh.bsct.datacollector.library.adapter.queryresult.OverpassQueryResult;
 import com.agh.bsct.datacollector.services.city.QueryForCityProvider;
 import com.agh.bsct.datacollector.services.interpreter.QueryInterpreterService;
@@ -35,36 +35,36 @@ public class CityDataService {
         this.streetsJoinerService = streetsJoinerService;
     }
 
-    public CityData getCityData(String cityName) {
+    public CityDataDTO getCityData(String cityName) {
         String query = queryForCityProvider.getQueryForCity(cityName);
 
         OverpassQueryResult interpretedQuery = queryInterpreterService.interpret(query);
         OverpassQueryResult removedAreaTagsQueryResult = resultFilterService.removeAreaTags(interpretedQuery);
 
-        Set<Street> streets = streetsJoinerService.joinStreets(removedAreaTagsQueryResult);
+        Set<StreetDTO> streets = streetsJoinerService.joinStreets(removedAreaTagsQueryResult);
 
         return updateCrossings(streets, removedAreaTagsQueryResult);
     }
 
-    private CityData updateCrossings(Set<Street> streets, OverpassQueryResult overpassQueryResult) {
+    private CityDataDTO updateCrossings(Set<StreetDTO> streets, OverpassQueryResult overpassQueryResult) {
         Map<Long, Integer> nodeIdToOccurrencesInStreetCount = getNodeIdToOccurrencesInStreetCountMap(streets);
         Set<Long> crossingsIds = getCrossingIds(nodeIdToOccurrencesInStreetCount, streets);
-        List<Street> streetsAfterSplitting = getStreetsSeparatedOnCrossings(streets, crossingsIds);
-        List<Node> nodes = mapToNodes(overpassQueryResult);
+        List<StreetDTO> streetsAfterSplitting = getStreetsSeparatedOnCrossings(streets, crossingsIds);
+        List<NodeDTO> nodes = mapToNodes(overpassQueryResult);
         updateWithCrossingInformation(nodes, crossingsIds);
-        return new CityData(nodes, streetsAfterSplitting);
+        return new CityDataDTO(nodes, streetsAfterSplitting);
     }
 
-    private Map<Long, Integer> getNodeIdToOccurrencesInStreetCountMap(Set<Street> streets) {
+    private Map<Long, Integer> getNodeIdToOccurrencesInStreetCountMap(Set<StreetDTO> streets) {
         Map<Long, Integer> nodeIdsToOccurrencesInStreets = new HashMap<>();
         streets.stream()
-                .map(Street::getNodesIds)
+                .map(StreetDTO::getNodesIds)
                 .flatMap(Collection::stream)
                 .forEach(nodeId -> nodeIdsToOccurrencesInStreets.merge(nodeId, 1, (a, b) -> a + b));
         return nodeIdsToOccurrencesInStreets;
     }
 
-    private Set<Long> getCrossingIds(Map<Long, Integer> nodeIdToOccurrencesInStreetCount, Set<Street> streets) {
+    private Set<Long> getCrossingIds(Map<Long, Integer> nodeIdToOccurrencesInStreetCount, Set<StreetDTO> streets) {
         Set<Long> crossingsIds = nodeIdToOccurrencesInStreetCount.entrySet().stream()
                 .filter(this::isNodesOccurrenceGreaterThanOne)
                 .map(Map.Entry::getKey)
@@ -75,8 +75,8 @@ public class CityDataService {
         return crossingsIds;
     }
 
-    private void addFirstAndLastNodeForEachStreet(Set<Street> streets, Set<Long> crossingsIds) {
-        for(Street street :streets) {
+    private void addFirstAndLastNodeForEachStreet(Set<StreetDTO> streets, Set<Long> crossingsIds) {
+        for (StreetDTO street : streets) {
             var nodesIds = street.getNodesIds();
 
             var firstNodeId = nodesIds.get(0);
@@ -91,10 +91,10 @@ public class CityDataService {
         return entry.getValue() > 1;
     }
 
-    private List<Street> getStreetsSeparatedOnCrossings(Set<Street> streets, Set<Long> crossingsIds) {
-        var streetsSeparatedOnCrossings = new ArrayList<Street>();
+    private List<StreetDTO> getStreetsSeparatedOnCrossings(Set<StreetDTO> streets, Set<Long> crossingsIds) {
+        var streetsSeparatedOnCrossings = new ArrayList<StreetDTO>();
 
-        for (Street street : streets) {
+        for (StreetDTO street : streets) {
             List<Long> nodesIds = street.getNodesIds();
             var crossingWithinStreet = new ArrayList<Long>();
             for (int i = 1; i < nodesIds.size() - 1; i++) {
@@ -113,7 +113,7 @@ public class CityDataService {
         return streetsSeparatedOnCrossings;
     }
 
-    private List<Street> splitStreet(Street street, List<Long> middleNodeIds) {
+    private List<StreetDTO> splitStreet(StreetDTO street, List<Long> middleNodeIds) {
         ArrayList<List<Long>> listOfSplitStreetsNodes = getInitializedWithEmptyLists(middleNodeIds.size() + 1);
         splitNodesOfBaseStreet(street, middleNodeIds, listOfSplitStreetsNodes);
         return mapToStreets(street, listOfSplitStreetsNodes);
@@ -127,7 +127,7 @@ public class CityDataService {
         return splitStreetsNodes;
     }
 
-    private void splitNodesOfBaseStreet(Street street, List<Long> middleNodeIds,
+    private void splitNodesOfBaseStreet(StreetDTO street, List<Long> middleNodeIds,
                                         ArrayList<List<Long>> listOfSplitStreetsNodes) {
         var streetPartId = 0;
         for (Long nodeId : street.getNodesIds()) {
@@ -141,21 +141,21 @@ public class CityDataService {
         }
     }
 
-    private List<Street> mapToStreets(Street street, ArrayList<List<Long>> listOfSplitStreetsNodes) {
+    private List<StreetDTO> mapToStreets(StreetDTO street, ArrayList<List<Long>> listOfSplitStreetsNodes) {
         return listOfSplitStreetsNodes
                 .stream()
-                .map(nodeIds -> new Street(street.getName(), nodeIds))
+                .map(nodeIds -> new StreetDTO(street.getName(), nodeIds))
                 .collect(Collectors.toList());
     }
 
-    private List<Node> mapToNodes(OverpassQueryResult overpassQueryResult) {
+    private List<NodeDTO> mapToNodes(OverpassQueryResult overpassQueryResult) {
         return overpassQueryResult.getElements().stream()
                     .filter(element -> NODE_TYPE.equals(element.getType()))
-                    .map(element -> new Node(element.getId(), element.getLon(), element.getLat()))
+                .map(element -> new NodeDTO(element.getId(), element.getLon(), element.getLat()))
                     .collect(Collectors.toList());
     }
 
-    private void updateWithCrossingInformation(List<Node> nodes, Set<Long> crossingsIds) {
+    private void updateWithCrossingInformation(List<NodeDTO> nodes, Set<Long> crossingsIds) {
         nodes.forEach(node -> {
             if (crossingsIds.contains(node.getId())) {
                 node.setCrossing(true);

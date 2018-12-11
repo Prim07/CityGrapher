@@ -1,6 +1,5 @@
 package com.agh.bsct.datacollector.services.city;
 
-import com.agh.bsct.datacollector.entities.graph.Graph;
 import com.agh.bsct.datacollector.services.algorithm.boundary.AlgorithmService;
 import com.agh.bsct.datacollector.services.data.CityDataService;
 import com.agh.bsct.datacollector.services.data.GraphDataService;
@@ -37,9 +36,10 @@ public class OSMCityService {
     public ObjectNode getCityGraph(String cityName) {
         var cityData = cityDataService.getCityData(cityName);
         var graphData = graphService.getGraphData(cityData);
-        var jsonGraph = dataParser.parseToJson(new Graph(graphData));
-        return algorithmService.run(cityName, jsonGraph);
+        var jsonGraphData = dataParser.parseToJson(graphData);
+        return algorithmService.run(cityName, jsonGraphData);
         /* TODO poniższa część kodu kiedyś miała sens, ale teraz musi przejść w nowe miejsce, jeszcze nie do koca wiadomo, gdzie
+        var graph = new Graph(graphData);
         var hospitalNodes = graphService.runAlgorithmAndCalculateHospitalNodes(jsonGraph);
         return dataParser.parseToJson(graphData, hospitalNodes); */
     }

@@ -1,7 +1,7 @@
-package com.agh.bsct.datacollector.entities.graph;
+package com.agh.bsct.api.entities.graph;
 
-import com.agh.bsct.datacollector.entities.graphdata.Crossing;
-import com.agh.bsct.datacollector.entities.graphdata.GraphData;
+import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
+import com.agh.bsct.api.entities.graphdata.NodeDTO;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,12 +12,12 @@ public class Graph {
 
     private Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap = new HashMap<>();
 
-    public Graph(GraphData graphData) {
-        var edges = graphData.getEdges();
-        var crossings = graphData.getCrossings();
+    public Graph(GraphDataDTO graphData) {
+        var edges = graphData.getEdgeDTOS();
+        var crossings = graphData.getNodeDTOS();
 
         for(var edge : edges) {
-            var edgeNodeIds = edge.getStreet().getNodesIds();
+            var edgeNodeIds = edge.getStreetDTO().getNodesIds();
             var edgeWeight = edge.getWeight();
 
             var firstNodeId = edgeNodeIds.get(0);
@@ -53,11 +53,11 @@ public class Graph {
                 .orElse(null);
     }
 
-    private Crossing getCrossingWithId(List<Crossing> crossings, Long nodeId) {
+    private NodeDTO getCrossingWithId(List<NodeDTO> crossings, Long nodeId) {
         return crossings.stream()
-                .filter(crossing -> crossing.getNode().getId().equals(nodeId))
+                .filter(crossing -> crossing.getNodeDTO().getId().equals(nodeId))
                 .findAny()
-                .orElseThrow(() -> new IllegalStateException("Cannot find Crossing for GraphNode with given id: "
+                .orElseThrow(() -> new IllegalStateException("Cannot find NodeDTO for GraphNode with given id: "
                                                             + nodeId));
     }
 

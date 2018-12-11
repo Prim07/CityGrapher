@@ -1,4 +1,4 @@
-package com.agh.bsct.datacollector.entities.graph;
+package com.agh.bsct.api.entities.graph;
 
 public class GraphEdge {
 
