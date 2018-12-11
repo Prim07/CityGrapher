@@ -24,6 +24,7 @@ public class AlgorithmController {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private AlgorithmRunnerService algorithmRunnerService;
+
     @Autowired
     public AlgorithmController(AlgorithmRunnerService algorithmRunnerService) {
         this.algorithmRunnerService = algorithmRunnerService;
@@ -68,12 +69,17 @@ public class AlgorithmController {
     }
 
     private ObjectNode mapToResponseJson(AlgorithmTask task) {
-        return objectMapper.createObjectNode()
-                .put("taskId", task.getId())
-                .put("currentStatus", task.getStatus().toString())
-                .putPOJO("result", task.getAlgorithmResultDTO().isPresent()
-                        ? task.getAlgorithmResultDTO().get()
-                        : objectMapper.createObjectNode());
+        ObjectNode response = objectMapper.createObjectNode();
+        response.put("taskId", task.getId());
+        response.put("currentStatus", task.getStatus().toString());
+        if (task.getAlgorithmResultDTO().isPresent()) {
+            response.putPOJO("result", task.getAlgorithmResultDTO().get());
+            response.putPOJO("graphData", task.getGraphDataDTO());
+        } else {
+            response.putPOJO("result", objectMapper.createObjectNode());
+            response.putPOJO("graphData", objectMapper.createObjectNode());
+        }
+        return response;
     }
 
     private ResponseEntity<ObjectNode> getSuccessfulResponseWithUriToTask(String taskId) {
