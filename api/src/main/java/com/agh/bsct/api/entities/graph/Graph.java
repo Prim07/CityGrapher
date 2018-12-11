@@ -55,9 +55,9 @@ public class Graph {
 
     private NodeDTO getCrossingWithId(List<NodeDTO> crossings, Long nodeId) {
         return crossings.stream()
-                .filter(crossing -> crossing.getNodeDTO().getId().equals(nodeId))
+                .filter(crossing -> crossing.getGeographicalNodeDTO().getId().equals(nodeId))
                 .findAny()
-                .orElseThrow(() -> new IllegalStateException("Cannot find NodeDTO for GraphNode with given id: "
+                .orElseThrow(() -> new IllegalStateException("Cannot find GeographicalNodeDTO for GraphNode with given id: "
                                                             + nodeId));
     }
 

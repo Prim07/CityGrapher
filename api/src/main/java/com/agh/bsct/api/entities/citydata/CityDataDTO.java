@@ -3,11 +3,11 @@ package com.agh.bsct.api.entities.citydata;
 import java.util.List;
 
 public class CityDataDTO {
-    private List<NodeDTO> nodes;
+    private List<GeographicalNodeDTO> geographicalNodes;
     private List<StreetDTO> streets;
 
-    public CityDataDTO(List<NodeDTO> nodes, List<StreetDTO> streets) {
-        this.nodes = nodes;
+    public CityDataDTO(List<GeographicalNodeDTO> geographicalNodes, List<StreetDTO> streets) {
+        this.geographicalNodes = geographicalNodes;
         this.streets = streets;
     }
 
@@ -15,7 +15,7 @@ public class CityDataDTO {
         return streets;
     }
 
-    public List<NodeDTO> getNodes() {
-        return nodes;
+    public List<GeographicalNodeDTO> getGeographicalNodes() {
+        return geographicalNodes;
     }
 }

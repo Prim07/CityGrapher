@@ -1,6 +1,7 @@
 package com.agh.bsct.datacollector.services.data;
 
 import com.agh.bsct.api.entities.citydata.CityDataDTO;
+import com.agh.bsct.api.entities.citydata.GeographicalNodeDTO;
 import com.agh.bsct.api.entities.citydata.StreetDTO;
 import com.agh.bsct.api.entities.graphdata.EdgeDTO;
 import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
@@ -25,12 +26,12 @@ public class GraphDataService {
     private static final Random random = new Random();
 
     public GraphDataDTO getGraphData(CityDataDTO cityData) {
-        List<EdgeDTO> edges = calculateEdgeWeights(cityData.getStreets(), cityData.getNodes());
-        List<NodeDTO> crossings = calculateNodeWeights(cityData.getNodes());
+        List<EdgeDTO> edges = calculateEdgeWeights(cityData.getStreets(), cityData.getGeographicalNodes());
+        List<NodeDTO> crossings = calculateNodeWeights(cityData.getGeographicalNodes());
         return new GraphDataDTO(edges, crossings);
     }
 
-    private List<EdgeDTO> calculateEdgeWeights(List<StreetDTO> streets, List<com.agh.bsct.api.entities.citydata.NodeDTO> nodes) {
+    private List<EdgeDTO> calculateEdgeWeights(List<StreetDTO> streets, List<GeographicalNodeDTO> nodes) {
         List<EdgeDTO> edges = new ArrayList<>();
 
         for (StreetDTO street : streets) {
@@ -41,8 +42,8 @@ public class GraphDataService {
                 Long startNodeId = nodesIds.get(i);
                 Long endNodeId = nodesIds.get(i + 1);
 
-                com.agh.bsct.api.entities.citydata.NodeDTO startNode = getNodeWithId(startNodeId, nodes);
-                com.agh.bsct.api.entities.citydata.NodeDTO endNode = getNodeWithId(endNodeId, nodes);
+                GeographicalNodeDTO startNode = getNodeWithId(startNodeId, nodes);
+                GeographicalNodeDTO endNode = getNodeWithId(endNodeId, nodes);
 
                 weight += calculateDistance(startNode, endNode);
             }
@@ -53,7 +54,7 @@ public class GraphDataService {
         return edges;
     }
 
-    private double calculateDistance(com.agh.bsct.api.entities.citydata.NodeDTO startNode, com.agh.bsct.api.entities.citydata.NodeDTO endNode) {
+    private double calculateDistance(GeographicalNodeDTO startNode, GeographicalNodeDTO endNode) {
         double startLat = startNode.getLat();
         double endLat = endNode.getLat();
         double startLon = startNode.getLon();
@@ -68,25 +69,25 @@ public class GraphDataService {
                 * asin(sqrt(pow(sin(latRad / 2), 2) + cos(startLatRad) * cos(endLatRad) * pow(sin(lonRad / 2), 2)));
     }
 
-    private com.agh.bsct.api.entities.citydata.NodeDTO getNodeWithId(Long nodeId, List<com.agh.bsct.api.entities.citydata.NodeDTO> nodes) {
+    private GeographicalNodeDTO getNodeWithId(Long nodeId, List<GeographicalNodeDTO> nodes) {
         return nodes.stream()
                 .filter(node -> node.getId().equals(nodeId))
                 .findAny()
                 .orElseThrow(() -> new IllegalStateException("Cannot find GraphNode with given id: " + nodeId));
     }
 
-    private List<NodeDTO> calculateNodeWeights(List<com.agh.bsct.api.entities.citydata.NodeDTO> nodes) {
+    private List<NodeDTO> calculateNodeWeights(List<GeographicalNodeDTO> nodes) {
         //TODO sprawdzić czas wykonania i porównać z czymś szybszym, np. zwykłym forem
         return nodes.stream()
                 .map(this::getCrossingWithRandomNodeWeight)
                 .collect(Collectors.toList());
     }
 
-    private NodeDTO getCrossingWithRandomNodeWeight(com.agh.bsct.api.entities.citydata.NodeDTO node) {
+    private NodeDTO getCrossingWithRandomNodeWeight(GeographicalNodeDTO node) {
         return new NodeDTO(node, random.nextInt((NODE_WEIGHT_MAX - NODE_WEIGHT_MIN) + 1) + NODE_WEIGHT_MIN);
     }
 
-    public List<com.agh.bsct.api.entities.citydata.NodeDTO> runAlgorithmAndCalculateHospitalNodes(ObjectNode jsonGraph) {
+    public List<GeographicalNodeDTO> runAlgorithmAndCalculateHospitalNodes(ObjectNode jsonGraph) {
         //TODO impl
         return new ArrayList<>();
     }

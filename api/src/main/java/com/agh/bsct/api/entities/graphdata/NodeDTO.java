@@ -1,17 +1,19 @@
 package com.agh.bsct.api.entities.graphdata;
 
+import com.agh.bsct.api.entities.citydata.GeographicalNodeDTO;
+
 public class NodeDTO {
 
-    private com.agh.bsct.api.entities.citydata.NodeDTO nodeDTO;
+    private GeographicalNodeDTO geographicalNodeDTO;
     private Integer weight;
 
-    public NodeDTO(com.agh.bsct.api.entities.citydata.NodeDTO nodeDTO, Integer weight) {
-        this.nodeDTO = nodeDTO;
+    public NodeDTO(GeographicalNodeDTO geographicalNodeDTO, Integer weight) {
+        this.geographicalNodeDTO = geographicalNodeDTO;
         this.weight = weight;
     }
 
-    public com.agh.bsct.api.entities.citydata.NodeDTO getNodeDTO() {
-        return nodeDTO;
+    public GeographicalNodeDTO getGeographicalNodeDTO() {
+        return geographicalNodeDTO;
     }
 
     public Integer getWeight() {

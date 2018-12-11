@@ -1,7 +1,7 @@
 package com.agh.bsct.datacollector.services.data;
 
 import com.agh.bsct.api.entities.citydata.CityDataDTO;
-import com.agh.bsct.api.entities.citydata.NodeDTO;
+import com.agh.bsct.api.entities.citydata.GeographicalNodeDTO;
 import com.agh.bsct.api.entities.citydata.StreetDTO;
 import com.agh.bsct.datacollector.library.adapter.queryresult.OverpassQueryResult;
 import com.agh.bsct.datacollector.services.city.QueryForCityProvider;
@@ -50,7 +50,7 @@ public class CityDataService {
         Map<Long, Integer> nodeIdToOccurrencesInStreetCount = getNodeIdToOccurrencesInStreetCountMap(streets);
         Set<Long> crossingsIds = getCrossingIds(nodeIdToOccurrencesInStreetCount, streets);
         List<StreetDTO> streetsAfterSplitting = getStreetsSeparatedOnCrossings(streets, crossingsIds);
-        List<NodeDTO> nodes = mapToNodes(overpassQueryResult);
+        List<GeographicalNodeDTO> nodes = mapToNodes(overpassQueryResult);
         updateWithCrossingInformation(nodes, crossingsIds);
         return new CityDataDTO(nodes, streetsAfterSplitting);
     }
@@ -148,14 +148,14 @@ public class CityDataService {
                 .collect(Collectors.toList());
     }
 
-    private List<NodeDTO> mapToNodes(OverpassQueryResult overpassQueryResult) {
+    private List<GeographicalNodeDTO> mapToNodes(OverpassQueryResult overpassQueryResult) {
         return overpassQueryResult.getElements().stream()
                     .filter(element -> NODE_TYPE.equals(element.getType()))
-                .map(element -> new NodeDTO(element.getId(), element.getLon(), element.getLat()))
+                .map(element -> new GeographicalNodeDTO(element.getId(), element.getLon(), element.getLat()))
                     .collect(Collectors.toList());
     }
 
-    private void updateWithCrossingInformation(List<NodeDTO> nodes, Set<Long> crossingsIds) {
+    private void updateWithCrossingInformation(List<GeographicalNodeDTO> nodes, Set<Long> crossingsIds) {
         nodes.forEach(node -> {
             if (crossingsIds.contains(node.getId())) {
                 node.setCrossing(true);
