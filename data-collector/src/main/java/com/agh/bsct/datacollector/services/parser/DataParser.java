@@ -3,9 +3,6 @@ package com.agh.bsct.datacollector.services.parser;
 import com.agh.bsct.api.entities.citydata.CityDataDTO;
 import com.agh.bsct.api.entities.citydata.GeographicalNodeDTO;
 import com.agh.bsct.api.entities.citydata.StreetDTO;
-import com.agh.bsct.api.entities.graph.Graph;
-import com.agh.bsct.api.entities.graph.GraphEdge;
-import com.agh.bsct.api.entities.graph.GraphNode;
 import com.agh.bsct.api.entities.graphdata.EdgeDTO;
 import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
 import com.agh.bsct.api.entities.graphdata.NodeDTO;
@@ -16,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class DataParser {
@@ -53,10 +49,11 @@ public class DataParser {
         return boxObjectNodesWithName(jsonStreets, EDGES_KEY);
     }
 
+    /* TODO to remove after implementing calling algorithm from UI and retrieving real data
     public ObjectNode parseToJson(Graph graph) {
         ArrayList<ObjectNode> jsonIncidenceMapElements = getIncidenceMapParsedToObjectNodes(graph);
         return boxObjectNodesWithName(jsonIncidenceMapElements, GRAPH_KEY);
-    }
+    }*/
 
     private ArrayList<ObjectNode> getStreetsParsedToObjectNodes(CityDataDTO cityData, List<GeographicalNodeDTO> hospitals) {
         var jsonStreets = new ArrayList<ObjectNode>();
@@ -152,6 +149,7 @@ public class DataParser {
         return jsonBase;
     }
 
+    /* TODO to remove after implementing calling algorithm from UI and retrieving real data
     private ArrayList<ObjectNode> getIncidenceMapParsedToObjectNodes(Graph graph) {
         var incidenceMap = graph.getNodeToEdgesIncidenceMap();
         ArrayList<ObjectNode> jsonIncidenceMapElements = new ArrayList<>();
@@ -171,8 +169,9 @@ public class DataParser {
         }
 
         return jsonIncidenceMapElements;
-    }
+    }*/
 
+    /* TODO to remove after implementing calling algorithm from UI and retrieving real data
     private ArrayList<ObjectNode> getEdgesParsedToObjectNodes(Map.Entry<GraphNode, List<GraphEdge>> entry) {
         var edges = entry.getValue();
         var jsonEdges = new ArrayList<ObjectNode>();
@@ -190,5 +189,5 @@ public class DataParser {
         }
 
         return jsonEdges;
-    }
+    }*/
 }

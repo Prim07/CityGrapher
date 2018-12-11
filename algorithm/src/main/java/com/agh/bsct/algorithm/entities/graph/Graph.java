@@ -1,4 +1,4 @@
-package com.agh.bsct.api.entities.graph;
+package com.agh.bsct.algorithm.entities.graph;
 
 import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
 import com.agh.bsct.api.entities.graphdata.NodeDTO;

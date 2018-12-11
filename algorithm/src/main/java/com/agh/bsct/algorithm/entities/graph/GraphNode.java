@@ -1,4 +1,4 @@
-package com.agh.bsct.api.entities.graph;
+package com.agh.bsct.algorithm.entities.graph;
 
 public class GraphNode {
 
