@@ -10,7 +10,7 @@ public class AlgorithmTask {
     private final String id;
     private AlgorithmCalculationStatus status;
     private Graph graphData;
-    private Optional<AlgorithmResultDTO> algorithmResultDTO = Optional.empty();
+    private AlgorithmResultDTO algorithmResultDTO;
 
     AlgorithmTask(String id, Graph graphData) {
         this.id = id;
@@ -35,10 +35,10 @@ public class AlgorithmTask {
     }
 
     public Optional<AlgorithmResultDTO> getAlgorithmResultDTO() {
-        return algorithmResultDTO;
+        return Optional.ofNullable(algorithmResultDTO);
     }
 
     public void setAlgorithmResultDTO(AlgorithmResultDTO algorithmResultDTO) {
-        this.algorithmResultDTO = Optional.ofNullable(algorithmResultDTO);
+        this.algorithmResultDTO = algorithmResultDTO;
     }
 }
