@@ -14,6 +14,7 @@ public class AsyncAlgorithmTaskRunner {
         try {
             algorithmTask.setStatus(AlgorithmCalculationStatus.CALCULATING);
             Thread.sleep(2000);
+            algorithmTask.setJsonResult(algorithmTask.getGraphData());
             algorithmTask.setStatus(AlgorithmCalculationStatus.SUCCESS);
         } catch (InterruptedException e) {
             e.printStackTrace();
