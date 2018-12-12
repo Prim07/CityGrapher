@@ -44,7 +44,7 @@ public class DataParser {
         return parseToJson(graphData, new ArrayList<>());
     }
 
-    private ObjectNode parseToJson(GraphDataDTO graphData, List<GeographicalNodeDTO> hospitals) {
+    public ObjectNode parseToJson(GraphDataDTO graphData, List<GeographicalNodeDTO> hospitals) {
         ArrayList<ObjectNode> jsonStreets = getEdgesParsedToObjectNodes(graphData, hospitals);
         return boxObjectNodesWithName(jsonStreets, EDGES_KEY);
     }

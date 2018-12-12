@@ -1,5 +1,6 @@
 package com.agh.bsct.datacollector.services.algorithm.boundary;
 
+import com.agh.bsct.api.entities.algorithmresult.AlgorithmResultDTO;
 import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -27,11 +28,11 @@ public class AlgorithmService {
         return restTemplate.postForObject(uri, graphDataDTO, ObjectNode.class);
     }
 
-    public ObjectNode getResult(String taskId) {
+    public AlgorithmResultDTO getResult(String taskId) {
         var uri = new DefaultUriBuilderFactory(ALGORITHM_PATH).builder()
                 .path(taskId)
                 .build()
                 .toString();
-        return restTemplate.getForObject(uri, ObjectNode.class);
+        return restTemplate.getForObject(uri, AlgorithmResultDTO.class);
     }
 }
