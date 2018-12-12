@@ -9,7 +9,7 @@ public class Graph {
 
     private Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap = new HashMap<>();
 
-    private double[][] shortestPathsDistances;
+    private Double[][] shortestPathsDistances;
 
     Graph() {
     }
@@ -52,8 +52,51 @@ public class Graph {
         return nodeToEdgesIncidenceMap;
     }
 
+    Double[][] getShortestPathsDistances() {
+        return shortestPathsDistances;
+    }
+
+    void setShortestPathsDistances(Double[][] shortestPathsDistances) {
+        this.shortestPathsDistances = shortestPathsDistances;
+    }
+
     void setNodeToEdgesIncidenceMap(Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap) {
         this.nodeToEdgesIncidenceMap = nodeToEdgesIncidenceMap;
+    }
+
+    void calculateShortestPathsDistances() {
+        var graphNodes = new ArrayList<>(nodeToEdgesIncidenceMap.keySet());
+
+        int graphNodesCount = nodeToEdgesIncidenceMap.size();
+        shortestPathsDistances = new Double[graphNodesCount][graphNodesCount];
+
+        //initialize distances with edge weights or infinity when edge doesn't exist
+        for (int i = 0; i < graphNodesCount; i++) {
+            for (int j = 0; j < graphNodesCount; j++) {
+                if (i == j) {
+                    shortestPathsDistances[i][j] = 0.0;
+                } else {
+                    double edgeWeight = getEdgeWeight(graphNodes.get(i), graphNodes.get(j));
+                    if (edgeWeight > 0) {
+                        shortestPathsDistances[i][j] = edgeWeight;
+                    } else {
+                        shortestPathsDistances[i][j] = Double.MAX_VALUE;
+                    }
+                }
+            }
+        }
+
+        //find shortest paths distances
+        for (int k = 0; k < graphNodesCount; k++) {
+            for (int i = 0; i < graphNodesCount; i++) {
+                for (int j = 0; j < graphNodesCount; j++) {
+                    if (shortestPathsDistances[i][j] > shortestPathsDistances[i][k] + shortestPathsDistances[k][j]) {
+                        shortestPathsDistances[i][j] = shortestPathsDistances[i][k] + shortestPathsDistances[k][j];
+                    }
+                }
+            }
+        }
+
     }
 
     List<GraphNode> getBiggestConnectedComponent() {
@@ -165,41 +208,6 @@ public class Graph {
                 .findAny()
                 .orElseThrow(() -> new IllegalStateException("Cannot find Crossing for GraphNode with given id: "
                         + nodeId));
-    }
-
-    private void calculateShortestPathsDistances() {
-        var graphNodes = new ArrayList<>(nodeToEdgesIncidenceMap.keySet());
-
-        int graphNodesCount = nodeToEdgesIncidenceMap.size();
-        shortestPathsDistances = new double[graphNodesCount][graphNodesCount];
-
-        //initialize distances with edge weights or infinity when edge doesn't exist
-        for (int i = 0; i < graphNodesCount; i++) {
-            for (int j = 0; j < graphNodesCount; j++) {
-                if (i == j) {
-                    shortestPathsDistances[i][j] = 0;
-                } else {
-                    double edgeWeight = getEdgeWeight(graphNodes.get(i), graphNodes.get(j));
-                    if (edgeWeight > 0) {
-                        shortestPathsDistances[i][j] = edgeWeight;
-                    } else {
-                        shortestPathsDistances[i][j] = Double.MAX_VALUE;
-                    }
-                }
-            }
-        }
-
-        //find shortest paths distances
-        for (int k = 0; k < graphNodesCount; k++) {
-            for (int i = 0; i < graphNodesCount; i++) {
-                for (int j = 0; j < graphNodesCount; j++) {
-                    if (shortestPathsDistances[i][j] > shortestPathsDistances[i][k] + shortestPathsDistances[k][j]) {
-                        shortestPathsDistances[i][j] = shortestPathsDistances[i][k] + shortestPathsDistances[k][j];
-                    }
-                }
-            }
-        }
-
     }
 
     private double getEdgeWeight(GraphNode graphNode1, GraphNode graphNode2) {
