@@ -1,15 +1,15 @@
 package com.agh.bsct.api.entities.algorithmresult;
 
 import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
-@Setter
+@Builder
 @NoArgsConstructor
 public class AlgorithmResultDTO {
 
