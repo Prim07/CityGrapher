@@ -1,16 +1,28 @@
 package com.agh.bsct.api.entities.citydata;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class StreetDTO {
 
+    @JsonIgnore
     private static final String NAME_TAG = "name";
 
+    @NotNull
     private List<Long> nodesIds;
-    private Map<String, String> overpassTagNameToValue = new HashMap<>();
 
+    @NotNull
+    private Map<String, String> overpassTagNameToValue = new HashMap<>();
 
     public StreetDTO(String streetName, List<Long> nodesIds) {
         setName(streetName);
@@ -25,7 +37,4 @@ public class StreetDTO {
         return overpassTagNameToValue.get(NAME_TAG);
     }
 
-    public List<Long> getNodesIds() {
-        return nodesIds;
-    }
 }

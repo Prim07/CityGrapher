@@ -1,10 +1,26 @@
 package com.agh.bsct.api.entities.citydata;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import javax.validation.constraints.NotNull;
+
+@Getter
+@Setter
+@NoArgsConstructor
 public class GeographicalNodeDTO {
 
+    @NotNull
     private Long id;
+
+    @NotNull
     private Double lon;
+
+    @NotNull
     private Double lat;
+
+    @NotNull
     private boolean isCrossing;
 
     public GeographicalNodeDTO(Long id, Double lon, Double lat) {
@@ -18,23 +34,4 @@ public class GeographicalNodeDTO {
         this.isCrossing = isCrossing;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public Double getLon() {
-        return lon;
-    }
-
-    public Double getLat() {
-        return lat;
-    }
-
-    public boolean isCrossing() {
-        return isCrossing;
-    }
-
-    public void setCrossing(boolean crossing) {
-        isCrossing = crossing;
-    }
 }
