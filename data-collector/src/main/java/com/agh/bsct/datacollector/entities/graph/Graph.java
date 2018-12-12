@@ -12,6 +12,9 @@ public class Graph {
 
     private double[][] shortestPathsDistances;
 
+    Graph() {
+    }
+
     public Graph(GraphData graphData) {
         var edges = graphData.getEdges();
         var crossings = graphData.getCrossings();
@@ -45,33 +48,15 @@ public class Graph {
         }
     }
 
-    private void replaceGraphWithItsBiggestCommonComponent() {
-        var graphNodesFromCommonComponent = getBiggestCommonComponent();
-
-        var nodeToEdgesIncidenceMapCopy = new HashMap<GraphNode, List<GraphEdge>>();
-
-        for (Map.Entry<GraphNode, List<GraphEdge>> entry : nodeToEdgesIncidenceMap.entrySet()) {
-            var graphEdgesList = entry.getValue();
-            graphEdgesList.removeIf(graphEdge -> shouldGraphEdgeBeDeleted(graphNodesFromCommonComponent, graphEdge));
-
-            var graphNode = entry.getKey();
-            if (shouldGraphNodeBeKept(graphNodesFromCommonComponent, graphEdgesList, graphNode)) {
-                nodeToEdgesIncidenceMapCopy.put(graphNode, graphEdgesList);
-            }
-        }
-
-        nodeToEdgesIncidenceMap = nodeToEdgesIncidenceMapCopy;
+    public Map<GraphNode, List<GraphEdge>> getNodeToEdgesIncidenceMap() {
+        return nodeToEdgesIncidenceMap;
     }
 
-    private boolean shouldGraphEdgeBeDeleted(List<GraphNode> graphNodesFromCommonComponent, GraphEdge graphEdge) {
-        return !graphNodesFromCommonComponent.contains(graphEdge.getEndGraphNode());
+    void setNodeToEdgesIncidenceMap(Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap) {
+        this.nodeToEdgesIncidenceMap = nodeToEdgesIncidenceMap;
     }
 
-    private boolean shouldGraphNodeBeKept(List<GraphNode> graphNodesFromCommonComponent, List<GraphEdge> graphEdgesList, GraphNode graphNode) {
-        return graphNodesFromCommonComponent.contains(graphNode) && !graphEdgesList.isEmpty();
-    }
-
-    private List<GraphNode> getBiggestCommonComponent() {
+    List<GraphNode> getBiggestConnectedComponent() {
         var graphNodesSet = nodeToEdgesIncidenceMap.keySet();
         var graphNodesList = new ArrayList<>(graphNodesSet);
 
@@ -82,7 +67,7 @@ public class Graph {
             commonComponentsSizes[i] = 0;
         }
 
-        var numberOfCommonComponents = Integer.valueOf(0);
+        var numberOfCommonComponents = 0;
 
         var stack = new Stack<Integer>();
 
@@ -141,8 +126,30 @@ public class Graph {
 
     }
 
-    public Map<GraphNode, List<GraphEdge>> getNodeToEdgesIncidenceMap() {
-        return nodeToEdgesIncidenceMap;
+    private void replaceGraphWithItsBiggestConnectedComponent() {
+        var graphNodesFromCommonComponent = getBiggestConnectedComponent();
+
+        var nodeToEdgesIncidenceMapCopy = new HashMap<GraphNode, List<GraphEdge>>();
+
+        for (Map.Entry<GraphNode, List<GraphEdge>> entry : nodeToEdgesIncidenceMap.entrySet()) {
+            var graphEdgesList = entry.getValue();
+            graphEdgesList.removeIf(graphEdge -> shouldGraphEdgeBeDeleted(graphNodesFromCommonComponent, graphEdge));
+
+            var graphNode = entry.getKey();
+            if (shouldGraphNodeBeKept(graphNodesFromCommonComponent, graphEdgesList, graphNode)) {
+                nodeToEdgesIncidenceMapCopy.put(graphNode, graphEdgesList);
+            }
+        }
+
+        nodeToEdgesIncidenceMap = nodeToEdgesIncidenceMapCopy;
+    }
+
+    private boolean shouldGraphEdgeBeDeleted(List<GraphNode> graphNodesFromCommonComponent, GraphEdge graphEdge) {
+        return !graphNodesFromCommonComponent.contains(graphEdge.getEndGraphNode());
+    }
+
+    private boolean shouldGraphNodeBeKept(List<GraphNode> graphNodesFromCommonComponent, List<GraphEdge> graphEdgesList, GraphNode graphNode) {
+        return graphNodesFromCommonComponent.contains(graphNode) && !graphEdgesList.isEmpty();
     }
 
     private GraphNode getNodeForId(Long nodeId) {
