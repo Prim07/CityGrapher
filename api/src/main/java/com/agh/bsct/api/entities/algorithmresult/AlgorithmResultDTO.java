@@ -17,6 +17,9 @@ public class AlgorithmResultDTO {
     private String id;
 
     @NotNull
+    private String status;
+
+    @NotNull
     private GraphDataDTO graphDataDTO;
 
     @NotNull
