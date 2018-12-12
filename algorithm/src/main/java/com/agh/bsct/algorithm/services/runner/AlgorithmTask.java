@@ -4,14 +4,16 @@ import com.agh.bsct.algorithm.entities.graph.Graph;
 import com.agh.bsct.api.entities.algorithmresult.AlgorithmResultDTO;
 import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
 
+import java.util.List;
 import java.util.Optional;
 
 public class AlgorithmTask {
 
     private final String id;
     private final GraphDataDTO graphDataDTO;
-    private AlgorithmCalculationStatus status;
     private Graph graph;
+    private AlgorithmCalculationStatus status;
+    private List<Integer> hospitalIds;
     private AlgorithmResultDTO algorithmResultDTO;
 
     AlgorithmTask(String id, GraphDataDTO graphDataDTO, Graph graph) {
@@ -39,6 +41,14 @@ public class AlgorithmTask {
 
     public void setStatus(AlgorithmCalculationStatus status) {
         this.status = status;
+    }
+
+    public Optional<List<Integer>> getHospitalIds() {
+        return Optional.ofNullable(hospitalIds);
+    }
+
+    public void setHospitalIds(List<Integer> hospitalIds) {
+        this.hospitalIds = hospitalIds;
     }
 
     public Optional<AlgorithmResultDTO> getAlgorithmResultDTO() {
