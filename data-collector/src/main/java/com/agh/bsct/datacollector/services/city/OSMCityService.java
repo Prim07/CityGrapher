@@ -41,6 +41,6 @@ public class OSMCityService {
 
     public ObjectNode getMappedAlgorithmResult(String taskId) {
         AlgorithmResultDTO result = algorithmService.getResult(taskId);
-        return dataParser.parseToJson(result.getGraphDataDTO(), result.getHospitals());
+        return dataParser.parseToJson(result.getGraphData(), result.getHospitals());
     }
 }

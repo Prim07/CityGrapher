@@ -21,16 +21,16 @@ public class AlgorithmResultDTO {
     private String status;
 
     @NotNull
-    private GraphDataDTO graphDataDTO;
+    private GraphDataDTO graphData;
 
     @NotNull
     private List<GeographicalNodeDTO> hospitals;
 
-    public AlgorithmResultDTO(String id, String status, GraphDataDTO graphDataDTO,
+    public AlgorithmResultDTO(String id, String status, GraphDataDTO graphData,
                               List<GeographicalNodeDTO> hospitals) {
         this.id = id;
         this.status = status;
-        this.graphDataDTO = graphDataDTO;
+        this.graphData = graphData;
         this.hospitals = hospitals;
     }
 }

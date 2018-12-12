@@ -99,7 +99,7 @@ public class AlgorithmController {
         return AlgorithmResultDTO.builder()
                 .id("empty")
                 .status("Error: " + message)
-                .graphDataDTO(null)
+                .graphData(null)
                 .hospitals(Collections.emptyList())
                 .build();
     }

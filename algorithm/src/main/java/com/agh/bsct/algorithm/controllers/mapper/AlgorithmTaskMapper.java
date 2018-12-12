@@ -13,7 +13,7 @@ public class AlgorithmTaskMapper {
         return AlgorithmResultDTO.builder()
                 .id(algorithmTask.getId())
                 .status(algorithmTask.getStatus().toString())
-                .graphDataDTO(algorithmTask.getGraphDataDTO())
+                .graphData(algorithmTask.getGraphDataDTO())
                 .hospitals(algorithmTask.getHospitals().orElse(Collections.emptyList()))
                 .build();
     }
