@@ -26,12 +26,6 @@ public class AlgorithmResultDTO {
     @NotNull
     private List<GeographicalNodeDTO> hospitalIds;
 
-    public AlgorithmResultDTO(String id, GraphDataDTO graphDataDTO, List<GeographicalNodeDTO> hospitals) {
-        this.id = id;
-        this.graphDataDTO = graphDataDTO;
-        this.hospitalIds = hospitals;
-    }
-
     public AlgorithmResultDTO(String id, String status, GraphDataDTO graphDataDTO,
                               List<GeographicalNodeDTO> hospitalIds) {
         this.id = id;
