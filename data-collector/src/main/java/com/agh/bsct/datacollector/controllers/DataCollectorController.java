@@ -14,7 +14,7 @@ public class DataCollectorController {
     private static final String DATA_COLLECTOR_PATH = "/dataCollector";
     private static final String GET_CITY_GRAPH_PATH = "/cityGraph";
     private static final String GET_CITY_DATA_PATH = "/cityData";
-    private static final String GET_ALGORITHM_RESULT_PATH = "/algorithmResult";
+    private static final String GET_ALGORITHM_RESULT_PATH = "/algorithmResult/";
 
     private final OSMCityService osmCityService;
 
@@ -35,7 +35,7 @@ public class DataCollectorController {
         return osmCityService.getCityData(city);
     }
 
-    @GetMapping(DATA_COLLECTOR_PATH + GET_ALGORITHM_RESULT_PATH)
+    @GetMapping(DATA_COLLECTOR_PATH + GET_ALGORITHM_RESULT_PATH + "{taskId}")
     @ResponseBody
     public ObjectNode getMappedAlgorithmResult(@PathVariable String taskId) {
         return osmCityService.getMappedAlgorithmResult(taskId);
