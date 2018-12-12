@@ -4,17 +4,17 @@ import com.agh.bsct.algorithm.services.runner.AlgorithmTask;
 import com.agh.bsct.api.entities.algorithmresult.AlgorithmResultDTO;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.Collections;
 
 @Component
 public class AlgorithmTaskMapper {
 
-    public AlgorithmResultDTO mapToAlgorithmResultDTO(AlgorithmTask algorithmTask, List<Integer> hospitalIds) {
+    public AlgorithmResultDTO mapToAlgorithmResultDTO(AlgorithmTask algorithmTask) {
         return AlgorithmResultDTO.builder()
                 .id(algorithmTask.getId())
                 .status(algorithmTask.getStatus().toString())
                 .graphDataDTO(algorithmTask.getGraphDataDTO())
-                .hospitalIds(hospitalIds)
+                .hospitalIds(algorithmTask.getHospitalIds().orElse(Collections.emptyList()))
                 .build();
     }
 

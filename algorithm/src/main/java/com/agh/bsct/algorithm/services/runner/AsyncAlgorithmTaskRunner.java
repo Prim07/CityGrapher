@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-
 @Component
 public class AsyncAlgorithmTaskRunner {
 
@@ -27,7 +25,7 @@ public class AsyncAlgorithmTaskRunner {
             Thread.sleep(2000);
             algorithmTask.setStatus(AlgorithmCalculationStatus.SUCCESS);
 
-            var fakeAlgorithmResult = algorithmTaskMapper.mapToAlgorithmResultDTO(algorithmTask, Collections.emptyList());
+            var fakeAlgorithmResult = algorithmTaskMapper.mapToAlgorithmResultDTO(algorithmTask);
             algorithmTask.setAlgorithmResultDTO(fakeAlgorithmResult);
         } catch (InterruptedException e) {
             e.printStackTrace();
