@@ -30,4 +30,11 @@ public class AlgorithmResultDTO {
         this.graphDataDTO = graphDataDTO;
         this.hospitalIds = hospitalIds;
     }
+
+    public AlgorithmResultDTO(String id, String status, GraphDataDTO graphDataDTO, List<Integer> hospitalIds) {
+        this.id = id;
+        this.status = status;
+        this.graphDataDTO = graphDataDTO;
+        this.hospitalIds = hospitalIds;
+    }
 }
