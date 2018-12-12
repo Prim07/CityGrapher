@@ -1,5 +1,6 @@
 package com.agh.bsct.api.entities.algorithmresult;
 
+import com.agh.bsct.api.entities.citydata.GeographicalNodeDTO;
 import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,15 +24,16 @@ public class AlgorithmResultDTO {
     private GraphDataDTO graphDataDTO;
 
     @NotNull
-    private List<Integer> hospitalIds;
+    private List<GeographicalNodeDTO> hospitalIds;
 
-    public AlgorithmResultDTO(String id, GraphDataDTO graphDataDTO, List<Integer> hospitalIds) {
+    public AlgorithmResultDTO(String id, GraphDataDTO graphDataDTO, List<GeographicalNodeDTO> hospitals) {
         this.id = id;
         this.graphDataDTO = graphDataDTO;
-        this.hospitalIds = hospitalIds;
+        this.hospitalIds = hospitals;
     }
 
-    public AlgorithmResultDTO(String id, String status, GraphDataDTO graphDataDTO, List<Integer> hospitalIds) {
+    public AlgorithmResultDTO(String id, String status, GraphDataDTO graphDataDTO,
+                              List<GeographicalNodeDTO> hospitalIds) {
         this.id = id;
         this.status = status;
         this.graphDataDTO = graphDataDTO;
