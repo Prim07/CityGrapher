@@ -17,7 +17,7 @@ import java.util.List;
 @Service
 public class DataParser {
 
-    private static final String CROSSINGS_KEY = "crossing";
+    private static final String CROSSINGS_KEY = "crossings";
     private static final String EDGES_KEY = "edges";
     private static final String GRAPH_KEY = "graph";
     private static final String HOSPITAL_KEY = "hospital";
