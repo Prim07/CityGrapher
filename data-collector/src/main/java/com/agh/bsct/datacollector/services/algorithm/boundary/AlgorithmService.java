@@ -13,7 +13,6 @@ import static com.agh.bsct.datacollector.controllers.config.PathsConstants.ALGOR
 public class AlgorithmService {
 
     private static final String ALGORITHM_PATH = ALGORITHM_ROOT_PATH + "/algorithm/";
-    private static final String CITY_PARAM_NAME = "city";
 
     private final RestTemplate restTemplate;
 
@@ -25,7 +24,6 @@ public class AlgorithmService {
         var uri = new DefaultUriBuilderFactory(ALGORITHM_PATH).builder()
                 .build()
                 .toString();
-        //TODO AK tutaj albo WCZEŚNIEJ (nie wiem, jak jest OOP bardziej) złożyć nowy ObjectNode zawierający 2 pola: cityName i jsonGraph
         return restTemplate.postForObject(uri, graphDataDTO, ObjectNode.class);
     }
 
