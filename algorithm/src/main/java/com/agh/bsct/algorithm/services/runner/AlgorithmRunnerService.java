@@ -22,7 +22,7 @@ public class AlgorithmRunnerService {
     public String run(GraphDataDTO graphDataDTO) throws ExecutionException {
         AlgorithmTask algorithmTask = algorithmResultCache.createNewTask(graphDataDTO);
         asyncAlgorithmTaskRunner.run(algorithmTask);
-        return algorithmTask.getId();
+        return algorithmTask.getTaskId();
     }
 
     public AlgorithmTask get(String id) throws ExecutionException {

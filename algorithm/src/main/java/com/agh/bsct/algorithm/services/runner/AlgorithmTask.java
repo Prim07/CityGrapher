@@ -10,22 +10,22 @@ import java.util.Optional;
 
 public class AlgorithmTask {
 
-    private final String id;
+    private final String taskId;
     private final GraphDataDTO graphDataDTO;
     private Graph graph;
     private AlgorithmCalculationStatus status;
     private List<GeographicalNodeDTO> hospitals;
     private AlgorithmResultDTO algorithmResultDTO;
 
-    AlgorithmTask(String id, GraphDataDTO graphDataDTO, Graph graph) {
-        this.id = id;
+    AlgorithmTask(String taskId, GraphDataDTO graphDataDTO, Graph graph) {
+        this.taskId = taskId;
         this.graphDataDTO = graphDataDTO;
         this.graph = graph;
         this.status = AlgorithmCalculationStatus.NOT_STARTED;
     }
 
-    public String getId() {
-        return id;
+    public String getTaskId() {
+        return taskId;
     }
 
     public GraphDataDTO getGraphDataDTO() {

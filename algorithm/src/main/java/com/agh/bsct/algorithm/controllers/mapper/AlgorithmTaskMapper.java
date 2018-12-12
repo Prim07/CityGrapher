@@ -11,7 +11,7 @@ public class AlgorithmTaskMapper {
 
     public AlgorithmResultDTO mapToAlgorithmResultDTO(AlgorithmTask algorithmTask) {
         return AlgorithmResultDTO.builder()
-                .id(algorithmTask.getId())
+                .taskId(algorithmTask.getTaskId())
                 .status(algorithmTask.getStatus().toString())
                 .graphData(algorithmTask.getGraphDataDTO())
                 .hospitals(algorithmTask.getHospitals().orElse(Collections.emptyList()))

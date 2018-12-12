@@ -66,6 +66,6 @@ public class GraphDataMapper {
                 .filter(crossing -> crossing.getGeographicalNodeDTO().getId().equals(nodeId))
                 .findAny()
                 .orElseThrow(() ->
-                        new IllegalStateException("Cannot find GeographicalNodeDTO for GraphNode with id: " + nodeId));
+                        new IllegalStateException("Cannot find GeographicalNodeDTO for GraphNode with taskId: " + nodeId));
     }
 }

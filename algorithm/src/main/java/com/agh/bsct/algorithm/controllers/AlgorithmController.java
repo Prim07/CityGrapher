@@ -35,10 +35,10 @@ public class AlgorithmController {
         this.algorithmTaskMapper = algorithmTaskMapper;
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = ALGORITHM_PATH + "{id}")
-    public ResponseEntity<AlgorithmResultDTO> getResults(@PathVariable String id) {
+    @RequestMapping(method = RequestMethod.GET, value = ALGORITHM_PATH + "{taskId}")
+    public ResponseEntity<AlgorithmResultDTO> getResults(@PathVariable String taskId) {
         try {
-            AlgorithmTask task = algorithmRunnerService.get(id);
+            AlgorithmTask task = algorithmRunnerService.get(taskId);
             return (task.getStatus() == AlgorithmCalculationStatus.SUCCESS)
                     ? getSuccessfulResponseWithAlgorithmTask(task)
                     : getAcceptedResponseWithAlgorithmTask(task);
@@ -97,7 +97,7 @@ public class AlgorithmController {
 
     private AlgorithmResultDTO getAlgorithmResultWithErrorStatus(String message) {
         return AlgorithmResultDTO.builder()
-                .id("empty")
+                .taskId("empty")
                 .status("Error: " + message)
                 .graphData(null)
                 .hospitals(Collections.emptyList())

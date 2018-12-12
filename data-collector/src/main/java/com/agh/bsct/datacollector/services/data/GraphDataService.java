@@ -73,7 +73,7 @@ public class GraphDataService {
         return nodes.stream()
                 .filter(node -> node.getId().equals(nodeId))
                 .findAny()
-                .orElseThrow(() -> new IllegalStateException("Cannot find GraphNode with given id: " + nodeId));
+                .orElseThrow(() -> new IllegalStateException("Cannot find GraphNode with given taskId: " + nodeId));
     }
 
     private List<NodeDTO> calculateNodeWeights(List<GeographicalNodeDTO> nodes) {

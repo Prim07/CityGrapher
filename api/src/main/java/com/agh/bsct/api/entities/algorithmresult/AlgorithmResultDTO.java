@@ -15,7 +15,7 @@ import java.util.List;
 public class AlgorithmResultDTO {
 
     @NotNull
-    private String id;
+    private String taskId;
 
     @NotNull
     private String status;
@@ -26,9 +26,9 @@ public class AlgorithmResultDTO {
     @NotNull
     private List<GeographicalNodeDTO> hospitals;
 
-    public AlgorithmResultDTO(String id, String status, GraphDataDTO graphData,
+    public AlgorithmResultDTO(String taskId, String status, GraphDataDTO graphData,
                               List<GeographicalNodeDTO> hospitals) {
-        this.id = id;
+        this.taskId = taskId;
         this.status = status;
         this.graphData = graphData;
         this.hospitals = hospitals;

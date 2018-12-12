@@ -31,7 +31,7 @@ public enum OutputVerbosity {
 
     /**
      * Print everything known about the elements.
-     * This includes additionally to body for all elements the version, changeset id,
+     * This includes additionally to body for all elements the version, changeset taskId,
      * timestamp and the user data of the user that last touched the object.
      */
     META,

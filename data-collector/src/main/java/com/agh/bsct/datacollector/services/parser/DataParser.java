@@ -123,7 +123,7 @@ public class DataParser {
         return nodeDTOS.stream()
                 .filter(nodeDTO -> nodeDTO.getGeographicalNodeDTO().getId().equals(nodeId))
                 .findAny()
-                .orElseThrow(() -> new IllegalStateException("Cannot find GraphNode with given id"));
+                .orElseThrow(() -> new IllegalStateException("Cannot find GraphNode with given taskId"));
     }
 
 
@@ -131,7 +131,7 @@ public class DataParser {
         return nodes.stream()
                 .filter(node -> node.getId().equals(nodeId))
                 .findAny()
-                .orElseThrow(() -> new IllegalStateException("Cannot find GraphNode with given id"));
+                .orElseThrow(() -> new IllegalStateException("Cannot find GraphNode with given taskId"));
     }
 
     private void boxObjectNodesIntoEdgesArray(ObjectNode jsonBase, ArrayList<ObjectNode> jsonObjects) {
@@ -155,7 +155,7 @@ public class DataParser {
         for (Map.Entry<GraphNode, List<GraphEdge>> entry : incidenceMap.entrySet()) {
             var startNode = entry.getKey();
             var jsonStartNode = objectMapper.createObjectNode();
-            jsonStartNode.put(ID_KEY, startNode.getId());
+            jsonStartNode.put(ID_KEY, startNode.getTaskId());
             jsonStartNode.put(WEIGHT_KEY, startNode.getWeight());
 
             ArrayList<ObjectNode> jsonEdges = getEdgesParsedToObjectNodes(entry);
@@ -177,7 +177,7 @@ public class DataParser {
         for (GraphEdge graphEdge : edges) {
             var endNode = graphEdge.getEndGraphNode();
             var jsonEndNode = objectMapper.createObjectNode();
-            jsonEndNode.put(ID_KEY, endNode.getId());
+            jsonEndNode.put(ID_KEY, endNode.getTaskId());
             jsonEndNode.put(WEIGHT_KEY, endNode.getWeight());
 
             var jsonEdge = objectMapper.createObjectNode();

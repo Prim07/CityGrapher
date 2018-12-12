@@ -30,14 +30,14 @@ class GuavaLoadingCacheTest {
         AlgorithmTask task = tryCreateNewTask();
 
         Assert.assertNotNull(task);
-        Assert.assertNotNull(task.getId());
+        Assert.assertNotNull(task.getTaskId());
     }
 
     @Test
     void shouldCreateMultipleTasks() {
-        String firstTaskId = tryCreateNewTask().getId();
-        String secondTaskId = tryCreateNewTask().getId();
-        String thirdTaskId = tryCreateNewTask().getId();
+        String firstTaskId = tryCreateNewTask().getTaskId();
+        String secondTaskId = tryCreateNewTask().getTaskId();
+        String thirdTaskId = tryCreateNewTask().getTaskId();
 
         Assert.assertNotNull(firstTaskId);
         Assert.assertNotNull(secondTaskId);
@@ -46,16 +46,16 @@ class GuavaLoadingCacheTest {
 
     @Test
     void shouldReturnCreatedTask() {
-        String taskId = tryCreateNewTask().getId();
+        String taskId = tryCreateNewTask().getTaskId();
         AlgorithmTask task = tryGetTask(taskId);
 
         Assert.assertNotNull(task);
-        Assert.assertEquals(taskId, task.getId());
+        Assert.assertEquals(taskId, task.getTaskId());
     }
 
     @Test
     void shouldNotCreateNewTaskWhenGetTaskMethodIsCalledMultipleTimes() {
-        String taskId = tryCreateNewTask().getId();
+        String taskId = tryCreateNewTask().getTaskId();
         AlgorithmTask taskFromFirstGetAttempt = tryGetTask(taskId);
         AlgorithmTask taskFromSecondGetAttempt = tryGetTask(taskId);
         AlgorithmTask taskFromThirdGetAttempt = tryGetTask(taskId);
