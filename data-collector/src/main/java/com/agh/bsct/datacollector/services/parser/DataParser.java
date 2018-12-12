@@ -40,10 +40,6 @@ public class DataParser {
         return boxObjectNodesWithName(jsonStreets, WAYS_KEY);
     }
 
-    public ObjectNode parseToJson(GraphDataDTO graphData) {
-        return parseToJson(graphData, new ArrayList<>());
-    }
-
     public ObjectNode parseToJson(GraphDataDTO graphData, List<GeographicalNodeDTO> hospitals) {
         ArrayList<ObjectNode> jsonStreets = getEdgesParsedToObjectNodes(graphData, hospitals);
         return boxObjectNodesWithName(jsonStreets, EDGES_KEY);
