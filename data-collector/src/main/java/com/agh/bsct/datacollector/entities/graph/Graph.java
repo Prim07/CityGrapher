@@ -8,7 +8,6 @@ import java.util.*;
 public class Graph {
 
     private Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap = new HashMap<>();
-    private List<GraphNode> graphNodes = new ArrayList<>();
 
     private double[][] shortestPathsDistances;
 
@@ -36,9 +35,6 @@ public class Graph {
                 var lastCrossing = getCrossingWithId(crossings, lastNodeId);
                 lastNode = new GraphNode(lastNodeId, lastCrossing.getWeight());
             }
-
-            graphNodes.add(firstNode);
-            graphNodes.add(lastNode);
 
             var firstNodeEdges = nodeToEdgesIncidenceMap.computeIfAbsent(firstNode, node -> new ArrayList<>());
             firstNodeEdges.add(new GraphEdge(lastNode, edgeWeight));
