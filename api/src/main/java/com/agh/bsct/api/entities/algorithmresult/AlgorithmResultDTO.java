@@ -24,13 +24,13 @@ public class AlgorithmResultDTO {
     private GraphDataDTO graphDataDTO;
 
     @NotNull
-    private List<GeographicalNodeDTO> hospitalIds;
+    private List<GeographicalNodeDTO> hospitals;
 
     public AlgorithmResultDTO(String id, String status, GraphDataDTO graphDataDTO,
-                              List<GeographicalNodeDTO> hospitalIds) {
+                              List<GeographicalNodeDTO> hospitals) {
         this.id = id;
         this.status = status;
         this.graphDataDTO = graphDataDTO;
-        this.hospitalIds = hospitalIds;
+        this.hospitals = hospitals;
     }
 }

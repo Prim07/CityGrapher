@@ -2,6 +2,7 @@ package com.agh.bsct.algorithm.services.runner;
 
 import com.agh.bsct.algorithm.entities.graph.Graph;
 import com.agh.bsct.api.entities.algorithmresult.AlgorithmResultDTO;
+import com.agh.bsct.api.entities.citydata.GeographicalNodeDTO;
 import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public class AlgorithmTask {
     private final GraphDataDTO graphDataDTO;
     private Graph graph;
     private AlgorithmCalculationStatus status;
-    private List<Integer> hospitalIds;
+    private List<GeographicalNodeDTO> hospitals;
     private AlgorithmResultDTO algorithmResultDTO;
 
     AlgorithmTask(String id, GraphDataDTO graphDataDTO, Graph graph) {
@@ -43,12 +44,12 @@ public class AlgorithmTask {
         this.status = status;
     }
 
-    public Optional<List<Integer>> getHospitalIds() {
-        return Optional.ofNullable(hospitalIds);
+    public Optional<List<GeographicalNodeDTO>> getHospitals() {
+        return Optional.ofNullable(hospitals);
     }
 
-    public void setHospitalIds(List<Integer> hospitalIds) {
-        this.hospitalIds = hospitalIds;
+    public void setHospitals(List<GeographicalNodeDTO> hospitals) {
+        this.hospitals = hospitals;
     }
 
     public Optional<AlgorithmResultDTO> getAlgorithmResultDTO() {

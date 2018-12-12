@@ -14,7 +14,7 @@ public class AlgorithmTaskMapper {
                 .id(algorithmTask.getId())
                 .status(algorithmTask.getStatus().toString())
                 .graphDataDTO(algorithmTask.getGraphDataDTO())
-                .hospitalIds(algorithmTask.getHospitalIds().orElse(Collections.emptyList()))
+                .hospitals(algorithmTask.getHospitals().orElse(Collections.emptyList()))
                 .build();
     }
 

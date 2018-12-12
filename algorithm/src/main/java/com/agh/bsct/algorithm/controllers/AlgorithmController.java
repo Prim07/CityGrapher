@@ -100,7 +100,7 @@ public class AlgorithmController {
                 .id("empty")
                 .status("Error: " + message)
                 .graphDataDTO(null)
-                .hospitalIds(Collections.emptyList())
+                .hospitals(Collections.emptyList())
                 .build();
     }
 
