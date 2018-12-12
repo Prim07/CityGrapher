@@ -73,21 +73,6 @@ public class AlgorithmController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(algorithmResultDTO);
     }
 
-    private ObjectNode mapToResponseJson(AlgorithmTask task) {
-//        return task.getAlgorithmResultDTO()
-        ObjectNode response = objectMapper.createObjectNode();
-        response.put("taskId", task.getId());
-        response.put("currentStatus", task.getStatus().toString());
-        if (task.getAlgorithmResultDTO().isPresent()) {
-            response.putPOJO("result", task.getAlgorithmResultDTO().get());
-            response.putPOJO("graphData", task.getGraphDataDTO());
-        } else {
-            response.putPOJO("result", objectMapper.createObjectNode());
-            response.putPOJO("graphData", objectMapper.createObjectNode());
-        }
-        return response;
-    }
-
     private ResponseEntity<ObjectNode> getSuccessfulResponseWithUriToTask(String taskId) {
         ObjectNode json = objectMapper.createObjectNode()
                 .put("uri", PathsConstants.ROOT_PATH + ALGORITHM_PATH + taskId);
