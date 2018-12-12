@@ -69,6 +69,7 @@ public class AlgorithmController {
     }
 
     private ObjectNode mapToResponseJson(AlgorithmTask task) {
+//        return task.getAlgorithmResultDTO()
         ObjectNode response = objectMapper.createObjectNode();
         response.put("taskId", task.getId());
         response.put("currentStatus", task.getStatus().toString());

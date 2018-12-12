@@ -14,12 +14,16 @@ import java.util.List;
 public class AlgorithmResultDTO {
 
     @NotNull
+    private String id;
+
+    @NotNull
     private GraphDataDTO graphDataDTO;
 
     @NotNull
     private List<Integer> hospitalIds;
 
-    public AlgorithmResultDTO(GraphDataDTO graphDataDTO, List<Integer> hospitalIds) {
+    public AlgorithmResultDTO(String id, GraphDataDTO graphDataDTO, List<Integer> hospitalIds) {
+        this.id = id;
         this.graphDataDTO = graphDataDTO;
         this.hospitalIds = hospitalIds;
     }

@@ -17,8 +17,8 @@ public class AsyncAlgorithmTaskRunner {
         try {
             algorithmTask.setStatus(AlgorithmCalculationStatus.CALCULATING);
             Thread.sleep(2000);
-            AlgorithmResultDTO fakeAlgorithmResult =
-                    new AlgorithmResultDTO(algorithmTask.getGraphDataDTO(), Collections.emptyList());
+            AlgorithmResultDTO fakeAlgorithmResult = new AlgorithmResultDTO(algorithmTask.getId(),
+                    algorithmTask.getGraphDataDTO(), Collections.emptyList());
             algorithmTask.setAlgorithmResultDTO(fakeAlgorithmResult);
             algorithmTask.setStatus(AlgorithmCalculationStatus.SUCCESS);
         } catch (InterruptedException e) {
