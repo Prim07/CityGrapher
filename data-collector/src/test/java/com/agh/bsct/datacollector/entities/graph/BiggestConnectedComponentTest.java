@@ -1,6 +1,5 @@
 package com.agh.bsct.datacollector.entities.graph;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
@@ -15,11 +14,54 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BiggestConnectedComponentTest {
 
-    private static Graph graph = new Graph();
-    private static final String filename = "src/test/resources/milocin.txt";
+    private static final int LOOP_COUNT = 1000;
 
-    @BeforeAll
-    static void init() {
+    @Test
+    void shouldBeTheSameWhenMilocinIsCalculatedMultipleTimes() {
+        final String filename = "src/test/resources/milocin.txt";
+
+        var graph = initGraph(filename);
+
+        List<GraphNode> biggestCommonComponentToCompare = graph.getBiggestConnectedComponent();
+
+        for (int i = 0; i < LOOP_COUNT; i++) {
+            List<GraphNode> biggestCommonComponent = graph.getBiggestConnectedComponent();
+            assertEquals(biggestCommonComponentToCompare.size(), biggestCommonComponent.size());
+            assertEquals(biggestCommonComponentToCompare, biggestCommonComponent);
+        }
+    }
+
+    @Test
+    void shouldBeTheSameWhenLancutIsCalculatedMultipleTimes() {
+        final String filename = "src/test/resources/lancut.txt";
+
+        var graph = initGraph(filename);
+
+        List<GraphNode> biggestCommonComponentToCompare = graph.getBiggestConnectedComponent();
+
+        for (int i = 0; i < LOOP_COUNT; i++) {
+            List<GraphNode> biggestCommonComponent = graph.getBiggestConnectedComponent();
+            assertEquals(biggestCommonComponentToCompare.size(), biggestCommonComponent.size());
+            assertEquals(biggestCommonComponentToCompare, biggestCommonComponent);
+        }
+    }
+
+    @Test
+    void shouldBeTheSameWhenTarnowIsCalculatedMultipleTimes() {
+        final String filename = "src/test/resources/tarnow.txt";
+
+        var graph = initGraph(filename);
+
+        List<GraphNode> biggestCommonComponentToCompare = graph.getBiggestConnectedComponent();
+
+        for (int i = 0; i < LOOP_COUNT; i++) {
+            List<GraphNode> biggestCommonComponent = graph.getBiggestConnectedComponent();
+            assertEquals(biggestCommonComponentToCompare.size(), biggestCommonComponent.size());
+            assertEquals(biggestCommonComponentToCompare, biggestCommonComponent);
+        }
+    }
+
+    private Graph initGraph(String filename) {
         Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap = new HashMap<>();
 
         BufferedReader reader;
@@ -59,17 +101,8 @@ class BiggestConnectedComponentTest {
             e.printStackTrace();
         }
 
+        var graph = new Graph();
         graph.setNodeToEdgesIncidenceMap(nodeToEdgesIncidenceMap);
-    }
-
-    @Test
-    void shouldBeTheSameWhenCalculatedMultipleTimes() {
-        List<GraphNode> biggestCommonComponentToCompare = graph.getBiggestConnectedComponent();
-
-        for (int i = 0; i < 1000; i++) {
-            List<GraphNode> biggestCommonComponent = graph.getBiggestConnectedComponent();
-            assertEquals(biggestCommonComponentToCompare.size(), biggestCommonComponent.size());
-            assertEquals(biggestCommonComponentToCompare, biggestCommonComponent);
-        }
+        return graph;
     }
 }
