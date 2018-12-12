@@ -8,7 +8,6 @@ import java.util.*;
 public class Graph {
 
     private Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap = new HashMap<>();
-    private List<GraphNode> graphNodes = new ArrayList<>();
 
     private double[][] shortestPathsDistances;
 
@@ -37,15 +36,16 @@ public class Graph {
                 lastNode = new GraphNode(lastNodeId, lastCrossing.getWeight());
             }
 
-            graphNodes.add(firstNode);
-            graphNodes.add(lastNode);
-
             var firstNodeEdges = nodeToEdgesIncidenceMap.computeIfAbsent(firstNode, node -> new ArrayList<>());
             firstNodeEdges.add(new GraphEdge(lastNode, edgeWeight));
 
             var lastNodeEdges = nodeToEdgesIncidenceMap.computeIfAbsent(lastNode, node -> new ArrayList<>());
             lastNodeEdges.add(new GraphEdge(firstNode, edgeWeight));
         }
+
+        replaceGraphWithItsBiggestConnectedComponent();
+
+        calculateShortestPathsDistances();
     }
 
     public Map<GraphNode, List<GraphEdge>> getNodeToEdgesIncidenceMap() {
@@ -164,10 +164,12 @@ public class Graph {
                 .filter(crossing -> crossing.getNode().getId().equals(nodeId))
                 .findAny()
                 .orElseThrow(() -> new IllegalStateException("Cannot find Crossing for GraphNode with given id: "
-                                                            + nodeId));
+                        + nodeId));
     }
 
-    public void calculateShortestPathsDistances() {
+    private void calculateShortestPathsDistances() {
+        var graphNodes = new ArrayList<>(nodeToEdgesIncidenceMap.keySet());
+
         int graphNodesCount = nodeToEdgesIncidenceMap.size();
         shortestPathsDistances = new double[graphNodesCount][graphNodesCount];
 
@@ -197,11 +199,6 @@ public class Graph {
                 }
             }
         }
-
-        //TODO if two nodes don't have a connection, then distance is infinity
-        //it will generate problems while calculating distances to hospital
-        //maybe it should be 0
-
 
     }
 
