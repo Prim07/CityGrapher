@@ -39,6 +39,7 @@ public class Graph {
         }
     }
 
+    // TODO PP przenieść tę metodę w bardziej odpowiednie miejsce i nie zapomnieć jej wywołać
     private void replaceGraphWithItsBiggestCommonComponent() {
         var graphNodesFromCommonComponent = getBiggestCommonComponent();
 
