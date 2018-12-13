@@ -56,10 +56,6 @@ public class Graph {
         return shortestPathsDistances;
     }
 
-    void setShortestPathsDistances(Double[][] shortestPathsDistances) {
-        this.shortestPathsDistances = shortestPathsDistances;
-    }
-
     void setNodeToEdgesIncidenceMap(Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap) {
         this.nodeToEdgesIncidenceMap = nodeToEdgesIncidenceMap;
     }

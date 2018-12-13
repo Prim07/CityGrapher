@@ -38,14 +38,12 @@ class FloydWarshallAlgorithmTest {
     private void shouldBeTheSameWhenCalculatedMultipleTimes(String filename) {
         var graph = graphInitializer.initGraph(filename);
 
-        graph.setShortestPathsDistances(null);
         graph.calculateShortestPathsDistances();
         var shortestPathsDistancesToCompare = graph.getShortestPathsDistances();
         var shortestPathsDistancesListToCompare = convert2DArrayToList(shortestPathsDistancesToCompare);
 
         int loopCount = 1000;
         for (int i = 0; i < loopCount; i++) {
-            graph.setShortestPathsDistances(null);
             graph.calculateShortestPathsDistances();
             var shortestPathsDistances = graph.getShortestPathsDistances();
             var shortestPathsDistancesList = convert2DArrayToList(shortestPathsDistances);
