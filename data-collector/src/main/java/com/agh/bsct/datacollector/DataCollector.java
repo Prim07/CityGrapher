@@ -9,9 +9,6 @@ import org.springframework.context.annotation.ComponentScan;
 public class DataCollector {
     public static void main(String[] args) {
         SpringApplication.run(DataCollector.class, args);
-
-        //DataCollectorController dataCollectorController = new DataCollectorController(new OSMCityService(new GraphDataService(), new CityDataService(new QueryForCityProvider(), new QueryInterpreterService(), new ResultFilterService(), new StreetsJoinerService()), new AlgorithmService(), new DataParser()));
-        //ObjectNode cityData = dataCollectorController.getCityGraph("Bochnia");
     }
 }
 
