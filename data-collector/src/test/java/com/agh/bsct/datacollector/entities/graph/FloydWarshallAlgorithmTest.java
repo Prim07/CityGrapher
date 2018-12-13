@@ -10,26 +10,27 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class FloydWarshallAlgorithmTest {
 
-    private final int LOOP_COUNT = 1000;
+    private static final String SRC_TEST_RESOURCES_PATH = "src/test/resources/";
+
     private final GraphInitializer graphInitializer = new GraphInitializer();
 
     @Test
     void shouldBeTheSameWhenMilocinIsCalculatedMultipleTimes() {
-        final String filename = "src/test/resources/milocin.txt";
+        final String filename = SRC_TEST_RESOURCES_PATH + "milocin.txt";
 
         shouldBeTheSameWhenCalculatedMultipleTimes(filename);
     }
 
     @Test
     void shouldBeTheSameWhenLancutIsCalculatedMultipleTimes() {
-        final String filename = "src/test/resources/lancut.txt";
+        final String filename = SRC_TEST_RESOURCES_PATH + "lancut.txt";
 
         shouldBeTheSameWhenCalculatedMultipleTimes(filename);
     }
 
     @Test
     void shouldBeTheSameWhenTarnowIsCalculatedMultipleTimes() {
-        final String filename = "src/test/resources/tarnow.txt";
+        final String filename = SRC_TEST_RESOURCES_PATH + "tarnow.txt";
 
         shouldBeTheSameWhenCalculatedMultipleTimes(filename);
     }
@@ -42,7 +43,8 @@ class FloydWarshallAlgorithmTest {
         var shortestPathsDistancesToCompare = graph.getShortestPathsDistances();
         var shortestPathsDistancesListToCompare = convert2DArrayToList(shortestPathsDistancesToCompare);
 
-        for (int i = 0; i < LOOP_COUNT; i++) {
+        int loopCount = 1000;
+        for (int i = 0; i < loopCount; i++) {
             graph.setShortestPathsDistances(null);
             graph.calculateShortestPathsDistances();
             var shortestPathsDistances = graph.getShortestPathsDistances();
