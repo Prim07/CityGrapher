@@ -27,7 +27,7 @@ public class GraphDataMapper {
         var edges = graphData.getEdgeDTOS();
         var crossings = graphData.getNodeDTOS();
 
-        for(var edge : edges) {
+        for (var edge : edges) {
             var edgeNodeIds = edge.getStreetDTO().getNodesIds();
             var edgeWeight = edge.getWeight();
 
@@ -38,7 +38,7 @@ public class GraphDataMapper {
                 firstNode = new GraphNode(firstNodeId, firstCrossing.getWeight());
             }
 
-            var lastNodeId = edgeNodeIds.get(edgeNodeIds.size()-1);
+            var lastNodeId = edgeNodeIds.get(edgeNodeIds.size() - 1);
             var lastNode = getNodeForId(nodeToEdgesIncidenceMap, lastNodeId);
             if (lastNode == null) {
                 var lastCrossing = getCrossingWithId(crossings, lastNodeId);

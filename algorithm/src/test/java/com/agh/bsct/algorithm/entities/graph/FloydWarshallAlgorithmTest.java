@@ -1,5 +1,6 @@
-package com.agh.bsct.datacollector.entities.graph;
+package com.agh.bsct.algorithm.entities.graph;
 
+import com.agh.bsct.algorithm.services.entities.graph.GraphService;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ class FloydWarshallAlgorithmTest {
     private static final String SRC_TEST_RESOURCES_PATH = "src/test/resources/";
 
     private final GraphInitializer graphInitializer = new GraphInitializer();
+    private final GraphService graphService = new GraphService();
 
     @Test
     void shouldBeTheSameWhenMilocinIsCalculatedMultipleTimes() {
@@ -40,14 +42,12 @@ class FloydWarshallAlgorithmTest {
     private void shouldBeTheSameWhenCalculatedMultipleTimes(String filename) {
         var graph = graphInitializer.initGraph(filename);
 
-        graph.calculateShortestPathsDistances();
-        var shortestPathsDistancesToCompare = graph.getShortestPathsDistances();
+        var shortestPathsDistancesToCompare = graphService.calculateShortestPathsDistances(graph);
         var shortestPathsDistancesListToCompare = convert2DArrayToList(shortestPathsDistancesToCompare);
 
         int loopCount = 1000;
         for (int i = 0; i < loopCount; i++) {
-            graph.calculateShortestPathsDistances();
-            var shortestPathsDistances = graph.getShortestPathsDistances();
+            var shortestPathsDistances = graphService.calculateShortestPathsDistances(graph);
             var shortestPathsDistancesList = convert2DArrayToList(shortestPathsDistances);
 
             for (List<Double> distances : shortestPathsDistancesList) {

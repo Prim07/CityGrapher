@@ -1,4 +1,4 @@
-package com.agh.bsct.datacollector.entities.graph;
+package com.agh.bsct.algorithm.entities.graph;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -22,8 +22,6 @@ class GraphInitializer {
     }
 
     private Graph loadGraphFromFile(String filename) {
-        var graph = new Graph();
-
         Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap = new HashMap<>();
 
         BufferedReader reader;
@@ -65,9 +63,7 @@ class GraphInitializer {
             e.printStackTrace();
         }
 
-        graph.setNodeToEdgesIncidenceMap(nodeToEdgesIncidenceMap);
-
-        return graph;
+        return new Graph(nodeToEdgesIncidenceMap);
     }
 
 }
