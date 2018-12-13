@@ -44,10 +44,10 @@ public class AlgorithmController {
                     : getAcceptedResponseWithAlgorithmTask(task);
         } catch (CacheLoader.InvalidCacheLoadException e) {
             e.printStackTrace();
-            return getNotFoundResponse(e);
+            return getNotFoundResponse(e, taskId);
         } catch (ExecutionException e) {
             e.printStackTrace();
-            return getFailureResponseWithAlgorithmResultDTO(e);
+            return getFailureResponseWithAlgorithmResultDTO(e, taskId);
         }
     }
 
@@ -85,19 +85,21 @@ public class AlgorithmController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorJson);
     }
 
-    private ResponseEntity<AlgorithmResultDTO> getNotFoundResponse(CacheLoader.InvalidCacheLoadException e) {
-        AlgorithmResultDTO algorithmResultDTO = getAlgorithmResultWithErrorStatus(e.getMessage());
+    private ResponseEntity<AlgorithmResultDTO> getNotFoundResponse(CacheLoader.InvalidCacheLoadException e,
+                                                                   String taskId) {
+        AlgorithmResultDTO algorithmResultDTO = getAlgorithmResultWithErrorStatus(e.getMessage(), taskId);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(algorithmResultDTO);
     }
 
-    private ResponseEntity<AlgorithmResultDTO> getFailureResponseWithAlgorithmResultDTO(ExecutionException e) {
-        AlgorithmResultDTO algorithmResultDTO = getAlgorithmResultWithErrorStatus(e.getMessage());
+    private ResponseEntity<AlgorithmResultDTO> getFailureResponseWithAlgorithmResultDTO(ExecutionException e,
+                                                                                        String taskId) {
+        AlgorithmResultDTO algorithmResultDTO = getAlgorithmResultWithErrorStatus(e.getMessage(), taskId);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(algorithmResultDTO);
     }
 
-    private AlgorithmResultDTO getAlgorithmResultWithErrorStatus(String message) {
+    private AlgorithmResultDTO getAlgorithmResultWithErrorStatus(String message, String taskId) {
         return AlgorithmResultDTO.builder()
-                .taskId("empty")
+                .taskId(taskId)
                 .status("Error: " + message)
                 .graphData(null)
                 .hospitals(Collections.emptyList())
