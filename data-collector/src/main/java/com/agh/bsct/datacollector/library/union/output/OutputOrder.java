@@ -8,7 +8,7 @@ package com.agh.bsct.datacollector.library.union.output;
  */
 public enum OutputOrder {
     /**
-     * Sort the output by object taskId
+     * Sort the output by object id
      */
     ASC,
 
