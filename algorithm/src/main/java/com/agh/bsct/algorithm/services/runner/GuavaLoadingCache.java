@@ -21,8 +21,8 @@ import java.util.concurrent.TimeUnit;
 public class GuavaLoadingCache implements AlgorithmResultCache {
 
     private AlgorithmTaskRepository algorithmTaskRepository;
-    private LoadingCache<String, AlgorithmTask> idToTaskCache;
     private GraphDataMapper graphDataMapper;
+    private LoadingCache<String, AlgorithmTask> idToTaskCache;
 
     @Autowired
     public GuavaLoadingCache(AlgorithmTaskRepository algorithmTaskRepository, GraphDataMapper graphDataMapper) {
