@@ -34,11 +34,11 @@ class BiggestConnectedComponentTest {
     private void shouldBeTheSameWhenCalculatedMultipleTimes(String filename) {
         var graph = graphInitializer.initGraph(filename);
 
-        var biggestCommonComponentToCompare = graph.getBiggestConnectedComponent();
+        var biggestCommonComponentToCompare = graph.findBiggestConnectedComponent();
 
         int loopCount = 1000;
         for (int i = 0; i < loopCount; i++) {
-            var biggestCommonComponent = graph.getBiggestConnectedComponent();
+            var biggestCommonComponent = graph.findBiggestConnectedComponent();
 
             assertEquals(biggestCommonComponentToCompare.size(), biggestCommonComponent.size());
             assertEquals(biggestCommonComponentToCompare, biggestCommonComponent);
