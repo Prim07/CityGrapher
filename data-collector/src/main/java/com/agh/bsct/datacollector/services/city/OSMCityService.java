@@ -1,6 +1,5 @@
 package com.agh.bsct.datacollector.services.city;
 
-import com.agh.bsct.api.entities.algorithmresult.AlgorithmResultDTO;
 import com.agh.bsct.datacollector.services.algorithm.boundary.AlgorithmService;
 import com.agh.bsct.datacollector.services.data.CityDataService;
 import com.agh.bsct.datacollector.services.data.GraphDataService;
@@ -40,7 +39,7 @@ public class OSMCityService {
     }
 
     public ObjectNode getMappedAlgorithmResult(String taskId) {
-        AlgorithmResultDTO result = algorithmService.getResult(taskId);
+        var result = algorithmService.getResult(taskId);
         return dataParser.parseToJson(result.getGraphData(), result.getHospitals());
     }
 }
