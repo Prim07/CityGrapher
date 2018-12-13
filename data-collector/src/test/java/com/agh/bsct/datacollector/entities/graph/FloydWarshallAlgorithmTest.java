@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -48,7 +50,7 @@ class FloydWarshallAlgorithmTest {
             var shortestPathsDistances = graph.getShortestPathsDistances();
             var shortestPathsDistancesList = convert2DArrayToList(shortestPathsDistances);
 
-            for (ArrayList<Double> distances : shortestPathsDistancesList) {
+            for (List<Double> distances : shortestPathsDistancesList) {
                 for (Double distance : distances) {
                     assertNotEquals(Double.MAX_VALUE, distance);
                 }
@@ -58,13 +60,10 @@ class FloydWarshallAlgorithmTest {
         }
     }
 
-    private ArrayList<ArrayList<Double>> convert2DArrayToList(Double[][] shortestPathsDistances) {
-        var shortestPathsDistancesList = new ArrayList<ArrayList<Double>>();
-
-        for (Double[] shortestPathsDistance : shortestPathsDistances) {
-            shortestPathsDistancesList.add(new ArrayList<>(Arrays.asList(shortestPathsDistance)));
-        }
-
-        return shortestPathsDistancesList;
+    private List<List<Double>> convert2DArrayToList(Double[][] shortestPathsDistances) {
+        return Arrays.stream(shortestPathsDistances)
+                .map(doubles -> Arrays.stream(doubles).collect(Collectors.toList()))
+                .map(ArrayList::new)
+                .collect(Collectors.toList());
     }
 }
