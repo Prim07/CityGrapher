@@ -49,6 +49,8 @@ class GraphInitializer {
                         }
                     }
 
+                    linesForOneMapElement = null;
+
                     nodeToEdgesIncidenceMap.put(graphNode, graphEdges);
 
                 } else {
