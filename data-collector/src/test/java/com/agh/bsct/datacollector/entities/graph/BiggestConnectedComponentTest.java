@@ -22,10 +22,10 @@ class BiggestConnectedComponentTest {
 
         var graph = initGraph(filename);
 
-        List<GraphNode> biggestCommonComponentToCompare = graph.getBiggestConnectedComponent();
+        List<GraphNode> biggestCommonComponentToCompare = graph.findBiggestConnectedComponent();
 
         for (int i = 0; i < LOOP_COUNT; i++) {
-            List<GraphNode> biggestCommonComponent = graph.getBiggestConnectedComponent();
+            List<GraphNode> biggestCommonComponent = graph.findBiggestConnectedComponent();
             assertEquals(biggestCommonComponentToCompare.size(), biggestCommonComponent.size());
             assertEquals(biggestCommonComponentToCompare, biggestCommonComponent);
         }
@@ -37,10 +37,10 @@ class BiggestConnectedComponentTest {
 
         var graph = initGraph(filename);
 
-        List<GraphNode> biggestCommonComponentToCompare = graph.getBiggestConnectedComponent();
+        List<GraphNode> biggestCommonComponentToCompare = graph.findBiggestConnectedComponent();
 
         for (int i = 0; i < LOOP_COUNT; i++) {
-            List<GraphNode> biggestCommonComponent = graph.getBiggestConnectedComponent();
+            List<GraphNode> biggestCommonComponent = graph.findBiggestConnectedComponent();
             assertEquals(biggestCommonComponentToCompare.size(), biggestCommonComponent.size());
             assertEquals(biggestCommonComponentToCompare, biggestCommonComponent);
         }
@@ -52,10 +52,10 @@ class BiggestConnectedComponentTest {
 
         var graph = initGraph(filename);
 
-        List<GraphNode> biggestCommonComponentToCompare = graph.getBiggestConnectedComponent();
+        List<GraphNode> biggestCommonComponentToCompare = graph.findBiggestConnectedComponent();
 
         for (int i = 0; i < LOOP_COUNT; i++) {
-            List<GraphNode> biggestCommonComponent = graph.getBiggestConnectedComponent();
+            List<GraphNode> biggestCommonComponent = graph.findBiggestConnectedComponent();
             assertEquals(biggestCommonComponentToCompare.size(), biggestCommonComponent.size());
             assertEquals(biggestCommonComponentToCompare, biggestCommonComponent);
         }
