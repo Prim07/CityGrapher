@@ -1,11 +1,11 @@
 package com.agh.bsct.datacollector.services.data;
 
-import com.agh.bsct.datacollector.entities.citydata.CityData;
-import com.agh.bsct.datacollector.entities.citydata.Node;
-import com.agh.bsct.datacollector.entities.citydata.Street;
-import com.agh.bsct.datacollector.entities.graphdata.Crossing;
-import com.agh.bsct.datacollector.entities.graphdata.Edge;
-import com.agh.bsct.datacollector.entities.graphdata.GraphData;
+import com.agh.bsct.api.entities.citydata.CityDataDTO;
+import com.agh.bsct.api.entities.citydata.GeographicalNodeDTO;
+import com.agh.bsct.api.entities.citydata.StreetDTO;
+import com.agh.bsct.api.entities.graphdata.EdgeDTO;
+import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
+import com.agh.bsct.api.entities.graphdata.NodeDTO;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.stereotype.Service;
 
@@ -25,16 +25,16 @@ public class GraphDataService {
 
     private static final Random random = new Random();
 
-    public GraphData getGraphData(CityData cityData) {
-        List<Edge> edges = calculateEdgeWeights(cityData.getStreets(), cityData.getNodes());
-        List<Crossing> crossings = calculateNodeWeights(cityData.getNodes());
-        return new GraphData(edges, crossings);
+    public GraphDataDTO getGraphDataDTO(CityDataDTO cityData) {
+        List<EdgeDTO> edges = calculateEdgeWeights(cityData.getStreets(), cityData.getGeographicalNodes());
+        List<NodeDTO> crossings = calculateNodeWeights(cityData.getGeographicalNodes());
+        return new GraphDataDTO(edges, crossings);
     }
 
-    private List<Edge> calculateEdgeWeights(List<Street> streets, List<Node> nodes) {
-        List<Edge> edges = new ArrayList<>();
+    private List<EdgeDTO> calculateEdgeWeights(List<StreetDTO> streets, List<GeographicalNodeDTO> nodes) {
+        List<EdgeDTO> edges = new ArrayList<>();
 
-        for (Street street : streets) {
+        for (StreetDTO street : streets) {
             double weight = 0;
             List<Long> nodesIds = street.getNodesIds();
 
@@ -42,19 +42,19 @@ public class GraphDataService {
                 Long startNodeId = nodesIds.get(i);
                 Long endNodeId = nodesIds.get(i + 1);
 
-                Node startNode = getNodeWithId(startNodeId, nodes);
-                Node endNode = getNodeWithId(endNodeId, nodes);
+                GeographicalNodeDTO startNode = getNodeWithId(startNodeId, nodes);
+                GeographicalNodeDTO endNode = getNodeWithId(endNodeId, nodes);
 
                 weight += calculateDistance(startNode, endNode);
             }
 
-            edges.add(new Edge(street, weight));
+            edges.add(new EdgeDTO(street, weight));
         }
 
         return edges;
     }
 
-    private double calculateDistance(Node startNode, Node endNode) {
+    private double calculateDistance(GeographicalNodeDTO startNode, GeographicalNodeDTO endNode) {
         double startLat = startNode.getLat();
         double endLat = endNode.getLat();
         double startLon = startNode.getLon();
@@ -69,25 +69,25 @@ public class GraphDataService {
                 * asin(sqrt(pow(sin(latRad / 2), 2) + cos(startLatRad) * cos(endLatRad) * pow(sin(lonRad / 2), 2)));
     }
 
-    private Node getNodeWithId(Long nodeId, List<Node> nodes) {
+    private GeographicalNodeDTO getNodeWithId(Long nodeId, List<GeographicalNodeDTO> nodes) {
         return nodes.stream()
                 .filter(node -> node.getId().equals(nodeId))
                 .findAny()
-                .orElseThrow(() -> new IllegalStateException("Cannot find GraphNode with given id: " + nodeId));
+                .orElseThrow(() -> new IllegalStateException("Cannot find GraphNode with given taskId: " + nodeId));
     }
 
-    private List<Crossing> calculateNodeWeights(List<Node> nodes) {
+    private List<NodeDTO> calculateNodeWeights(List<GeographicalNodeDTO> nodes) {
         //TODO sprawdzić czas wykonania i porównać z czymś szybszym, np. zwykłym forem
         return nodes.stream()
                 .map(this::getCrossingWithRandomNodeWeight)
                 .collect(Collectors.toList());
     }
 
-    private Crossing getCrossingWithRandomNodeWeight(Node node) {
-        return new Crossing(node, random.nextInt((NODE_WEIGHT_MAX - NODE_WEIGHT_MIN) + 1) + NODE_WEIGHT_MIN);
+    private NodeDTO getCrossingWithRandomNodeWeight(GeographicalNodeDTO node) {
+        return new NodeDTO(node, random.nextInt((NODE_WEIGHT_MAX - NODE_WEIGHT_MIN) + 1) + NODE_WEIGHT_MIN);
     }
 
-    public List<Node> runAlgorithmAndCalculateHospitalNodes(ObjectNode jsonGraph) {
+    public List<GeographicalNodeDTO> runAlgorithmAndCalculateHospitalNodes(ObjectNode jsonGraph) {
         //TODO impl
         return new ArrayList<>();
     }

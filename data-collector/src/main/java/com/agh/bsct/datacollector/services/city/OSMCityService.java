@@ -1,6 +1,5 @@
 package com.agh.bsct.datacollector.services.city;
 
-import com.agh.bsct.datacollector.entities.graph.Graph;
 import com.agh.bsct.datacollector.services.algorithm.boundary.AlgorithmService;
 import com.agh.bsct.datacollector.services.data.CityDataService;
 import com.agh.bsct.datacollector.services.data.GraphDataService;
@@ -29,21 +28,18 @@ public class OSMCityService {
     }
 
     public ObjectNode getCityData(String cityName) {
-        var cityData = cityDataService.getCityData(cityName);
-        return dataParser.parseToJson(cityData);
+        var cityDataDTO = cityDataService.getCityDataDTO(cityName);
+        return dataParser.parseToJson(cityDataDTO);
     }
 
     public ObjectNode getCityGraph(String cityName) {
-        var cityData = cityDataService.getCityData(cityName);
-        var graphData = graphService.getGraphData(cityData);
-        var jsonGraph = dataParser.parseToJson(new Graph(graphData));
-        //TODO AK wystawić tutaj algorithmService, który będzie się łączył z modułem Algorithm i koniecznie zmienić nazwę metody
-        var hospitalNodes = graphService.runAlgorithmAndCalculateHospitalNodes(jsonGraph);
-        return dataParser.parseToJson(graphData, hospitalNodes);
+        var cityDataDTO = cityDataService.getCityDataDTO(cityName);
+        var graphDataDTO = graphService.getGraphDataDTO(cityDataDTO);
+        return algorithmService.run(graphDataDTO);
     }
 
-    //TODO AK same as in TODO comment above exampleCallAlgorithm method in DataCollectorController
-    public String getAlgorithmData(String city) {
-        return algorithmService.run(city);
+    public ObjectNode getMappedAlgorithmResult(String taskId) {
+        var result = algorithmService.getResult(taskId);
+        return dataParser.parseToJson(result.getGraphData(), result.getHospitals());
     }
 }

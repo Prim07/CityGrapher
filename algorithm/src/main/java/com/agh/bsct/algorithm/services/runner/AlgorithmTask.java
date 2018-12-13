@@ -1,44 +1,62 @@
 package com.agh.bsct.algorithm.services.runner;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.agh.bsct.algorithm.entities.graph.Graph;
+import com.agh.bsct.api.entities.algorithmresult.AlgorithmResultDTO;
+import com.agh.bsct.api.entities.citydata.GeographicalNodeDTO;
+import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
 
+import java.util.List;
 import java.util.Optional;
 
 public class AlgorithmTask {
 
-    private final String id;
+    private final String taskId;
+    private final GraphDataDTO graphDataDTO;
+    private Graph graph;
     private AlgorithmCalculationStatus status;
-    //TODO tutaj musimy używać nie ObjectNode, a jakiejś sparsowanej encji - tak samo, jak w przypadku DataCollector było GraphData
-    private ObjectNode graphData;
-    private Optional<ObjectNode> jsonResult = Optional.empty();
+    private List<GeographicalNodeDTO> hospitals;
+    private AlgorithmResultDTO algorithmResultDTO;
 
-    public AlgorithmTask(String id, ObjectNode graphData) {
-        this.id = id;
-        this.graphData = graphData;
+    AlgorithmTask(String taskId, GraphDataDTO graphDataDTO, Graph graph) {
+        this.taskId = taskId;
+        this.graphDataDTO = graphDataDTO;
+        this.graph = graph;
         this.status = AlgorithmCalculationStatus.NOT_STARTED;
     }
 
-    public String getId() {
-        return id;
+    public String getTaskId() {
+        return taskId;
+    }
+
+    public GraphDataDTO getGraphDataDTO() {
+        return graphDataDTO;
+    }
+
+    public Graph getGraph() {
+        return graph;
     }
 
     public AlgorithmCalculationStatus getStatus() {
         return status;
     }
 
-    public Optional<ObjectNode> getJsonResult() {
-        return jsonResult;
-    }
-
-    public ObjectNode getGraphData() {
-        return graphData;
-    }
-
     public void setStatus(AlgorithmCalculationStatus status) {
         this.status = status;
     }
 
-    public void setJsonResult(ObjectNode jsonResult) {
-        this.jsonResult = Optional.ofNullable(jsonResult);
+    public Optional<List<GeographicalNodeDTO>> getHospitals() {
+        return Optional.ofNullable(hospitals);
+    }
+
+    public void setHospitals(List<GeographicalNodeDTO> hospitals) {
+        this.hospitals = hospitals;
+    }
+
+    public Optional<AlgorithmResultDTO> getAlgorithmResultDTO() {
+        return Optional.ofNullable(algorithmResultDTO);
+    }
+
+    public void setAlgorithmResultDTO(AlgorithmResultDTO algorithmResultDTO) {
+        this.algorithmResultDTO = algorithmResultDTO;
     }
 }

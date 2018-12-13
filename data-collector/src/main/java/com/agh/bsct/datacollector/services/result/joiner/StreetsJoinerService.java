@@ -1,6 +1,6 @@
 package com.agh.bsct.datacollector.services.result.joiner;
 
-import com.agh.bsct.datacollector.entities.citydata.Street;
+import com.agh.bsct.api.entities.citydata.StreetDTO;
 import com.agh.bsct.datacollector.library.adapter.queryresult.Element;
 import com.agh.bsct.datacollector.library.adapter.queryresult.OverpassQueryResult;
 import org.springframework.stereotype.Service;
@@ -15,15 +15,15 @@ public class StreetsJoinerService {
     private static final String NEXT_PART_OF_STREET_POSTFIX = "_part";
     private static final String UNNAMED_STREET_NAME = "unnamed";
 
-    public Set<Street> joinStreets(OverpassQueryResult queryResult) {
-        Map<String, Set<Street>> streetNameToStreets = getStreetNameToStreets(queryResult);
-        Set<Street> streets = getStreets(streetNameToStreets, new HashSet<>());
+    public Set<StreetDTO> joinStreets(OverpassQueryResult queryResult) {
+        Map<String, Set<StreetDTO>> streetNameToStreets = getStreetNameToStreets(queryResult);
+        Set<StreetDTO> streets = getStreets(streetNameToStreets, new HashSet<>());
         return getStreetsWithoutDuplicateNodes(streets);
     }
 
-    private HashMap<String, Set<Street>> getStreetNameToStreets(OverpassQueryResult queryResult) {
+    private HashMap<String, Set<StreetDTO>> getStreetNameToStreets(OverpassQueryResult queryResult) {
         var iterator = queryResult.getElements().iterator();
-        var streetNameToStreets = new HashMap<String, Set<Street>>();
+        var streetNameToStreets = new HashMap<String, Set<StreetDTO>>();
 
         while (iterator.hasNext()) {
             Element currentElement = iterator.next();
@@ -34,8 +34,8 @@ public class StreetsJoinerService {
                 }
                 var nodes = currentElement.getNodesAsArrayList();
                 if (nodes != null) {
-                    Set<Street> streets = streetNameToStreets.get(name);
-                    streets.add(new Street(name, new ArrayList<>(nodes)));
+                    Set<StreetDTO> streets = streetNameToStreets.get(name);
+                    streets.add(new StreetDTO(name, new ArrayList<>(nodes)));
                 }
             }
         }
@@ -52,9 +52,9 @@ public class StreetsJoinerService {
         return WAY_TYPE.equals(currentElement.getType());
     }
 
-    private Set<Street> getStreets(Map<String, Set<Street>> streetNameToStreets, Set<Street> streets) {
-        for (Map.Entry<String, Set<Street>> currentStreetNameToStreetsPart : streetNameToStreets.entrySet()) {
-            Set<Street> currentEntryStreets = currentStreetNameToStreetsPart.getValue();
+    private Set<StreetDTO> getStreets(Map<String, Set<StreetDTO>> streetNameToStreets, Set<StreetDTO> streets) {
+        for (Map.Entry<String, Set<StreetDTO>> currentStreetNameToStreetsPart : streetNameToStreets.entrySet()) {
+            Set<StreetDTO> currentEntryStreets = currentStreetNameToStreetsPart.getValue();
 
             List<Long> orderedJoinedNodes = initializeOrderedJoinedNodesWithFirstPart(currentEntryStreets);
 
@@ -72,35 +72,35 @@ public class StreetsJoinerService {
                 streets = getMapForRemainingStreets(currentEntryStreets, streets, streetName);
             }
 
-            streets.add(new Street(streetName, new ArrayList<>(orderedJoinedNodes)));
+            streets.add(new StreetDTO(streetName, new ArrayList<>(orderedJoinedNodes)));
         }
 
         return streets;
     }
 
-    private List<Long> initializeOrderedJoinedNodesWithFirstPart(Set<Street> currentEntryStreets) {
-        Iterator<Street> currentEntryStreetsIterator = currentEntryStreets.iterator();
+    private List<Long> initializeOrderedJoinedNodesWithFirstPart(Set<StreetDTO> currentEntryStreets) {
+        Iterator<StreetDTO> currentEntryStreetsIterator = currentEntryStreets.iterator();
         var orderedJoinedNodes = new ArrayList<>(currentEntryStreetsIterator.next().getNodesIds());
         currentEntryStreetsIterator.remove();
         return orderedJoinedNodes;
     }
 
-    private boolean isNextIterationAvailable(Set<Street> streets, int maxNumberOfIterations, int iterationsCounter) {
+    private boolean isNextIterationAvailable(Set<StreetDTO> streets, int maxNumberOfIterations, int iterationsCounter) {
         return isStreetBuiltOfManyParts(streets) && iterationsCounter < maxNumberOfIterations;
     }
 
-    private boolean isStreetBuiltOfManyParts(Set<Street> streets) {
+    private boolean isStreetBuiltOfManyParts(Set<StreetDTO> streets) {
         return !streets.isEmpty();
     }
 
-    private List<Long> joinNewNodesPartToOrderedJoinedNodes(Set<Street> currentEntryStreets,
+    private List<Long> joinNewNodesPartToOrderedJoinedNodes(Set<StreetDTO> currentEntryStreets,
                                                             List<Long> orderedNodes) {
         Long firstJoinedNodeId = orderedNodes.get(0);
         Long lastJoinedNodeId = orderedNodes.get(orderedNodes.size() - 1);
         var currentEntryListOfNodesIterator = currentEntryStreets.iterator();
 
         while (currentEntryListOfNodesIterator.hasNext()) {
-            Street street = currentEntryListOfNodesIterator.next();
+            StreetDTO street = currentEntryListOfNodesIterator.next();
             List<Long> streetNodesIds = street.getNodesIds();
             Long firstCandidateNodeToJoinId = streetNodesIds.get(0);
             Long lastCandidateNodeToJoinId = streetNodesIds.get(streetNodesIds.size() - 1);
@@ -156,17 +156,17 @@ public class StreetsJoinerService {
         return orderedJoinedNodes;
     }
 
-    private Set<Street> getMapForRemainingStreets(Set<Street> currentEntryStreets, Set<Street> streets,
-                                                  String streetName) {
-        HashMap<String, Set<Street>> remainingStreetNameToStreets = new HashMap<>();
+    private Set<StreetDTO> getMapForRemainingStreets(Set<StreetDTO> currentEntryStreets, Set<StreetDTO> streets,
+                                                     String streetName) {
+        HashMap<String, Set<StreetDTO>> remainingStreetNameToStreets = new HashMap<>();
         remainingStreetNameToStreets.put(streetName + NEXT_PART_OF_STREET_POSTFIX, currentEntryStreets);
         streets = getStreets(remainingStreetNameToStreets, streets);
         return streets;
     }
 
-    private Set<Street> getStreetsWithoutDuplicateNodes(Set<Street> streets) {
+    private Set<StreetDTO> getStreetsWithoutDuplicateNodes(Set<StreetDTO> streets) {
         return streets.stream()
-                .map(street -> new Street(street.getName(), mapToNodesWithoutDuplicates(street.getNodesIds())))
+                .map(street -> new StreetDTO(street.getName(), mapToNodesWithoutDuplicates(street.getNodesIds())))
                 .collect(Collectors.toSet());
     }
 

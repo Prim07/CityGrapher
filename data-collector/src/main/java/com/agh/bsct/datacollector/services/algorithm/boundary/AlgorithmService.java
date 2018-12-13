@@ -1,5 +1,8 @@
 package com.agh.bsct.datacollector.services.algorithm.boundary;
 
+import com.agh.bsct.api.entities.algorithmresult.AlgorithmResultDTO;
+import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -11,7 +14,6 @@ import static com.agh.bsct.datacollector.controllers.config.PathsConstants.ALGOR
 public class AlgorithmService {
 
     private static final String ALGORITHM_PATH = ALGORITHM_ROOT_PATH + "/algorithm/";
-    private static final String CITY_PARAM_NAME = "city";
 
     private final RestTemplate restTemplate;
 
@@ -19,11 +21,18 @@ public class AlgorithmService {
         this.restTemplate = new RestTemplateBuilder().build();
     }
 
-    public String run(String cityName) {
-        var uri = new DefaultUriBuilderFactory().builder().path(ALGORITHM_PATH)
-                .queryParam(CITY_PARAM_NAME, cityName)
+    public ObjectNode run(GraphDataDTO graphDataDTO) {
+        var uri = new DefaultUriBuilderFactory(ALGORITHM_PATH).builder()
                 .build()
                 .toString();
-        return restTemplate.getForObject(uri, String.class);
+        return restTemplate.postForObject(uri, graphDataDTO, ObjectNode.class);
+    }
+
+    public AlgorithmResultDTO getResult(String taskId) {
+        var uri = new DefaultUriBuilderFactory(ALGORITHM_PATH).builder()
+                .path(taskId)
+                .build()
+                .toString();
+        return restTemplate.getForObject(uri, AlgorithmResultDTO.class);
     }
 }

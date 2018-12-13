@@ -1,12 +1,11 @@
 package com.agh.bsct.datacollector.services.parser;
 
-import com.agh.bsct.datacollector.entities.citydata.CityData;
-import com.agh.bsct.datacollector.entities.citydata.Node;
-import com.agh.bsct.datacollector.entities.citydata.Street;
-import com.agh.bsct.datacollector.entities.graph.Graph;
-import com.agh.bsct.datacollector.entities.graph.GraphEdge;
-import com.agh.bsct.datacollector.entities.graph.GraphNode;
-import com.agh.bsct.datacollector.entities.graphdata.GraphData;
+import com.agh.bsct.api.entities.citydata.CityDataDTO;
+import com.agh.bsct.api.entities.citydata.GeographicalNodeDTO;
+import com.agh.bsct.api.entities.citydata.StreetDTO;
+import com.agh.bsct.api.entities.graphdata.EdgeDTO;
+import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
+import com.agh.bsct.api.entities.graphdata.NodeDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -14,12 +13,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class DataParser {
 
-    private static final String JUNCTION_KEY = "crossing";
+    private static final String CROSSINGS_KEY = "crossings";
     private static final String EDGES_KEY = "edges";
     private static final String GRAPH_KEY = "graph";
     private static final String HOSPITAL_KEY = "hospital";
@@ -33,32 +31,35 @@ public class DataParser {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public ObjectNode parseToJson(GraphData graphData, List<Node> hospitals) {
-        return parseToJson(graphData.toCityData(), hospitals);
+    public ObjectNode parseToJson(CityDataDTO cityDataDTO) {
+        return parseToJson(cityDataDTO, new ArrayList<>());
     }
 
-    public ObjectNode parseToJson(CityData cityData) {
-        return parseToJson(cityData, new ArrayList<>());
-    }
-
-    public ObjectNode parseToJson(Graph graph) {
-        ArrayList<ObjectNode> jsonIncidenceMapElements = getIncidenceMapParsedToObjectNodes(graph);
-        return boxObjectNodesWithName(jsonIncidenceMapElements, GRAPH_KEY);
-    }
-
-    private ObjectNode parseToJson(CityData cityData, List<Node> hospitals) {
-        ArrayList<ObjectNode> jsonStreets = getStreetsParsedToObjectNodes(cityData, hospitals);
+    private ObjectNode parseToJson(CityDataDTO cityDataDTO, List<GeographicalNodeDTO> hospitals) {
+        ArrayList<ObjectNode> jsonStreets = getStreetsParsedToObjectNodes(cityDataDTO, hospitals);
         return boxObjectNodesWithName(jsonStreets, WAYS_KEY);
     }
 
-    private ArrayList<ObjectNode> getStreetsParsedToObjectNodes(CityData cityData, List<Node> hospitals) {
+    public ObjectNode parseToJson(GraphDataDTO graphData, List<GeographicalNodeDTO> hospitals) {
+        ArrayList<ObjectNode> jsonStreets = getEdgesParsedToObjectNodes(graphData, hospitals);
+        return boxObjectNodesWithName(jsonStreets, EDGES_KEY);
+    }
+
+    /* TODO to remove after implementing calling algorithm from UI and retrieving real data
+    public ObjectNode parseToJson(Graph graph) {
+        ArrayList<ObjectNode> jsonIncidenceMapElements = getIncidenceMapParsedToObjectNodes(graph);
+        return boxObjectNodesWithName(jsonIncidenceMapElements, GRAPH_KEY);
+    }*/
+
+    private ArrayList<ObjectNode> getStreetsParsedToObjectNodes(CityDataDTO cityDataDTO,
+                                                                List<GeographicalNodeDTO> hospitals) {
         var jsonStreets = new ArrayList<ObjectNode>();
-        List<Street> streets = cityData.getStreets();
-        for (Street street : streets) {
+        List<StreetDTO> streets = cityDataDTO.getStreets();
+        for (StreetDTO street : streets) {
             ObjectNode jsonStreet = objectMapper.createObjectNode();
             jsonStreet.put(ID_KEY, streets.indexOf(street));
             var streetNodesIds = street.getNodesIds();
-            var nodes = cityData.getNodes();
+            var nodes = cityDataDTO.getGeographicalNodes();
             ArrayList<ObjectNode> jsonNodes = getNodesParsedToObjectNodes(streetNodesIds, nodes, hospitals);
             jsonStreet.putArray(NODES_KEY).addAll(jsonNodes);
             jsonStreets.add(jsonStreet);
@@ -66,28 +67,71 @@ public class DataParser {
         return jsonStreets;
     }
 
+    private ArrayList<ObjectNode> getEdgesParsedToObjectNodes(GraphDataDTO graphDataDTO,
+                                                              List<GeographicalNodeDTO> hospitals) {
+        var jsonStreets = new ArrayList<ObjectNode>();
+        List<EdgeDTO> edgeDTOS = graphDataDTO.getEdgeDTOS();
+        for (EdgeDTO edgeDTO : edgeDTOS) {
+            ObjectNode jsonStreet = objectMapper.createObjectNode();
+            jsonStreet.put(ID_KEY, edgeDTOS.indexOf(edgeDTO));
+            jsonStreet.put(WEIGHT_KEY, edgeDTO.getWeight());
+            var streetNodesIds = edgeDTO.getStreetDTO().getNodesIds();
+            var crossingDTOS = graphDataDTO.getNodeDTOS();
+            ArrayList<ObjectNode> jsonNodes = getCrossingsParsedToObjectNodes(streetNodesIds, crossingDTOS, hospitals);
+            jsonStreet.putArray(CROSSINGS_KEY).addAll(jsonNodes);
+            jsonStreets.add(jsonStreet);
+        }
+        return jsonStreets;
+    }
+
     private ArrayList<ObjectNode> getNodesParsedToObjectNodes(List<Long> streetNodesIds,
-                                                              List<Node> nodes,
-                                                              List<Node> hospitals) {
+                                                              List<GeographicalNodeDTO> nodes,
+                                                              List<GeographicalNodeDTO> hospitals) {
         ArrayList<ObjectNode> jsonNodes = new ArrayList<>();
         for (Long nodeId : streetNodesIds) {
             ObjectNode jsonNode = objectMapper.createObjectNode();
-            Node node = getNodeWithGivenId(nodeId, nodes);
+            GeographicalNodeDTO node = getNodeWithGivenId(nodeId, nodes);
             jsonNode.put(ID_KEY, node.getId());
             jsonNode.put(LATITUDE_KEY, node.getLat());
             jsonNode.put(LONGITUDE_KEY, node.getLon());
-            jsonNode.put(JUNCTION_KEY, node.isCrossing());
+            jsonNode.put(CROSSINGS_KEY, node.isCrossing());
             jsonNode.put(HOSPITAL_KEY, hospitals.contains(node));
             jsonNodes.add(jsonNode);
         }
         return jsonNodes;
     }
 
-    private Node getNodeWithGivenId(Long nodeId, List<Node> nodes) {
+    private ArrayList<ObjectNode> getCrossingsParsedToObjectNodes(List<Long> streetNodesIds,
+                                                                  List<NodeDTO> nodeDTOS,
+                                                                  List<GeographicalNodeDTO> hospitals) {
+        ArrayList<ObjectNode> jsonNodes = new ArrayList<>();
+        for (Long nodeId : streetNodesIds) {
+            ObjectNode jsonNode = objectMapper.createObjectNode();
+            NodeDTO crossing = getCrossingWithGivenId(nodeId, nodeDTOS);
+            jsonNode.put(ID_KEY, crossing.getGeographicalNodeDTO().getId());
+            jsonNode.put(WEIGHT_KEY, crossing.getWeight());
+            jsonNode.put(LATITUDE_KEY, crossing.getGeographicalNodeDTO().getLat());
+            jsonNode.put(LONGITUDE_KEY, crossing.getGeographicalNodeDTO().getLon());
+            jsonNode.put(CROSSINGS_KEY, crossing.getGeographicalNodeDTO().isCrossing());
+            jsonNode.put(HOSPITAL_KEY, hospitals.contains(crossing.getGeographicalNodeDTO()));
+            jsonNodes.add(jsonNode);
+        }
+        return jsonNodes;
+    }
+
+    private NodeDTO getCrossingWithGivenId(Long nodeId, List<NodeDTO> nodeDTOS) {
+        return nodeDTOS.stream()
+                .filter(nodeDTO -> nodeDTO.getGeographicalNodeDTO().getId().equals(nodeId))
+                .findAny()
+                .orElseThrow(() -> new IllegalStateException("Cannot find GraphNode with given taskId"));
+    }
+
+
+    private GeographicalNodeDTO getNodeWithGivenId(Long nodeId, List<GeographicalNodeDTO> nodes) {
         return nodes.stream()
                 .filter(node -> node.getId().equals(nodeId))
                 .findAny()
-                .orElseThrow(() -> new IllegalStateException("Cannot find GraphNode with given id"));
+                .orElseThrow(() -> new IllegalStateException("Cannot find GraphNode with given taskId"));
     }
 
     private void boxObjectNodesIntoEdgesArray(ObjectNode jsonBase, ArrayList<ObjectNode> jsonObjects) {
@@ -103,6 +147,7 @@ public class DataParser {
         return jsonBase;
     }
 
+    /* TODO to remove after implementing calling algorithm from UI and retrieving real data
     private ArrayList<ObjectNode> getIncidenceMapParsedToObjectNodes(Graph graph) {
         var incidenceMap = graph.getNodeToEdgesIncidenceMap();
         ArrayList<ObjectNode> jsonIncidenceMapElements = new ArrayList<>();
@@ -110,7 +155,7 @@ public class DataParser {
         for (Map.Entry<GraphNode, List<GraphEdge>> entry : incidenceMap.entrySet()) {
             var startNode = entry.getKey();
             var jsonStartNode = objectMapper.createObjectNode();
-            jsonStartNode.put(ID_KEY, startNode.getId());
+            jsonStartNode.put(ID_KEY, startNode.getTaskId());
             jsonStartNode.put(WEIGHT_KEY, startNode.getWeight());
 
             ArrayList<ObjectNode> jsonEdges = getEdgesParsedToObjectNodes(entry);
@@ -122,8 +167,9 @@ public class DataParser {
         }
 
         return jsonIncidenceMapElements;
-    }
+    }*/
 
+    /* TODO to remove after implementing calling algorithm from UI and retrieving real data
     private ArrayList<ObjectNode> getEdgesParsedToObjectNodes(Map.Entry<GraphNode, List<GraphEdge>> entry) {
         var edges = entry.getValue();
         var jsonEdges = new ArrayList<ObjectNode>();
@@ -131,7 +177,7 @@ public class DataParser {
         for (GraphEdge graphEdge : edges) {
             var endNode = graphEdge.getEndGraphNode();
             var jsonEndNode = objectMapper.createObjectNode();
-            jsonEndNode.put(ID_KEY, endNode.getId());
+            jsonEndNode.put(ID_KEY, endNode.getTaskId());
             jsonEndNode.put(WEIGHT_KEY, endNode.getWeight());
 
             var jsonEdge = objectMapper.createObjectNode();
@@ -141,5 +187,5 @@ public class DataParser {
         }
 
         return jsonEdges;
-    }
+    }*/
 }

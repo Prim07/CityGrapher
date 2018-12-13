@@ -1,9 +1,12 @@
 package com.agh.bsct.algorithm.controllers;
 
 import com.agh.bsct.algorithm.controllers.config.PathsConstants;
+import com.agh.bsct.algorithm.controllers.mapper.AlgorithmTaskMapper;
 import com.agh.bsct.algorithm.services.runner.AlgorithmCalculationStatus;
 import com.agh.bsct.algorithm.services.runner.AlgorithmRunnerService;
 import com.agh.bsct.algorithm.services.runner.AlgorithmTask;
+import com.agh.bsct.api.entities.algorithmresult.AlgorithmResultDTO;
+import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.cache.CacheLoader;
@@ -12,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 
 @CrossOrigin
@@ -23,33 +27,35 @@ public class AlgorithmController {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private AlgorithmRunnerService algorithmRunnerService;
+    private AlgorithmTaskMapper algorithmTaskMapper;
 
     @Autowired
-    public AlgorithmController(AlgorithmRunnerService algorithmRunnerService) {
+    public AlgorithmController(AlgorithmRunnerService algorithmRunnerService, AlgorithmTaskMapper algorithmTaskMapper) {
         this.algorithmRunnerService = algorithmRunnerService;
+        this.algorithmTaskMapper = algorithmTaskMapper;
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = ALGORITHM_PATH + "{id}")
-    public ResponseEntity<ObjectNode> getResults(@PathVariable String id) {
+    @RequestMapping(method = RequestMethod.GET, value = ALGORITHM_PATH + "{taskId}")
+    public ResponseEntity<AlgorithmResultDTO> getResults(@PathVariable String taskId) {
         try {
-            AlgorithmTask task = algorithmRunnerService.get(id);
+            AlgorithmTask task = algorithmRunnerService.get(taskId);
             return (task.getStatus() == AlgorithmCalculationStatus.SUCCESS)
                     ? getSuccessfulResponseWithAlgorithmTask(task)
                     : getAcceptedResponseWithAlgorithmTask(task);
         } catch (CacheLoader.InvalidCacheLoadException e) {
             e.printStackTrace();
-            return getNotFoundResponse(e);
+            return getNotFoundResponse(e, taskId);
         } catch (ExecutionException e) {
             e.printStackTrace();
-            return getFailureResponse(e);
+            return getFailureResponseWithAlgorithmResultDTO(e, taskId);
         }
     }
 
     @RequestMapping(method = RequestMethod.POST, value = ALGORITHM_PATH)
     @ResponseBody
-    public ResponseEntity<ObjectNode> run(@RequestBody ObjectNode graphData) {
+    public ResponseEntity<ObjectNode> run(@RequestBody GraphDataDTO graphDataDTO) {
         try {
-            String taskId = algorithmRunnerService.run(graphData);
+            String taskId = algorithmRunnerService.run(graphDataDTO);
             return getSuccessfulResponseWithUriToTask(taskId);
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -57,23 +63,14 @@ public class AlgorithmController {
         }
     }
 
-    private ResponseEntity<ObjectNode> getSuccessfulResponseWithAlgorithmTask(AlgorithmTask task) {
-        ObjectNode responseJson = mapToResponseJson(task);
-        return ResponseEntity.status(HttpStatus.OK).body(responseJson);
+    private ResponseEntity<AlgorithmResultDTO> getSuccessfulResponseWithAlgorithmTask(AlgorithmTask task) {
+        AlgorithmResultDTO algorithmResultDTO = algorithmTaskMapper.mapToAlgorithmResultDTO(task);
+        return ResponseEntity.status(HttpStatus.OK).body(algorithmResultDTO);
     }
 
-    private ResponseEntity<ObjectNode> getAcceptedResponseWithAlgorithmTask(AlgorithmTask task) {
-        ObjectNode responseJson = mapToResponseJson(task);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseJson);
-    }
-
-    private ObjectNode mapToResponseJson(AlgorithmTask task) {
-        return objectMapper.createObjectNode()
-                .put("taskId", task.getId())
-                .put("currentStatus", task.getStatus().toString())
-                .putPOJO("result", task.getJsonResult().isPresent()
-                        ? task.getJsonResult().get()
-                        : objectMapper.createObjectNode());
+    private ResponseEntity<AlgorithmResultDTO> getAcceptedResponseWithAlgorithmTask(AlgorithmTask task) {
+        AlgorithmResultDTO algorithmResultDTO = algorithmTaskMapper.mapToAlgorithmResultDTO(task);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(algorithmResultDTO);
     }
 
     private ResponseEntity<ObjectNode> getSuccessfulResponseWithUriToTask(String taskId) {
@@ -88,10 +85,25 @@ public class AlgorithmController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorJson);
     }
 
-    private ResponseEntity<ObjectNode> getNotFoundResponse(CacheLoader.InvalidCacheLoadException e) {
-        ObjectNode json = objectMapper.createObjectNode()
-                .put("error", e.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(json);
+    private ResponseEntity<AlgorithmResultDTO> getNotFoundResponse(CacheLoader.InvalidCacheLoadException e,
+                                                                   String taskId) {
+        AlgorithmResultDTO algorithmResultDTO = getAlgorithmResultWithErrorStatus(e.getMessage(), taskId);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(algorithmResultDTO);
+    }
+
+    private ResponseEntity<AlgorithmResultDTO> getFailureResponseWithAlgorithmResultDTO(ExecutionException e,
+                                                                                        String taskId) {
+        AlgorithmResultDTO algorithmResultDTO = getAlgorithmResultWithErrorStatus(e.getMessage(), taskId);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(algorithmResultDTO);
+    }
+
+    private AlgorithmResultDTO getAlgorithmResultWithErrorStatus(String message, String taskId) {
+        return AlgorithmResultDTO.builder()
+                .taskId(taskId)
+                .status("Error: " + message)
+                .graphData(null)
+                .hospitals(Collections.emptyList())
+                .build();
     }
 
 }

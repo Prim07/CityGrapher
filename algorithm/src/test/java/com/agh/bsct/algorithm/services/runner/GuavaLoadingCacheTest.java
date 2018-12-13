@@ -1,27 +1,28 @@
 package com.agh.bsct.algorithm.services.runner;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.agh.bsct.algorithm.controllers.mapper.GraphDataMapper;
+import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
+import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 
 @RunWith(JUnitPlatform.class)
 class GuavaLoadingCacheTest {
 
     private AlgorithmResultCache algorithmResultCache;
-    //TODO AK change it as in service
-    private ObjectNode graphData;
+    private GraphDataDTO graphDataDTO;
 
     @BeforeEach
     void setUp() {
         var algorithmTaskRepository = new AlgorithmTaskRepository();
-        this.algorithmResultCache = new GuavaLoadingCache(algorithmTaskRepository);
-        this.graphData = new ObjectMapper().createObjectNode();
+        var graphDataMapper = new GraphDataMapper();
+        this.algorithmResultCache = new GuavaLoadingCache(algorithmTaskRepository, graphDataMapper);
+        this.graphDataDTO = new GraphDataDTO(Collections.emptyList(), Collections.emptyList());
     }
 
     @Test
@@ -29,14 +30,14 @@ class GuavaLoadingCacheTest {
         AlgorithmTask task = tryCreateNewTask();
 
         Assert.assertNotNull(task);
-        Assert.assertNotNull(task.getId());
+        Assert.assertNotNull(task.getTaskId());
     }
 
     @Test
     void shouldCreateMultipleTasks() {
-        String firstTaskId = tryCreateNewTask().getId();
-        String secondTaskId = tryCreateNewTask().getId();
-        String thirdTaskId = tryCreateNewTask().getId();
+        String firstTaskId = tryCreateNewTask().getTaskId();
+        String secondTaskId = tryCreateNewTask().getTaskId();
+        String thirdTaskId = tryCreateNewTask().getTaskId();
 
         Assert.assertNotNull(firstTaskId);
         Assert.assertNotNull(secondTaskId);
@@ -45,16 +46,16 @@ class GuavaLoadingCacheTest {
 
     @Test
     void shouldReturnCreatedTask() {
-        String taskId = tryCreateNewTask().getId();
+        String taskId = tryCreateNewTask().getTaskId();
         AlgorithmTask task = tryGetTask(taskId);
 
         Assert.assertNotNull(task);
-        Assert.assertEquals(taskId, task.getId());
+        Assert.assertEquals(taskId, task.getTaskId());
     }
 
     @Test
     void shouldNotCreateNewTaskWhenGetTaskMethodIsCalledMultipleTimes() {
-        String taskId = tryCreateNewTask().getId();
+        String taskId = tryCreateNewTask().getTaskId();
         AlgorithmTask taskFromFirstGetAttempt = tryGetTask(taskId);
         AlgorithmTask taskFromSecondGetAttempt = tryGetTask(taskId);
         AlgorithmTask taskFromThirdGetAttempt = tryGetTask(taskId);
@@ -66,7 +67,7 @@ class GuavaLoadingCacheTest {
     private AlgorithmTask tryCreateNewTask() {
         AlgorithmTask task = null;
         try {
-            task = algorithmResultCache.createNewTask(graphData);
+            task = algorithmResultCache.createNewTask(graphDataDTO);
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
