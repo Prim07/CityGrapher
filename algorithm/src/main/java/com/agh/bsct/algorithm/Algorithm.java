@@ -1,6 +1,6 @@
 package com.agh.bsct.algorithm;
 
-import com.agh.bsct.algorithm.services.runner.CustomAsyncExceptionHandler;
+import com.agh.bsct.algorithm.services.runner.asyncrunner.CustomAsyncExceptionHandler;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

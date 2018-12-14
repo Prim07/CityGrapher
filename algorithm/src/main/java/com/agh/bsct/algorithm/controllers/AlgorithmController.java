@@ -2,9 +2,9 @@ package com.agh.bsct.algorithm.controllers;
 
 import com.agh.bsct.algorithm.controllers.config.PathsConstants;
 import com.agh.bsct.algorithm.controllers.mapper.AlgorithmTaskMapper;
-import com.agh.bsct.algorithm.services.runner.AlgorithmCalculationStatus;
 import com.agh.bsct.algorithm.services.runner.AlgorithmRunnerService;
-import com.agh.bsct.algorithm.services.runner.AlgorithmTask;
+import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmCalculationStatus;
+import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
 import com.agh.bsct.api.entities.algorithmresult.AlgorithmResultDTO;
 import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;

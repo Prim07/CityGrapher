@@ -1,4 +1,4 @@
-package com.agh.bsct.algorithm.services.runner;
+package com.agh.bsct.algorithm.services.runner.algorithmtask;
 
 import com.agh.bsct.algorithm.entities.graph.Graph;
 import com.agh.bsct.api.entities.algorithmresult.AlgorithmResultDTO;
@@ -17,7 +17,7 @@ public class AlgorithmTask {
     private List<GeographicalNodeDTO> hospitals;
     private AlgorithmResultDTO algorithmResultDTO;
 
-    AlgorithmTask(String taskId, GraphDataDTO graphDataDTO, Graph graph) {
+    public AlgorithmTask(String taskId, GraphDataDTO graphDataDTO, Graph graph) {
         this.taskId = taskId;
         this.graphDataDTO = graphDataDTO;
         this.graph = graph;

@@ -1,6 +1,10 @@
 package com.agh.bsct.algorithm.services.runner;
 
 import com.agh.bsct.algorithm.controllers.mapper.GraphDataMapper;
+import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
+import com.agh.bsct.algorithm.services.runner.cache.AlgorithmResultCache;
+import com.agh.bsct.algorithm.services.runner.cache.GuavaLoadingCache;
+import com.agh.bsct.algorithm.services.runner.repository.AlgorithmTaskRepository;
 import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;

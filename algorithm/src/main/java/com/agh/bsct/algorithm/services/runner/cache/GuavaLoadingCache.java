@@ -1,6 +1,8 @@
-package com.agh.bsct.algorithm.services.runner;
+package com.agh.bsct.algorithm.services.runner.cache;
 
 import com.agh.bsct.algorithm.controllers.mapper.GraphDataMapper;
+import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
+import com.agh.bsct.algorithm.services.runner.repository.AlgorithmTaskRepository;
 import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
