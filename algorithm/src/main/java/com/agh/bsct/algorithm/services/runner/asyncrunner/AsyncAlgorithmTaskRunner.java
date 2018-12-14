@@ -1,7 +1,9 @@
-package com.agh.bsct.algorithm.services.runner;
+package com.agh.bsct.algorithm.services.runner.asyncrunner;
 
 import com.agh.bsct.algorithm.Algorithm;
 import com.agh.bsct.algorithm.controllers.mapper.AlgorithmTaskMapper;
+import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmCalculationStatus;
+import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;

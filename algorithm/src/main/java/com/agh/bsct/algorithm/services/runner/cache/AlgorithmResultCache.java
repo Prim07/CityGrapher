@@ -1,5 +1,6 @@
-package com.agh.bsct.algorithm.services.runner;
+package com.agh.bsct.algorithm.services.runner.cache;
 
+import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
 import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
 
 import java.util.concurrent.ExecutionException;

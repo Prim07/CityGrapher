@@ -1,5 +1,6 @@
-package com.agh.bsct.algorithm.services.runner;
+package com.agh.bsct.algorithm.services.runner.repository;
 
+import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -13,15 +14,15 @@ public class AlgorithmTaskRepository {
 
     private final ConcurrentMap<String, AlgorithmTask> idToTask = new ConcurrentHashMap<>();
 
-    AlgorithmTask put(String id, AlgorithmTask algorithmTask) {
+    public AlgorithmTask put(String id, AlgorithmTask algorithmTask) {
         return idToTask.putIfAbsent(id, algorithmTask);
     }
 
-    AlgorithmTask getAlgorithmTaskById(String id) {
+    public AlgorithmTask getAlgorithmTaskById(String id) {
         return idToTask.get(id);
     }
 
-    void remove(String id) {
+    public void remove(String id) {
         idToTask.remove(id);
     }
 

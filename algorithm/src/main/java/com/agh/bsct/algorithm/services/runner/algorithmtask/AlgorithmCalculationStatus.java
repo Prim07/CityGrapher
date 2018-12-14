@@ -1,4 +1,4 @@
-package com.agh.bsct.algorithm.services.runner;
+package com.agh.bsct.algorithm.services.runner.algorithmtask;
 
 public enum AlgorithmCalculationStatus {
 
