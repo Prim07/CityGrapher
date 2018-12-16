@@ -11,6 +11,76 @@ import java.util.*;
 @Service
 public class GraphService {
 
+
+    public void replaceGraphWithItsBiggestConnectedComponent(Graph graph) {
+        var nodeToEdgesIncidenceMap = graph.getIncidenceMap();
+
+        var graphNodesFromConnectedComponent = findBiggestConnectedComponent(nodeToEdgesIncidenceMap);
+
+        var nodeToEdgesIncidenceMapCopy = new HashMap<GraphNode, List<GraphEdge>>();
+
+        for (Map.Entry<GraphNode, List<GraphEdge>> entry : nodeToEdgesIncidenceMap.entrySet()) {
+            var graphEdgesList = entry.getValue();
+            graphEdgesList.removeIf(graphEdge -> shouldGraphEdgeBeDeleted(graphNodesFromConnectedComponent, graphEdge));
+
+            var graphNode = entry.getKey();
+            if (shouldGraphNodeBeKept(graphNodesFromConnectedComponent, graphEdgesList, graphNode)) {
+                nodeToEdgesIncidenceMapCopy.put(graphNode, graphEdgesList);
+            }
+        }
+
+        nodeToEdgesIncidenceMap = nodeToEdgesIncidenceMapCopy;
+    }
+
+    public List<GraphNode> findBiggestConnectedComponent(Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap) {
+        var graphNodesSet = nodeToEdgesIncidenceMap.keySet();
+        var graphNodesList = new ArrayList<>(graphNodesSet);
+
+        var graphNodesSize = graphNodesList.size();
+
+        var nodesComponentIds = new Integer[graphNodesSize];
+        for (int i = 0; i < graphNodesSize; i++) {
+            nodesComponentIds[i] = 0;
+        }
+
+        var currentComponentId = 0;
+
+        var currentComponentNodesIds = new Stack<Integer>();
+
+        for (Integer i = 0; i < graphNodesSize; i++) {
+            if (nodesComponentIds[i] > 0) {
+                continue;
+            }
+
+            currentComponentId++;
+            currentComponentNodesIds.push(i);
+            nodesComponentIds[i] = currentComponentId;
+
+            while (!currentComponentNodesIds.empty()) {
+                var nodeIdFromPeek = currentComponentNodesIds.peek();
+                currentComponentNodesIds.pop();
+
+                var graphNodeFromPeek = graphNodesList.get(nodeIdFromPeek);
+
+                for (GraphEdge neighbourEdge : nodeToEdgesIncidenceMap.get(graphNodeFromPeek)) {
+                    var neighbour = neighbourEdge.getEndGraphNode();
+                    var neighbourId = graphNodesList.indexOf(neighbour);
+
+                    if (nodesComponentIds[neighbourId] > 0) {
+                        continue;
+                    }
+
+                    currentComponentNodesIds.push(neighbourId);
+                    nodesComponentIds[neighbourId] = currentComponentId;
+                }
+            }
+        }
+
+        int biggestCCId = getBiggestCCId(graphNodesSize, nodesComponentIds, currentComponentId);
+        return getBiggestCCGraphNodes(graphNodesList, graphNodesSize, nodesComponentIds, biggestCCId);
+
+    }
+
     public Double[][] calculateShortestPathsDistances(Graph graph) {
         var nodeToEdgesIncidenceMap = graph.getIncidenceMap();
 
@@ -82,55 +152,6 @@ public class GraphService {
         return graphEdgeToFind != null ? graphEdgeToFind.getWeight() : -1;
     }
 
-    public List<GraphNode> findBiggestConnectedComponent(Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap) {
-        var graphNodesSet = nodeToEdgesIncidenceMap.keySet();
-        var graphNodesList = new ArrayList<>(graphNodesSet);
-
-        var graphNodesSize = graphNodesList.size();
-
-        var nodesComponentIds = new Integer[graphNodesSize];
-        for (int i = 0; i < graphNodesSize; i++) {
-            nodesComponentIds[i] = 0;
-        }
-
-        var currentComponentId = 0;
-
-        var currentComponentNodesIds = new Stack<Integer>();
-
-        for (Integer i = 0; i < graphNodesSize; i++) {
-            if (nodesComponentIds[i] > 0) {
-                continue;
-            }
-
-            currentComponentId++;
-            currentComponentNodesIds.push(i);
-            nodesComponentIds[i] = currentComponentId;
-
-            while (!currentComponentNodesIds.empty()) {
-                var nodeIdFromPeek = currentComponentNodesIds.peek();
-                currentComponentNodesIds.pop();
-
-                var graphNodeFromPeek = graphNodesList.get(nodeIdFromPeek);
-
-                for (GraphEdge neighbourEdge : nodeToEdgesIncidenceMap.get(graphNodeFromPeek)) {
-                    var neighbour = neighbourEdge.getEndGraphNode();
-                    var neighbourId = graphNodesList.indexOf(neighbour);
-
-                    if (nodesComponentIds[neighbourId] > 0) {
-                        continue;
-                    }
-
-                    currentComponentNodesIds.push(neighbourId);
-                    nodesComponentIds[neighbourId] = currentComponentId;
-                }
-            }
-        }
-
-        int biggestCCId = getBiggestCCId(graphNodesSize, nodesComponentIds, currentComponentId);
-        return getBiggestCCGraphNodes(graphNodesList, graphNodesSize, nodesComponentIds, biggestCCId);
-
-    }
-
     private ArrayList<GraphNode> getBiggestCCGraphNodes(ArrayList<GraphNode> graphNodesList, int graphNodesSize,
                                                         Integer[] nodesComponentIds, int biggestConnectedComponentId) {
         var graphNodesFromBiggestCC = new ArrayList<GraphNode>();
@@ -158,27 +179,6 @@ public class GraphService {
             }
         }
         return biggestConnectedComponentId;
-    }
-
-
-    private void replaceGraphWithItsBiggestConnectedComponent(Graph graph) {
-        var nodeToEdgesIncidenceMap = graph.getIncidenceMap();
-
-        var graphNodesFromConnectedComponent = findBiggestConnectedComponent(nodeToEdgesIncidenceMap);
-
-        var nodeToEdgesIncidenceMapCopy = new HashMap<GraphNode, List<GraphEdge>>();
-
-        for (Map.Entry<GraphNode, List<GraphEdge>> entry : nodeToEdgesIncidenceMap.entrySet()) {
-            var graphEdgesList = entry.getValue();
-            graphEdgesList.removeIf(graphEdge -> shouldGraphEdgeBeDeleted(graphNodesFromConnectedComponent, graphEdge));
-
-            var graphNode = entry.getKey();
-            if (shouldGraphNodeBeKept(graphNodesFromConnectedComponent, graphEdgesList, graphNode)) {
-                nodeToEdgesIncidenceMapCopy.put(graphNode, graphEdgesList);
-            }
-        }
-
-        nodeToEdgesIncidenceMap = nodeToEdgesIncidenceMapCopy;
     }
 
 }
