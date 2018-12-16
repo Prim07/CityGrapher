@@ -11,7 +11,7 @@ import java.util.*;
 @Service
 public class GraphService {
 
-
+    //TODO call this method before algorithm
     public void replaceGraphWithItsBiggestConnectedComponent(Graph graph) {
         var nodeToEdgesIncidenceMap = graph.getIncidenceMap();
 
@@ -81,6 +81,7 @@ public class GraphService {
 
     }
 
+    //TODO call this method before algorithm
     public Double[][] calculateShortestPathsDistances(Graph graph) {
         var nodeToEdgesIncidenceMap = graph.getIncidenceMap();
 

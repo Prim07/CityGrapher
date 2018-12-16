@@ -61,6 +61,13 @@ public class CityDataService {
                 .map(StreetDTO::getNodesIds)
                 .flatMap(Collection::stream)
                 .forEach(nodeId -> nodeIdsToOccurrencesInStreets.merge(nodeId, 1, (a, b) -> a + b));
+
+        streets.forEach(street -> {
+            List<Long> nodesIds = street.getNodesIds();
+            nodeIdsToOccurrencesInStreets.put(nodesIds.get(0), 2);
+            nodeIdsToOccurrencesInStreets.put(nodesIds.get(nodesIds.size() - 1), 2);
+        });
+
         return nodeIdsToOccurrencesInStreets;
     }
 
@@ -150,9 +157,9 @@ public class CityDataService {
 
     private List<GeographicalNodeDTO> mapToNodes(OverpassQueryResult overpassQueryResult) {
         return overpassQueryResult.getElements().stream()
-                    .filter(element -> NODE_TYPE.equals(element.getType()))
+                .filter(element -> NODE_TYPE.equals(element.getType()))
                 .map(element -> new GeographicalNodeDTO(element.getId(), element.getLon(), element.getLat()))
-                    .collect(Collectors.toList());
+                .collect(Collectors.toList());
     }
 
     private void updateWithCrossingInformation(List<GeographicalNodeDTO> nodes, Set<Long> crossingsIds) {
