@@ -6,12 +6,16 @@ import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmCalculation
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 public class AsyncAlgorithmTaskRunner {
 
-
+    private static AtomicInteger THREAD_COUNT = new AtomicInteger(0);
     private AlgorithmTaskMapper algorithmTaskMapper;
 
     @Autowired
@@ -20,7 +24,9 @@ public class AsyncAlgorithmTaskRunner {
     }
 
     @Async(Algorithm.SPRING_THREAD_POOL_NAME)
-    public void run(AlgorithmTask algorithmTask) {
+    public Future<Integer> run(AlgorithmTask algorithmTask) {
+        int currentThreadNumber = THREAD_COUNT.getAndIncrement();
+
         //TODO implement here calculating and logic and remove below fake log calculations
         try {
             algorithmTask.setStatus(AlgorithmCalculationStatus.CALCULATING);
@@ -30,9 +36,12 @@ public class AsyncAlgorithmTaskRunner {
             var fakeAlgorithmResult = algorithmTaskMapper.mapToAlgorithmResultDTO(algorithmTask);
             algorithmTask.setAlgorithmResultDTO(fakeAlgorithmResult);
         } catch (InterruptedException e) {
-            e.printStackTrace();
-            algorithmTask.setStatus(AlgorithmCalculationStatus.FAILED);
+            System.out.println("Interrupted thread: " + currentThreadNumber);
+            Thread.currentThread().interrupt();
+            algorithmTask.setStatus(AlgorithmCalculationStatus.CANCELLED);
         }
+
+        return new AsyncResult<>(currentThreadNumber);
     }
 
 }
