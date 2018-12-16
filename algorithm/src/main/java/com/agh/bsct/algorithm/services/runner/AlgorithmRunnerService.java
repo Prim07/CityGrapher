@@ -1,5 +1,6 @@
 package com.agh.bsct.algorithm.services.runner;
 
+import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmCalculationStatus;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
 import com.agh.bsct.algorithm.services.runner.asyncrunner.AsyncAlgorithmTaskRunner;
 import com.agh.bsct.algorithm.services.runner.cache.AlgorithmResultCache;
@@ -33,4 +34,9 @@ public class AlgorithmRunnerService {
         return algorithmResultCache.getTask(id);
     }
 
+    public void cancel(String id) throws ExecutionException {
+        AlgorithmTask algorithmTask = get(id);
+        algorithmTask.setStatus(AlgorithmCalculationStatus.CANCELLED);
+        //TODO here we have do sth more to REALLY stop async task
+    }
 }

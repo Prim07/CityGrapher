@@ -51,6 +51,17 @@ public class AlgorithmController {
         }
     }
 
+    @RequestMapping(method = RequestMethod.DELETE, value = ALGORITHM_PATH + "{taskId}")
+    public ResponseEntity<ObjectNode> cancelAlgorithmTask(@PathVariable String taskId) {
+        try {
+            algorithmRunnerService.cancel(taskId);
+            return getSuccessfulResponseForCancelledAlgorithmTask(taskId);
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            return getFailureResponseForCancelledAlgorithmTask(e);
+        }
+    }
+
     @RequestMapping(method = RequestMethod.POST, value = ALGORITHM_PATH)
     @ResponseBody
     public ResponseEntity<ObjectNode> run(@RequestBody GraphDataDTO graphDataDTO) {
@@ -79,6 +90,12 @@ public class AlgorithmController {
         return ResponseEntity.status(HttpStatus.OK).body(json);
     }
 
+    private ResponseEntity<ObjectNode> getSuccessfulResponseForCancelledAlgorithmTask(@PathVariable String taskId) {
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("message", "Algorithm task with ID: " + taskId + " was successfully cancelled");
+        return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+    }
+
     private ResponseEntity<ObjectNode> getFailureResponse(ExecutionException e) {
         ObjectNode errorJson = objectMapper.createObjectNode()
                 .put("error", e.getMessage());
@@ -95,6 +112,12 @@ public class AlgorithmController {
                                                                                         String taskId) {
         AlgorithmResultDTO algorithmResultDTO = getAlgorithmResultWithErrorStatus(e.getMessage(), taskId);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(algorithmResultDTO);
+    }
+
+    private ResponseEntity<ObjectNode> getFailureResponseForCancelledAlgorithmTask(ExecutionException e) {
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("message", "Error: " + e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(objectNode);
     }
 
     private AlgorithmResultDTO getAlgorithmResultWithErrorStatus(String message, String taskId) {
