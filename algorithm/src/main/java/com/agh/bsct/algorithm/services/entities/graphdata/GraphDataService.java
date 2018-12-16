@@ -22,8 +22,8 @@ public class GraphDataService {
         this.graphService = graphService;
     }
 
-    public void selectBiggestConnectedComponentInGraphDataDTO(GraphDataDTO graphData,
-                                                              Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap) {
+    public void extractBiggestConnectedComponentInGraphDataDTO(GraphDataDTO graphData,
+                                                               Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap) {
         var biggestConnectedComponentNodes = graphService.findBiggestConnectedComponent(nodeToEdgesIncidenceMap);
 
         var nodes = graphData.getNodeDTOS();

@@ -36,8 +36,7 @@ public class AsyncAlgorithmTaskRunner {
             Thread.sleep(2000);
             algorithmTask.setStatus(AlgorithmCalculationStatus.SUCCESS);
 
-            graphDataService.selectBiggestConnectedComponentInGraphDataDTO(algorithmTask.getGraphDataDTO(),
-                    algorithmTask.getGraph().getIncidenceMap());
+            extractBiggestConnectedComponentInGraphDataDTO(algorithmTask);
 
             var fakeAlgorithmResult = algorithmTaskMapper.mapToAlgorithmResultDTO(algorithmTask);
             algorithmTask.setAlgorithmResultDTO(fakeAlgorithmResult);
@@ -48,6 +47,11 @@ public class AsyncAlgorithmTaskRunner {
         }
 
         return new AsyncResult<>(currentThreadNumber);
+    }
+
+    private void extractBiggestConnectedComponentInGraphDataDTO(AlgorithmTask algorithmTask) {
+        graphDataService.extractBiggestConnectedComponentInGraphDataDTO(algorithmTask.getGraphDataDTO(),
+                algorithmTask.getGraph().getIncidenceMap());
     }
 
 }
