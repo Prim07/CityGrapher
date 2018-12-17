@@ -27,8 +27,9 @@ public class DataCollectorController {
 
     @GetMapping(DATA_COLLECTOR_PATH + GET_CITY_GRAPH_PATH)
     @ResponseBody
-    public ResponseEntity<ObjectNode> getCityGraph(@RequestParam(name = "city") String city) {
-        ObjectNode cityGraph = osmCityService.getCityGraph(city);
+    public ResponseEntity<ObjectNode> getCityGraph(@RequestParam(name = "city") String city,
+                                                   @RequestParam(name = "numberOfResults") Integer numberOfResults) {
+        ObjectNode cityGraph = osmCityService.getCityGraph(city, numberOfResults);
         return ResponseEntity.status(HttpStatus.OK).body(cityGraph);
     }
 

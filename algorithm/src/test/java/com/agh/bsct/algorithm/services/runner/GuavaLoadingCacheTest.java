@@ -5,6 +5,7 @@ import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
 import com.agh.bsct.algorithm.services.runner.cache.AlgorithmResultCache;
 import com.agh.bsct.algorithm.services.runner.cache.GuavaLoadingCache;
 import com.agh.bsct.algorithm.services.runner.repository.AlgorithmTaskRepository;
+import com.agh.bsct.api.entities.algorithmorder.AlgorithmOrderDTO;
 import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,14 +20,15 @@ import java.util.concurrent.ExecutionException;
 class GuavaLoadingCacheTest {
 
     private AlgorithmResultCache algorithmResultCache;
-    private GraphDataDTO graphDataDTO;
+    private AlgorithmOrderDTO algorithmOrderDTO;
 
     @BeforeEach
     void setUp() {
         var algorithmTaskRepository = new AlgorithmTaskRepository();
         var graphDataMapper = new GraphDataMapper();
         this.algorithmResultCache = new GuavaLoadingCache(algorithmTaskRepository, graphDataMapper);
-        this.graphDataDTO = new GraphDataDTO(Collections.emptyList(), Collections.emptyList());
+        GraphDataDTO graphDataDTO = new GraphDataDTO(Collections.emptyList(), Collections.emptyList());
+        this.algorithmOrderDTO = new AlgorithmOrderDTO(2, graphDataDTO);
     }
 
     @Test
@@ -71,7 +73,7 @@ class GuavaLoadingCacheTest {
     private AlgorithmTask tryCreateNewTask() {
         AlgorithmTask task = null;
         try {
-            task = algorithmResultCache.createNewTask(graphDataDTO);
+            task = algorithmResultCache.createNewTask(algorithmOrderDTO);
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
