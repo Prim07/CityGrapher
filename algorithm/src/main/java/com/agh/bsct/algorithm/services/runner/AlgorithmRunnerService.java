@@ -5,7 +5,7 @@ import com.agh.bsct.algorithm.services.runner.asyncrunner.AsyncAlgorithmTaskRunn
 import com.agh.bsct.algorithm.services.runner.cache.AlgorithmResultCache;
 import com.agh.bsct.algorithm.services.runner.cache.GuavaLoadingCache;
 import com.agh.bsct.algorithm.services.runner.repository.AsyncTaskRepository;
-import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
+import com.agh.bsct.api.entities.algorithmorder.AlgorithmOrderDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +28,8 @@ public class AlgorithmRunnerService {
         this.asyncTaskRepository = asyncTaskRepository;
     }
 
-    public String run(GraphDataDTO graphDataDTO) throws ExecutionException {
-        AlgorithmTask algorithmTask = algorithmResultCache.createNewTask(graphDataDTO);
+    public String run(AlgorithmOrderDTO algorithmOrderDTO) throws ExecutionException {
+        AlgorithmTask algorithmTask = algorithmResultCache.createNewTask(algorithmOrderDTO);
         Future<Integer> asyncTask = asyncAlgorithmTaskRunner.run(algorithmTask);
         asyncTaskRepository.put(algorithmTask.getTaskId(), asyncTask);
         return algorithmTask.getTaskId();

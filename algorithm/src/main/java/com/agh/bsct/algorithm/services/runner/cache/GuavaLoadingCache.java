@@ -3,7 +3,7 @@ package com.agh.bsct.algorithm.services.runner.cache;
 import com.agh.bsct.algorithm.controllers.mapper.GraphDataMapper;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
 import com.agh.bsct.algorithm.services.runner.repository.AlgorithmTaskRepository;
-import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
+import com.agh.bsct.api.entities.algorithmorder.AlgorithmOrderDTO;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -34,10 +34,10 @@ public class GuavaLoadingCache implements AlgorithmResultCache {
     }
 
     @Override
-    public AlgorithmTask createNewTask(GraphDataDTO graphDataDTO) {
+    public AlgorithmTask createNewTask(AlgorithmOrderDTO algorithmOrderDTO) {
         var id = UUID.randomUUID().toString();
-        var graph = graphDataMapper.mapToGraph(graphDataDTO);
-        AlgorithmTask algorithmTask = new AlgorithmTask(id, graphDataDTO, graph);
+        var graph = graphDataMapper.mapToGraph(algorithmOrderDTO.getGraphDataDTO());
+        AlgorithmTask algorithmTask = new AlgorithmTask(id, algorithmOrderDTO, graph);
         algorithmTaskRepository.put(id, algorithmTask);
         return algorithmTask;
     }

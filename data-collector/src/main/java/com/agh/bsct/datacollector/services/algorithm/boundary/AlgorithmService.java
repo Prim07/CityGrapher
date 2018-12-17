@@ -1,7 +1,7 @@
 package com.agh.bsct.datacollector.services.algorithm.boundary;
 
+import com.agh.bsct.api.entities.algorithmorder.AlgorithmOrderDTO;
 import com.agh.bsct.api.entities.algorithmresult.AlgorithmResultDTO;
-import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
@@ -21,11 +21,11 @@ public class AlgorithmService {
         this.restTemplate = new RestTemplateBuilder().build();
     }
 
-    public ObjectNode run(GraphDataDTO graphDataDTO) {
+    public ObjectNode run(AlgorithmOrderDTO algorithmOrderDTO) {
         var uri = new DefaultUriBuilderFactory(ALGORITHM_PATH).builder()
                 .build()
                 .toString();
-        return restTemplate.postForObject(uri, graphDataDTO, ObjectNode.class);
+        return restTemplate.postForObject(uri, algorithmOrderDTO, ObjectNode.class);
     }
 
     public AlgorithmResultDTO getResult(String taskId) {

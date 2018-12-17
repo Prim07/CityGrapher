@@ -5,8 +5,8 @@ import com.agh.bsct.algorithm.controllers.mapper.AlgorithmTaskMapper;
 import com.agh.bsct.algorithm.services.runner.AlgorithmRunnerService;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmCalculationStatus;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
+import com.agh.bsct.api.entities.algorithmorder.AlgorithmOrderDTO;
 import com.agh.bsct.api.entities.algorithmresult.AlgorithmResultDTO;
-import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.cache.CacheLoader;
@@ -59,9 +59,9 @@ public class AlgorithmController {
 
     @RequestMapping(method = RequestMethod.POST, value = ALGORITHM_PATH)
     @ResponseBody
-    public ResponseEntity<ObjectNode> run(@RequestBody GraphDataDTO graphDataDTO) {
+    public ResponseEntity<ObjectNode> run(@RequestBody AlgorithmOrderDTO algorithmOrderDTO) {
         try {
-            String taskId = algorithmRunnerService.run(graphDataDTO);
+            String taskId = algorithmRunnerService.run(algorithmOrderDTO);
             return getSuccessfulResponseWithUriToTask(taskId);
         } catch (ExecutionException e) {
             e.printStackTrace();

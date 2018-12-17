@@ -1,5 +1,6 @@
 package com.agh.bsct.datacollector.services.city;
 
+import com.agh.bsct.api.entities.algorithmorder.AlgorithmOrderDTO;
 import com.agh.bsct.datacollector.services.algorithm.boundary.AlgorithmService;
 import com.agh.bsct.datacollector.services.data.CityDataService;
 import com.agh.bsct.datacollector.services.data.GraphDataService;
@@ -32,10 +33,11 @@ public class OSMCityService {
         return dataParser.parseToJson(cityDataDTO);
     }
 
-    public ObjectNode getCityGraph(String cityName) {
+    public ObjectNode getCityGraph(String cityName, Integer numberOfResults) {
         var cityDataDTO = cityDataService.getCityDataDTO(cityName);
         var graphDataDTO = graphService.getGraphDataDTO(cityDataDTO);
-        return algorithmService.run(graphDataDTO);
+        var algorithmOrderDTO = new AlgorithmOrderDTO(numberOfResults, graphDataDTO);
+        return algorithmService.run(algorithmOrderDTO);
     }
 
     public ObjectNode getMappedAlgorithmResult(String taskId) {
