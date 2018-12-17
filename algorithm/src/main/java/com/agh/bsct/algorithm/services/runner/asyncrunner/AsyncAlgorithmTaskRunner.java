@@ -2,6 +2,7 @@ package com.agh.bsct.algorithm.services.runner.asyncrunner;
 
 import com.agh.bsct.algorithm.Algorithm;
 import com.agh.bsct.algorithm.controllers.mapper.AlgorithmTaskMapper;
+import com.agh.bsct.algorithm.services.entities.graphdata.GraphDataService;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmCalculationStatus;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +18,12 @@ public class AsyncAlgorithmTaskRunner {
 
     private static AtomicInteger THREAD_COUNT = new AtomicInteger(0);
     private AlgorithmTaskMapper algorithmTaskMapper;
+    private GraphDataService graphDataService;
 
     @Autowired
-    public AsyncAlgorithmTaskRunner(AlgorithmTaskMapper algorithmTaskMapper) {
+    public AsyncAlgorithmTaskRunner(AlgorithmTaskMapper algorithmTaskMapper, GraphDataService graphDataService) {
         this.algorithmTaskMapper = algorithmTaskMapper;
+        this.graphDataService = graphDataService;
     }
 
     @Async(Algorithm.SPRING_THREAD_POOL_NAME)
@@ -33,6 +36,8 @@ public class AsyncAlgorithmTaskRunner {
             Thread.sleep(2000);
             algorithmTask.setStatus(AlgorithmCalculationStatus.SUCCESS);
 
+            extractBiggestConnectedComponent(algorithmTask);
+
             var fakeAlgorithmResult = algorithmTaskMapper.mapToAlgorithmResultDTO(algorithmTask);
             algorithmTask.setAlgorithmResultDTO(fakeAlgorithmResult);
         } catch (InterruptedException e) {
@@ -42,6 +47,11 @@ public class AsyncAlgorithmTaskRunner {
         }
 
         return new AsyncResult<>(currentThreadNumber);
+    }
+
+    private void extractBiggestConnectedComponent(AlgorithmTask algorithmTask) {
+        graphDataService.extractBiggestConnectedComponent(algorithmTask.getGraphDataDTO(),
+                algorithmTask.getGraph().getIncidenceMap());
     }
 
 }
