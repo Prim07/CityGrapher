@@ -95,11 +95,12 @@ public class StreetsJoinerService {
 
     private List<Long> joinNewNodesPartToOrderedJoinedNodes(Set<StreetDTO> currentEntryStreets,
                                                             List<Long> orderedNodes) {
-        Long firstJoinedNodeId = orderedNodes.get(0);
-        Long lastJoinedNodeId = orderedNodes.get(orderedNodes.size() - 1);
         var currentEntryListOfNodesIterator = currentEntryStreets.iterator();
 
         while (currentEntryListOfNodesIterator.hasNext()) {
+            Long firstJoinedNodeId = orderedNodes.get(0);
+            Long lastJoinedNodeId = orderedNodes.get(orderedNodes.size() - 1);
+
             StreetDTO street = currentEntryListOfNodesIterator.next();
             List<Long> streetNodesIds = street.getNodesIds();
             Long firstCandidateNodeToJoinId = streetNodesIds.get(0);

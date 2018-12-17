@@ -62,12 +62,6 @@ public class CityDataService {
                 .flatMap(Collection::stream)
                 .forEach(nodeId -> nodeIdsToOccurrencesInStreets.merge(nodeId, 1, (a, b) -> a + b));
 
-        streets.forEach(street -> {
-            List<Long> nodesIds = street.getNodesIds();
-            nodeIdsToOccurrencesInStreets.put(nodesIds.get(0), 2);
-            nodeIdsToOccurrencesInStreets.put(nodesIds.get(nodesIds.size() - 1), 2);
-        });
-
         return nodeIdsToOccurrencesInStreets;
     }
 
