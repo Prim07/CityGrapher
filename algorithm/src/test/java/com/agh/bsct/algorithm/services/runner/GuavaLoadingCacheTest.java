@@ -5,6 +5,7 @@ import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
 import com.agh.bsct.algorithm.services.runner.cache.AlgorithmResultCache;
 import com.agh.bsct.algorithm.services.runner.cache.GuavaLoadingCache;
 import com.agh.bsct.algorithm.services.runner.repository.AlgorithmTaskRepository;
+import com.agh.bsct.algorithm.services.runner.repository.AsyncTaskRepository;
 import com.agh.bsct.api.entities.algorithmorder.AlgorithmOrderDTO;
 import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
 import org.junit.Assert;
@@ -25,10 +26,12 @@ class GuavaLoadingCacheTest {
     @BeforeEach
     void setUp() {
         var algorithmTaskRepository = new AlgorithmTaskRepository();
+        var asyncTaskRepository = new AsyncTaskRepository();
         var graphDataMapper = new GraphDataMapper();
-        this.algorithmResultCache = new GuavaLoadingCache(algorithmTaskRepository, graphDataMapper);
+        algorithmResultCache = new GuavaLoadingCache(algorithmTaskRepository, asyncTaskRepository, graphDataMapper);
+
         GraphDataDTO graphDataDTO = new GraphDataDTO(Collections.emptyList(), Collections.emptyList());
-        this.algorithmOrderDTO = new AlgorithmOrderDTO(2, graphDataDTO);
+        algorithmOrderDTO = new AlgorithmOrderDTO(2, graphDataDTO);
     }
 
     @Test

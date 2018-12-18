@@ -3,6 +3,7 @@ package com.agh.bsct.algorithm.services.runner.cache;
 import com.agh.bsct.algorithm.controllers.mapper.GraphDataMapper;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
 import com.agh.bsct.algorithm.services.runner.repository.AlgorithmTaskRepository;
+import com.agh.bsct.algorithm.services.runner.repository.AsyncTaskRepository;
 import com.agh.bsct.api.entities.algorithmorder.AlgorithmOrderDTO;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -23,12 +24,16 @@ import java.util.concurrent.TimeUnit;
 public class GuavaLoadingCache implements AlgorithmResultCache {
 
     private AlgorithmTaskRepository algorithmTaskRepository;
+    private AsyncTaskRepository asyncTaskRepository;
     private GraphDataMapper graphDataMapper;
     private LoadingCache<String, AlgorithmTask> idToTaskCache;
 
     @Autowired
-    public GuavaLoadingCache(AlgorithmTaskRepository algorithmTaskRepository, GraphDataMapper graphDataMapper) {
+    public GuavaLoadingCache(AlgorithmTaskRepository algorithmTaskRepository,
+                             AsyncTaskRepository asyncTaskRepository,
+                             GraphDataMapper graphDataMapper) {
         this.algorithmTaskRepository = algorithmTaskRepository;
+        this.asyncTaskRepository = asyncTaskRepository;
         this.graphDataMapper = graphDataMapper;
         this.idToTaskCache = getInitializedLoadingCache();
     }
@@ -50,13 +55,17 @@ public class GuavaLoadingCache implements AlgorithmResultCache {
     private LoadingCache<String, AlgorithmTask> getInitializedLoadingCache() {
         return CacheBuilder.newBuilder()
                 .maximumSize(1000)
-                .expireAfterAccess(30, TimeUnit.MINUTES)
+                .expireAfterAccess(10, TimeUnit.SECONDS)
                 .removalListener(getRemovalListener())
                 .build(getCacheLoader());
     }
 
     private RemovalListener<String, AlgorithmTask> getRemovalListener() {
-        return removalNotification -> algorithmTaskRepository.remove(removalNotification.getKey());
+        return removalNotification -> {
+            String key = removalNotification.getKey();
+            algorithmTaskRepository.remove(key);
+            asyncTaskRepository.remove(key);
+        };
     }
 
     private CacheLoader<String, AlgorithmTask> getCacheLoader() {
