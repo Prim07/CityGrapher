@@ -33,13 +33,6 @@ public class DataCollectorController {
         return ResponseEntity.status(HttpStatus.OK).body(cityGraph);
     }
 
-    @GetMapping(DATA_COLLECTOR_PATH + GET_CITY_DATA_PATH)
-    @ResponseBody
-    public ResponseEntity<ObjectNode> getCityData(@RequestParam(name = "city") String city) {
-        ObjectNode cityData = osmCityService.getCityData(city);
-        return ResponseEntity.status(HttpStatus.OK).body(cityData);
-    }
-
     @GetMapping(DATA_COLLECTOR_PATH + GET_ALGORITHM_RESULT_PATH + "{taskId}")
     @ResponseBody
     public ObjectNode getMappedAlgorithmResult(@PathVariable String taskId) {
