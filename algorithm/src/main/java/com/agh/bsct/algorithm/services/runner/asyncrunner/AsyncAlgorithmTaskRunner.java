@@ -3,7 +3,6 @@ package com.agh.bsct.algorithm.services.runner.asyncrunner;
 import com.agh.bsct.algorithm.Algorithm;
 import com.agh.bsct.algorithm.algorithms.IAlgorithm;
 import com.agh.bsct.algorithm.algorithms.SAAlgorithm;
-import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmCalculationStatus;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,18 +28,8 @@ public class AsyncAlgorithmTaskRunner {
 
     @Async(Algorithm.SPRING_THREAD_POOL_NAME)
     public Future<Integer> run(AlgorithmTask algorithmTask) {
-        int currentThreadNumber = THREAD_COUNT.getAndIncrement();
-
-        //TODO implement here calculating and logic and remove below fake log calculations
-        try {
-            algorithm.run(algorithmTask);
-        } catch (InterruptedException e) {
-            System.out.println("Interrupted thread: " + currentThreadNumber);
-            Thread.currentThread().interrupt();
-            algorithmTask.setStatus(AlgorithmCalculationStatus.CANCELLED);
-        }
-
-        return new AsyncResult<>(currentThreadNumber);
+        algorithm.run(algorithmTask);
+        return new AsyncResult<>(THREAD_COUNT.getAndIncrement());
     }
 
 

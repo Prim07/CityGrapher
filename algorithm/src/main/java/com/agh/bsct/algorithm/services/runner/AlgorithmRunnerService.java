@@ -1,5 +1,6 @@
 package com.agh.bsct.algorithm.services.runner;
 
+import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmCalculationStatus;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
 import com.agh.bsct.algorithm.services.runner.asyncrunner.AsyncAlgorithmTaskRunner;
 import com.agh.bsct.algorithm.services.runner.cache.AlgorithmResultCache;
@@ -36,12 +37,21 @@ public class AlgorithmRunnerService {
     }
 
     public AlgorithmTask get(String id) throws ExecutionException {
+        cancelTaskIfItsThreadIsCancelled(id);
         return algorithmResultCache.getTask(id);
+    }
+
+    private void cancelTaskIfItsThreadIsCancelled(String id) throws ExecutionException {
+        Future asyncTaskById = asyncTaskRepository.getAsyncTaskById(id);
+        if (asyncTaskById.isCancelled()) {
+            AlgorithmTask algorithmTask = algorithmResultCache.getTask(id);
+            algorithmTask.setStatus(AlgorithmCalculationStatus.CANCELLED);
+            asyncTaskRepository.remove(id);
+        }
     }
 
     public void cancel(String id) {
         Future asyncTaskById = asyncTaskRepository.getAsyncTaskById(id);
         asyncTaskById.cancel(true);
-        asyncTaskRepository.remove(id);
     }
 }
