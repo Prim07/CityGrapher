@@ -14,8 +14,8 @@ import java.util.concurrent.Executor;
 
 @SpringBootApplication
 @ComponentScan({"com.agh.bsct.algorithm.controllers",
-        "com.agh.bsct.algorithm.services",
-        "com.agh.bsct.algorithm.algorithms"})
+                "com.agh.bsct.algorithm.services",
+                "com.agh.bsct.algorithm.algorithms"})
 @EnableAsync
 public class Algorithm implements AsyncConfigurer {
 
