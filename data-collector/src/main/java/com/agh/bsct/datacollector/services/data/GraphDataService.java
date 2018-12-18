@@ -6,12 +6,10 @@ import com.agh.bsct.api.entities.citydata.StreetDTO;
 import com.agh.bsct.api.entities.graphdata.EdgeDTO;
 import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
 import com.agh.bsct.api.entities.graphdata.NodeDTO;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.*;
@@ -20,10 +18,6 @@ import static java.lang.Math.*;
 public class GraphDataService {
 
     private static final int EARTH_RADIUS = 6372800;
-    private static final int NODE_WEIGHT_MIN = 50;
-    private static final int NODE_WEIGHT_MAX = 1000;
-
-    private static final Random random = new Random();
 
     public GraphDataDTO getGraphDataDTO(CityDataDTO cityData) {
         List<EdgeDTO> edges = calculateEdgeWeights(cityData.getStreets(), cityData.getGeographicalNodes());
@@ -79,16 +73,11 @@ public class GraphDataService {
     private List<NodeDTO> calculateNodeWeights(List<GeographicalNodeDTO> nodes) {
         //TODO sprawdzić czas wykonania i porównać z czymś szybszym, np. zwykłym forem
         return nodes.stream()
-                .map(this::getCrossingWithRandomNodeWeight)
+                .map(this::getCrossingWithNodeWeight)
                 .collect(Collectors.toList());
     }
 
-    private NodeDTO getCrossingWithRandomNodeWeight(GeographicalNodeDTO node) {
-        return new NodeDTO(node, random.nextInt((NODE_WEIGHT_MAX - NODE_WEIGHT_MIN) + 1) + NODE_WEIGHT_MIN);
-    }
-
-    public List<GeographicalNodeDTO> runAlgorithmAndCalculateHospitalNodes(ObjectNode jsonGraph) {
-        //TODO impl
-        return new ArrayList<>();
+    private NodeDTO getCrossingWithNodeWeight(GeographicalNodeDTO node) {
+        return new NodeDTO(node, 1);
     }
 }
