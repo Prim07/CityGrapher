@@ -30,12 +30,6 @@ public class DataParser {
         return boxObjectNodesWithName(jsonStreets, EDGES_KEY);
     }
 
-    /* TODO to remove after implementing calling algorithm from UI and retrieving real data
-    public ObjectNode parseToJson(Graph graph) {
-        ArrayList<ObjectNode> jsonIncidenceMapElements = getIncidenceMapParsedToObjectNodes(graph);
-        return boxObjectNodesWithName(jsonIncidenceMapElements, GRAPH_KEY);
-    }*/
-
     private ArrayList<ObjectNode> getEdgesParsedToObjectNodes(GraphDataDTO graphDataDTO,
                                                               List<GeographicalNodeDTO> hospitals) {
         var jsonStreets = new ArrayList<ObjectNode>();
@@ -85,46 +79,4 @@ public class DataParser {
 
         return jsonBase;
     }
-
-    /* TODO to remove after implementing calling algorithm from UI and retrieving real data
-    private ArrayList<ObjectNode> getIncidenceMapParsedToObjectNodes(Graph graph) {
-        var incidenceMap = graph.getNodeToEdgesIncidenceMap();
-        ArrayList<ObjectNode> jsonIncidenceMapElements = new ArrayList<>();
-
-        for (Map.Entry<GraphNode, List<GraphEdge>> entry : incidenceMap.entrySet()) {
-            var startNode = entry.getKey();
-            var jsonStartNode = objectMapper.createObjectNode();
-            jsonStartNode.put(ID_KEY, startNode.getTaskId());
-            jsonStartNode.put(WEIGHT_KEY, startNode.getWeight());
-
-            ArrayList<ObjectNode> jsonEdges = getEdgesParsedToObjectNodes(entry);
-
-            var jsonIncidenceMapElement = objectMapper.createObjectNode();
-            jsonIncidenceMapElement.putPOJO(NODE_KEY, jsonStartNode);
-            boxObjectNodesIntoEdgesArray(jsonIncidenceMapElement, jsonEdges);
-            jsonIncidenceMapElements.add(jsonIncidenceMapElement);
-        }
-
-        return jsonIncidenceMapElements;
-    }*/
-
-    /* TODO to remove after implementing calling algorithm from UI and retrieving real data
-    private ArrayList<ObjectNode> getEdgesParsedToObjectNodes(Map.Entry<GraphNode, List<GraphEdge>> entry) {
-        var edges = entry.getValue();
-        var jsonEdges = new ArrayList<ObjectNode>();
-
-        for (GraphEdge graphEdge : edges) {
-            var endNode = graphEdge.getEndGraphNode();
-            var jsonEndNode = objectMapper.createObjectNode();
-            jsonEndNode.put(ID_KEY, endNode.getTaskId());
-            jsonEndNode.put(WEIGHT_KEY, endNode.getWeight());
-
-            var jsonEdge = objectMapper.createObjectNode();
-            jsonEdge.putPOJO(NODE_KEY, jsonEndNode);
-            jsonEdge.put(WEIGHT_KEY, graphEdge.getWeight());
-            jsonEdges.add(jsonEdge);
-        }
-
-        return jsonEdges;
-    }*/
 }
