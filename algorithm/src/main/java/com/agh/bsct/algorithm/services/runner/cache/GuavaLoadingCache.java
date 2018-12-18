@@ -55,7 +55,7 @@ public class GuavaLoadingCache implements AlgorithmResultCache {
     private LoadingCache<String, AlgorithmTask> getInitializedLoadingCache() {
         return CacheBuilder.newBuilder()
                 .maximumSize(1000)
-                .expireAfterAccess(10, TimeUnit.SECONDS)
+                .expireAfterAccess(30, TimeUnit.MINUTES)
                 .removalListener(getRemovalListener())
                 .build(getCacheLoader());
     }
