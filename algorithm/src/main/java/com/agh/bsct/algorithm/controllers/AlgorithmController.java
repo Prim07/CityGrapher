@@ -87,7 +87,7 @@ public class AlgorithmController {
 
     private ResponseEntity<ObjectNode> getSuccessfulResponseForCancelledAlgorithmTask(@PathVariable String taskId) {
         ObjectNode objectNode = objectMapper.createObjectNode();
-        objectNode.put("message", "Algorithm task with ID: " + taskId + " was successfully cancelled");
+        objectNode.put("message", "IAlgorithm task with ID: " + taskId + " was successfully cancelled");
         return ResponseEntity.status(HttpStatus.OK).body(objectNode);
     }
 
