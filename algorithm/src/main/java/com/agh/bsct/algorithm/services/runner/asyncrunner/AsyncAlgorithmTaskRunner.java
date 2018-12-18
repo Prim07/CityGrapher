@@ -19,10 +19,11 @@ public class AsyncAlgorithmTaskRunner {
 
     private static AtomicInteger THREAD_COUNT = new AtomicInteger(0);
 
+    @Qualifier(SAAlgorithm.SIMULATED_ANNEALING_QUALIFIER)
     private IAlgorithm algorithm;
 
     @Autowired
-    public AsyncAlgorithmTaskRunner(@Qualifier(SAAlgorithm.SIMULATED_ANNEALING_QUALIFIER) IAlgorithm algorithm) {
+    public AsyncAlgorithmTaskRunner(IAlgorithm algorithm) {
         this.algorithm = algorithm;
     }
 
