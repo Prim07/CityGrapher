@@ -4,6 +4,6 @@ import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
 
 public interface IAlgorithm {
 
-    void run(AlgorithmTask algorithmTask) throws InterruptedException;
+    void run(AlgorithmTask algorithmTask);
 
 }
