@@ -28,11 +28,6 @@ public class OSMCityService {
         this.dataParser = dataParser;
     }
 
-    public ObjectNode getCityData(String cityName) {
-        var cityDataDTO = cityDataService.getCityDataDTO(cityName);
-        return dataParser.parseToJson(cityDataDTO);
-    }
-
     public ObjectNode getCityGraph(String cityName, Integer numberOfResults) {
         var cityDataDTO = cityDataService.getCityDataDTO(cityName);
         var graphDataDTO = graphService.getGraphDataDTO(cityDataDTO);
