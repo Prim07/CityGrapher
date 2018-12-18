@@ -15,12 +15,12 @@ import java.util.List;
 @Service
 public class DataParser {
 
-    private static final String CROSSINGS_KEY = "crossings";
     private static final String EDGES_KEY = "edges";
-    private static final String HOSPITAL_KEY = "hospital";
     private static final String ID_KEY = "id";
+    private static final String IS_HOSPITAL_KEY = "isHospital";
     private static final String LATITUDE_KEY = "lat";
     private static final String LONGITUDE_KEY = "lon";
+    private static final String NODES_KEY = "nodes";
     private static final String WEIGHT_KEY = "weight";
 
     private ObjectMapper objectMapper = new ObjectMapper();
@@ -41,7 +41,7 @@ public class DataParser {
             var streetNodesIds = edgeDTO.getStreetDTO().getNodesIds();
             var crossingDTOS = graphDataDTO.getNodeDTOS();
             ArrayList<ObjectNode> jsonNodes = getCrossingsParsedToObjectNodes(streetNodesIds, crossingDTOS, hospitals);
-            jsonStreet.putArray(CROSSINGS_KEY).addAll(jsonNodes);
+            jsonStreet.putArray(NODES_KEY).addAll(jsonNodes);
             jsonStreets.add(jsonStreet);
         }
         return jsonStreets;
@@ -55,11 +55,9 @@ public class DataParser {
             ObjectNode jsonNode = objectMapper.createObjectNode();
             NodeDTO crossing = getCrossingWithGivenId(nodeId, nodeDTOS);
             jsonNode.put(ID_KEY, crossing.getGeographicalNodeDTO().getId());
-            jsonNode.put(WEIGHT_KEY, crossing.getWeight());
             jsonNode.put(LATITUDE_KEY, crossing.getGeographicalNodeDTO().getLat());
             jsonNode.put(LONGITUDE_KEY, crossing.getGeographicalNodeDTO().getLon());
-            jsonNode.put(CROSSINGS_KEY, crossing.getGeographicalNodeDTO().isCrossing());
-            jsonNode.put(HOSPITAL_KEY, hospitals.contains(crossing.getGeographicalNodeDTO()));
+            jsonNode.put(IS_HOSPITAL_KEY, hospitals.contains(crossing.getGeographicalNodeDTO()));
             jsonNodes.add(jsonNode);
         }
         return jsonNodes;
