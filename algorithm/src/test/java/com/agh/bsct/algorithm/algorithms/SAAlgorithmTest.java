@@ -1,7 +1,6 @@
 package com.agh.bsct.algorithm.algorithms;
 
 import com.agh.bsct.algorithm.controllers.mapper.AlgorithmTaskMapper;
-import com.agh.bsct.algorithm.entities.graph.Graph;
 import com.agh.bsct.algorithm.entities.graph.GraphInitializer;
 import com.agh.bsct.algorithm.services.entities.graph.GraphService;
 import com.agh.bsct.algorithm.services.entities.graphdata.GraphDataService;
@@ -18,18 +17,17 @@ import static com.agh.bsct.algorithm.entities.graph.GraphInitializer.SRC_TEST_RE
 import static org.mockito.Mockito.mock;
 
 //@RunWith(JUnitPlatform.class)
-public class SAAlgorithmTest {
+class SAAlgorithmTest {
 
     private static int NUMBER_OF_RESULTS = 1;
 
-    private Graph graph;
     private AsyncAlgorithmTaskRunner asyncAlgorithmTaskRunner;
     private AlgorithmTask algorithmTask;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         var graphInitializer = new GraphInitializer();
-        this.graph = graphInitializer.initGraph(SRC_TEST_RESOURCES_PATH + "tarnow.txt");
+        var graph = graphInitializer.initGraph(SRC_TEST_RESOURCES_PATH + "tarnow.txt");
 
         var saAlgorithm = new SAAlgorithm(new AlgorithmTaskMapper(), new GraphDataService(new GraphService()));
         this.asyncAlgorithmTaskRunner = new AsyncAlgorithmTaskRunner(saAlgorithm);
@@ -40,7 +38,12 @@ public class SAAlgorithmTest {
     }
 
     @Test
-    public void shouldRunAlgorithm() {
+    void shouldRunAlgorithm() {
+        asyncAlgorithmTaskRunner.run(algorithmTask);
+    }
+
+    @Test
+    void shouldWork() {
         asyncAlgorithmTaskRunner.run(algorithmTask);
     }
 

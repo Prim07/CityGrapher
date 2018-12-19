@@ -27,17 +27,15 @@ public class SAAlgorithm implements IAlgorithm {
     public void run(AlgorithmTask algorithmTask) {
         algorithmTask.setStatus(AlgorithmCalculationStatus.CALCULATING);
 
-        algorithmTask.setStatus(AlgorithmCalculationStatus.SUCCESS);
-
-        extractBiggestConnectedComponent(algorithmTask);
+        replaceGraphWithItsBiggestCommonComponent(algorithmTask);
 
         var fakeAlgorithmResult = algorithmTaskMapper.mapToAlgorithmResultDTO(algorithmTask);
         algorithmTask.setAlgorithmResultDTO(fakeAlgorithmResult);
     }
 
-    private void extractBiggestConnectedComponent(AlgorithmTask algorithmTask) {
-        graphDataService.extractBiggestConnectedComponent(algorithmTask.getGraphDataDTO(),
-                algorithmTask.getGraph().getIncidenceMap());
+    private void replaceGraphWithItsBiggestCommonComponent(AlgorithmTask algorithmTask) {
+        graphDataService.replaceGraphWithItsBiggestCommonComponent(
+                algorithmTask.getGraphDataDTO(), algorithmTask.getGraph().getIncidenceMap());
     }
 
 }

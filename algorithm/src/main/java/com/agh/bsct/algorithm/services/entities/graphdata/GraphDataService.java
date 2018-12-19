@@ -21,8 +21,8 @@ public class GraphDataService {
         this.graphService = graphService;
     }
 
-    public void extractBiggestConnectedComponent(GraphDataDTO graphData,
-                                                 Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap) {
+    public void replaceGraphWithItsBiggestCommonComponent(GraphDataDTO graphData,
+                                                          Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap) {
         var biggestConnectedComponentNodes = graphService.findBiggestConnectedComponent(nodeToEdgesIncidenceMap);
 
         //we don't have to remove anything from nodes collection because we want to draw only edges
