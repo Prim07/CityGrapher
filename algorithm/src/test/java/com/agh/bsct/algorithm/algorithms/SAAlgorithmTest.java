@@ -29,7 +29,9 @@ class SAAlgorithmTest {
         var graphInitializer = new GraphInitializer();
         var graph = graphInitializer.initGraph(SRC_TEST_RESOURCES_PATH + "tarnow.txt");
 
-        var saAlgorithm = new SAAlgorithm(new AlgorithmTaskMapper(), new GraphDataService(new GraphService()));
+        var graphDataService = new GraphDataService();
+        var graphService = new GraphService(graphDataService);
+        var saAlgorithm = new SAAlgorithm(new AlgorithmTaskMapper(), graphService);
         this.asyncAlgorithmTaskRunner = new AsyncAlgorithmTaskRunner(saAlgorithm);
 
         var taskId = UUID.randomUUID().toString();

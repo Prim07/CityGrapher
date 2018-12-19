@@ -3,7 +3,10 @@ package com.agh.bsct.algorithm.services.entities.graph;
 import com.agh.bsct.algorithm.entities.graph.Graph;
 import com.agh.bsct.algorithm.entities.graph.GraphEdge;
 import com.agh.bsct.algorithm.entities.graph.GraphNode;
+import com.agh.bsct.algorithm.services.entities.graphdata.GraphDataService;
+import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
 import com.agh.bsct.api.entities.graphdata.NodeDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -11,8 +14,16 @@ import java.util.*;
 @Service
 public class GraphService {
 
+    private GraphDataService graphDataService;
+
+    @Autowired
+    public GraphService(GraphDataService graphDataService) {
+        this.graphDataService = graphDataService;
+    }
+
     //TODO call this method before algorithm
-    public void replaceGraphWithItsBiggestConnectedComponent(Graph graph) {
+    public void replaceGraphWithItsBiggestConnectedComponent(AlgorithmTask algorithmTask) {
+        var graph = algorithmTask.getGraph();
         var nodeToEdgesIncidenceMap = graph.getIncidenceMap();
 
         var graphNodesFromConnectedComponent = findBiggestConnectedComponent(nodeToEdgesIncidenceMap);
@@ -29,7 +40,10 @@ public class GraphService {
             }
         }
 
-        nodeToEdgesIncidenceMap = nodeToEdgesIncidenceMapCopy;
+        graph.setNodeToEdgesIncidenceMap(nodeToEdgesIncidenceMapCopy);
+
+        var graphDataDTO = algorithmTask.getGraphDataDTO();
+        graphDataService.replaceGraphWithItsBiggestCommonComponent(graphDataDTO, graphNodesFromConnectedComponent);
     }
 
     public List<GraphNode> findBiggestConnectedComponent(Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap) {

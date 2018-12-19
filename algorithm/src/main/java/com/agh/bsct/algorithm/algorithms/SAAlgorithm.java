@@ -1,7 +1,7 @@
 package com.agh.bsct.algorithm.algorithms;
 
 import com.agh.bsct.algorithm.controllers.mapper.AlgorithmTaskMapper;
-import com.agh.bsct.algorithm.services.entities.graphdata.GraphDataService;
+import com.agh.bsct.algorithm.services.entities.graph.GraphService;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmCalculationStatus;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,27 +15,25 @@ public class SAAlgorithm implements IAlgorithm {
     public static final String SIMULATED_ANNEALING_QUALIFIER = "simulatedAnnealingAlgorithm";
 
     private AlgorithmTaskMapper algorithmTaskMapper;
-    private GraphDataService graphDataService;
+    private GraphService graphService;
 
     @Autowired
-    public SAAlgorithm(AlgorithmTaskMapper algorithmTaskMapper, GraphDataService graphDataService) {
+    public SAAlgorithm(AlgorithmTaskMapper algorithmTaskMapper,
+                       GraphService graphService) {
         this.algorithmTaskMapper = algorithmTaskMapper;
-        this.graphDataService = graphDataService;
+        this.graphService = graphService;
     }
 
     @Override
     public void run(AlgorithmTask algorithmTask) {
         algorithmTask.setStatus(AlgorithmCalculationStatus.CALCULATING);
+        graphService.replaceGraphWithItsBiggestConnectedComponent(algorithmTask);
+        graphService.calculateShortestPathsDistances(algorithmTask.getGraph());
 
-        replaceGraphWithItsBiggestCommonComponent(algorithmTask);
+
 
         var fakeAlgorithmResult = algorithmTaskMapper.mapToAlgorithmResultDTO(algorithmTask);
         algorithmTask.setAlgorithmResultDTO(fakeAlgorithmResult);
-    }
-
-    private void replaceGraphWithItsBiggestCommonComponent(AlgorithmTask algorithmTask) {
-        graphDataService.replaceGraphWithItsBiggestCommonComponent(
-                algorithmTask.getGraphDataDTO(), algorithmTask.getGraph().getIncidenceMap());
     }
 
 }

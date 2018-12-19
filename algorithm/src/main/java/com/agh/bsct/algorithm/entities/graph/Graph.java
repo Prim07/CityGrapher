@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class Graph {
 
-    private final Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap;
+    private Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap;
 
     public Graph(Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap) {
         this.nodeToEdgesIncidenceMap = nodeToEdgesIncidenceMap;
@@ -13,6 +13,10 @@ public class Graph {
 
     public Map<GraphNode, List<GraphEdge>> getIncidenceMap() {
         return nodeToEdgesIncidenceMap;
+    }
+
+    public void setNodeToEdgesIncidenceMap(Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap) {
+        this.nodeToEdgesIncidenceMap = nodeToEdgesIncidenceMap;
     }
 
 }
