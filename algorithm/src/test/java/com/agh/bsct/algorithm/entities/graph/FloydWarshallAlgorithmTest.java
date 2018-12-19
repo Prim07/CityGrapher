@@ -8,12 +8,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.agh.bsct.algorithm.entities.graph.GraphInitializer.SRC_TEST_RESOURCES_PATH;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class FloydWarshallAlgorithmTest {
-
-    private static final String SRC_TEST_RESOURCES_PATH = "src/test/resources/";
 
     private final GraphInitializer graphInitializer = new GraphInitializer();
     private final GraphService graphService = new GraphService();

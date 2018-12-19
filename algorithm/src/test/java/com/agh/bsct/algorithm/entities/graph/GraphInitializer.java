@@ -8,11 +8,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class GraphInitializer {
+public class GraphInitializer {
+
+    public static final String SRC_TEST_RESOURCES_PATH = "src/test/resources/";
 
     private Map<String, Graph> filenameToGraph = new HashMap<>();
 
-    Graph initGraph(String filename) {
+    public Graph initGraph(String filename) {
         if (!filenameToGraph.containsKey(filename)) {
             var graph = loadGraphFromFile(filename);
             filenameToGraph.put(filename, graph);

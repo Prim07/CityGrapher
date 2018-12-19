@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-
 @Component
 @Qualifier(SAAlgorithm.SIMULATED_ANNEALING_QUALIFIER)
 public class SAAlgorithm implements IAlgorithm {
@@ -28,11 +26,6 @@ public class SAAlgorithm implements IAlgorithm {
     @Override
     public void run(AlgorithmTask algorithmTask) {
         algorithmTask.setStatus(AlgorithmCalculationStatus.CALCULATING);
-
-        //TODO this fake calculation takes about 20 sec on i7-4700HQ, remove it when start implementation
-        for (int j = 0; j < 300000; ++j) {
-            ArrayList<Integer> aaa =new ArrayList<>(j);
-        }
 
         algorithmTask.setStatus(AlgorithmCalculationStatus.SUCCESS);
 
