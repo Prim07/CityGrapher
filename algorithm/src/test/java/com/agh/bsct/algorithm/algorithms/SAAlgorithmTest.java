@@ -16,7 +16,6 @@ import java.util.UUID;
 import static com.agh.bsct.algorithm.entities.graph.GraphInitializer.SRC_TEST_RESOURCES_PATH;
 import static org.mockito.Mockito.mock;
 
-//@RunWith(JUnitPlatform.class)
 class SAAlgorithmTest {
 
     private static int NUMBER_OF_RESULTS = 1;
