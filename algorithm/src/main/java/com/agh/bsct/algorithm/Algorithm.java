@@ -29,8 +29,8 @@ public class Algorithm implements AsyncConfigurer {
     @Bean(name = SPRING_THREAD_POOL_NAME)
     public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
-        threadPoolTaskExecutor.setCorePoolSize(8);
-        threadPoolTaskExecutor.setMaxPoolSize(16);
+        threadPoolTaskExecutor.setCorePoolSize(16);
+        threadPoolTaskExecutor.setMaxPoolSize(32);
         threadPoolTaskExecutor.setQueueCapacity(64);
         return threadPoolTaskExecutor;
     }

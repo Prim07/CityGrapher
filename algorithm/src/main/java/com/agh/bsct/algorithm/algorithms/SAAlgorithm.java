@@ -25,8 +25,9 @@ public class SAAlgorithm implements IAlgorithm {
 
     public static final String SIMULATED_ANNEALING_QUALIFIER = "simulatedAnnealingAlgorithm";
 
-    private static final int MAX_ITERATIONS = 100000;
-    private static final double MIN_TEMP = 0.005;
+    private static final int MAX_ITERATIONS = 1000000;
+    private static final double MIN_TEMP = 0.000000005;
+    private static final double INITIAL_TEMP = 100000000.0;
 
     private AlgorithmTaskMapper algorithmTaskMapper;
     private GraphService graphService;
@@ -48,7 +49,7 @@ public class SAAlgorithm implements IAlgorithm {
 
         // heart of calculating
         var k = 0;
-        var temp = 10000.0;
+        var temp = INITIAL_TEMP;
         Map<GraphNode, List<GraphEdge>> incidenceMap = algorithmTask.getGraph().getIncidenceMap();
         List<GraphNode> acceptedState = initializeGlobalState(algorithmTask, incidenceMap);
         List<GraphNode> bestState = acceptedState;
@@ -59,6 +60,7 @@ public class SAAlgorithm implements IAlgorithm {
             acceptedFunctionValue = calculateFunctionValue(shortestPathsDistances, acceptedState);
             var localState = changeRandomlyState(incidenceMap, acceptedState);
             var localFunctionValue = calculateFunctionValue(shortestPathsDistances, localState);
+            double delta = localFunctionValue - acceptedFunctionValue;
 
             if (localFunctionValue < acceptedFunctionValue) {
                 acceptedState = localState;
@@ -67,16 +69,18 @@ public class SAAlgorithm implements IAlgorithm {
                 }
             } else {
                 var worseResultAcceptanceProbability = random.nextDouble();
-                var p = Math.exp(-(localFunctionValue - acceptedFunctionValue) / temp);
+                var p = Math.exp(-delta / temp);
                 if (worseResultAcceptanceProbability < p) {
                     acceptedState = localState;
                 }
             }
 
             // update temperature
-            temp = temp * 0.95;
+            temp = 0.99 * temp;
             k++;
         }
+        System.out.println(temp);
+        System.out.println(k);
 
         // map to algorithm result and set it
         algorithmTask.setStatus(AlgorithmCalculationStatus.SUCCESS);
