@@ -1,5 +1,7 @@
 package com.agh.bsct.algorithm.entities.graph;
 
+import java.util.Objects;
+
 public class GraphNode {
 
     private long id;
@@ -16,5 +18,19 @@ public class GraphNode {
 
     public Integer getWeight() {
         return weight;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GraphNode graphNode = (GraphNode) o;
+        return id == graphNode.id &&
+                weight == graphNode.weight;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, weight);
     }
 }

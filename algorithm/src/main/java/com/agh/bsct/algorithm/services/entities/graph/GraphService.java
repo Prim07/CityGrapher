@@ -5,6 +5,7 @@ import com.agh.bsct.algorithm.entities.graph.GraphEdge;
 import com.agh.bsct.algorithm.entities.graph.GraphNode;
 import com.agh.bsct.algorithm.services.entities.graphdata.GraphDataService;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
+import com.agh.bsct.api.entities.graphdata.NodeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -59,7 +60,7 @@ public class GraphService {
 
         var currentComponentNodesIds = new Stack<Integer>();
 
-        for (Integer i = 0; i < graphNodesSize; i++) {
+        for (int i = 0; i < graphNodesSize; i++) {
             if (nodesComponentIds[i] > 0) {
                 continue;
             }
@@ -67,7 +68,6 @@ public class GraphService {
             currentComponentId++;
             currentComponentNodesIds.push(i);
             nodesComponentIds[i] = currentComponentId;
-
             while (!currentComponentNodesIds.empty()) {
                 var nodeIdFromPeek = currentComponentNodesIds.peek();
                 currentComponentNodesIds.pop();
@@ -174,10 +174,10 @@ public class GraphService {
         return graphNodesFromBiggestCC;
     }
 
-    private int getBiggestCCId(int graphNodesSize, Integer[] nodesComponentIds, int currentComponentId) {
+    private int getBiggestCCId(int graphNodesSize, Integer[] nodesComponentIds, int numberOfComponents) {
         var biggestConnectedComponentId = 0;
         var biggestConnectedComponentSize = 0;
-        for (int i = 1; i <= currentComponentId; i++) {
+        for (int i = 1; i <= numberOfComponents; i++) {
             var connectedComponentSize = 0;
             for (int j = 0; j < graphNodesSize; j++) {
                 if (nodesComponentIds[j] == i) {

@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -34,4 +35,19 @@ public class GeographicalNodeDTO {
         this.isCrossing = isCrossing;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GeographicalNodeDTO that = (GeographicalNodeDTO) o;
+        return isCrossing == that.isCrossing &&
+                Objects.equals(id, that.id) &&
+                Objects.equals(lon, that.lon) &&
+                Objects.equals(lat, that.lat);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, lon, lat, isCrossing);
+    }
 }

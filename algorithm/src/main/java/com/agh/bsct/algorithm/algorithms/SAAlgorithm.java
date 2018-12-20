@@ -6,6 +6,9 @@ import com.agh.bsct.algorithm.entities.graph.GraphNode;
 import com.agh.bsct.algorithm.services.entities.graph.GraphService;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmCalculationStatus;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
+import com.agh.bsct.api.entities.citydata.GeographicalNodeDTO;
+import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
+import com.agh.bsct.api.entities.graphdata.NodeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -14,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Component
 @Qualifier(SAAlgorithm.SIMULATED_ANNEALING_QUALIFIER)
@@ -21,7 +25,8 @@ public class SAAlgorithm implements IAlgorithm {
 
     public static final String SIMULATED_ANNEALING_QUALIFIER = "simulatedAnnealingAlgorithm";
 
-    private static final int MAX_ITERATIONS = 10000;
+    private static final int MAX_ITERATIONS = 100000;
+    private static final double MIN_TEMP = 0.005;
 
     private AlgorithmTaskMapper algorithmTaskMapper;
     private GraphService graphService;
@@ -39,38 +44,70 @@ public class SAAlgorithm implements IAlgorithm {
         // prepare properly graph
         algorithmTask.setStatus(AlgorithmCalculationStatus.CALCULATING);
         graphService.replaceGraphWithItsBiggestConnectedComponent(algorithmTask);
-        Map<Long, Map<Long, Double>> shortestPathsDistances = graphService.calculateShortestPathsDistances(algorithmTask.getGraph());
+        final Map<Long, Map<Long, Double>> shortestPathsDistances = graphService.calculateShortestPathsDistances(algorithmTask.getGraph());
 
         // heart of calculating
-        int k = 0;
-        double temp = Double.MAX_VALUE;
+        var k = 0;
+        var temp = 10000.0;
         Map<GraphNode, List<GraphEdge>> incidenceMap = algorithmTask.getGraph().getIncidenceMap();
-        List<GraphNode> globalState = initializeGlobalState(algorithmTask, incidenceMap);
-        double globalFunctionValue = calculateFunctionValue(shortestPathsDistances, globalState);
+        List<GraphNode> acceptedState = initializeGlobalState(algorithmTask, incidenceMap);
+        List<GraphNode> bestState = acceptedState;
+        double acceptedFunctionValue = calculateFunctionValue(shortestPathsDistances, acceptedState);
+        double bestFunctionValue = acceptedFunctionValue;
 
-        while (shouldIterate(k)) {
-            double functionValue = calculateFunctionValue(shortestPathsDistances, globalState);
-            changeRandomlyState(globalState, incidenceMap);
-            double primFunctionValue = calculateFunctionValue(shortestPathsDistances, globalState);
+        while (shouldIterate(k, temp)) {
+            acceptedFunctionValue = calculateFunctionValue(shortestPathsDistances, acceptedState);
+            var localState = changeRandomlyState(incidenceMap, acceptedState);
+            var localFunctionValue = calculateFunctionValue(shortestPathsDistances, localState);
 
+            if (localFunctionValue < acceptedFunctionValue) {
+                acceptedState = localState;
+                if (localFunctionValue < bestFunctionValue) {
+                    bestFunctionValue = localFunctionValue;
+                }
+            } else {
+                var worseResultAcceptanceProbability = random.nextDouble();
+                var p = Math.exp(-(localFunctionValue - acceptedFunctionValue) / temp);
+                if (worseResultAcceptanceProbability < p) {
+                    acceptedState = localState;
+                }
+            }
 
+            // update temperature
+            temp = temp * 0.95;
             k++;
         }
 
         // map to algorithm result and set it
+        algorithmTask.setStatus(AlgorithmCalculationStatus.SUCCESS);
+        algorithmTask.setHospitals(getGeographicalNodesForBestState(bestState, algorithmTask.getGraphDataDTO()));
         var fakeAlgorithmResult = algorithmTaskMapper.mapToAlgorithmResultDTO(algorithmTask);
         algorithmTask.setAlgorithmResultDTO(fakeAlgorithmResult);
     }
 
-    private boolean shouldIterate(int k) {
-        return k < MAX_ITERATIONS;
+    private List<GeographicalNodeDTO> getGeographicalNodesForBestState(List<GraphNode> bestState,
+                                                                       GraphDataDTO graphDataDTO) {
+        List<Long> bestStateNodesIds = bestState.stream()
+                .map(GraphNode::getId)
+                .collect(Collectors.toList());
+        return graphDataDTO.getNodeDTOS().stream()
+                .map(NodeDTO::getGeographicalNodeDTO)
+                .filter(geographicalNodeDTO -> bestStateNodesIds.contains(geographicalNodeDTO.getId()))
+                .collect(Collectors.toList());
     }
 
-    private void changeRandomlyState(List<GraphNode> globalState, Map<GraphNode, List<GraphEdge>> incidenceMap) {
-        int nodeToChangeIndex = random.nextInt(globalState.size());
-        List<GraphEdge> nodeToChangeNeighbours = incidenceMap.get(globalState.get(nodeToChangeIndex));
+    private boolean shouldIterate(int k, double temp) {
+        return k < MAX_ITERATIONS
+                && temp > MIN_TEMP;
+    }
+
+    private ArrayList<GraphNode> changeRandomlyState(Map<GraphNode, List<GraphEdge>> incidenceMap, List<GraphNode> globalState) {
+        var localState = new ArrayList<>(globalState);
+        int nodeToChangeIndex = random.nextInt(localState.size());
+        List<GraphEdge> nodeToChangeNeighbours = incidenceMap.get(localState.get(nodeToChangeIndex));
         GraphEdge graphEdge = nodeToChangeNeighbours.get(random.nextInt(nodeToChangeNeighbours.size()));
-        globalState.set(nodeToChangeIndex, graphEdge.getEndGraphNode());
+        localState.set(nodeToChangeIndex, graphEdge.getEndGraphNode());
+        return localState;
     }
 
     private List<GraphNode> initializeGlobalState(AlgorithmTask algorithmTask,

@@ -33,7 +33,7 @@ public class GraphInitializer {
             String linesForOneMapElement = null;
             while (line != null) {
 
-                if (line.matches("\\s+")) {
+                if (line.equals("") || line.matches("\\s+")) {
                     String[] stringIds = linesForOneMapElement.split("\\s+");
 
                     GraphNode graphNode = null;
@@ -54,7 +54,7 @@ public class GraphInitializer {
                     nodeToEdgesIncidenceMap.put(graphNode, graphEdges);
 
                 } else {
-                    linesForOneMapElement = (linesForOneMapElement == null) ? line : (linesForOneMapElement + line);
+                    linesForOneMapElement = (linesForOneMapElement == null) ? line : (linesForOneMapElement + " " + line);
                 }
 
                 line = reader.readLine();

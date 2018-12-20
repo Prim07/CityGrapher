@@ -1,5 +1,7 @@
 package com.agh.bsct.algorithm.entities.graph;
 
+import java.util.Objects;
+
 public class GraphEdge {
 
     /*
@@ -22,5 +24,19 @@ public class GraphEdge {
 
     public double getWeight() {
         return weight;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GraphEdge graphEdge = (GraphEdge) o;
+        return Double.compare(graphEdge.weight, weight) == 0 &&
+                Objects.equals(endGraphNode, graphEdge.endGraphNode);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(endGraphNode, weight);
     }
 }
