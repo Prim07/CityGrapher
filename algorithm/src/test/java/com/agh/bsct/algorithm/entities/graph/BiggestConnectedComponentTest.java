@@ -1,6 +1,7 @@
 package com.agh.bsct.algorithm.entities.graph;
 
 import com.agh.bsct.algorithm.services.entities.graph.GraphService;
+import com.agh.bsct.algorithm.services.entities.graphdata.GraphDataService;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class BiggestConnectedComponentTest {
 
     private final GraphInitializer graphInitializer = new GraphInitializer();
-    private final GraphService graphService = new GraphService();
+    private final GraphService graphService = new GraphService(new GraphDataService());
 
     @Test
     void shouldBeTheSameWhenMilocinIsCalculatedMultipleTimes() {

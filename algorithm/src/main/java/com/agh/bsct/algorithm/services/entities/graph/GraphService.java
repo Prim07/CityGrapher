@@ -5,7 +5,6 @@ import com.agh.bsct.algorithm.entities.graph.GraphEdge;
 import com.agh.bsct.algorithm.entities.graph.GraphNode;
 import com.agh.bsct.algorithm.services.entities.graphdata.GraphDataService;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
-import com.agh.bsct.api.entities.graphdata.NodeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +20,6 @@ public class GraphService {
         this.graphDataService = graphDataService;
     }
 
-    //TODO call this method before algorithm
     public void replaceGraphWithItsBiggestConnectedComponent(AlgorithmTask algorithmTask) {
         var graph = algorithmTask.getGraph();
         var nodeToEdgesIncidenceMap = graph.getIncidenceMap();
@@ -95,43 +93,56 @@ public class GraphService {
 
     }
 
-    //TODO call this method before algorithm
-    public Double[][] calculateShortestPathsDistances(Graph graph) {
+    public Map<Long, Map<Long, Double>> calculateShortestPathsDistances(Graph graph) {
         var nodeToEdgesIncidenceMap = graph.getIncidenceMap();
 
         var graphNodes = new ArrayList<>(nodeToEdgesIncidenceMap.keySet());
+        var shortestPathsDistances = new HashMap<Long, Map<Long, Double>>();
 
-        int graphNodesCount = nodeToEdgesIncidenceMap.size();
-        var shortestPathsDistances = new Double[graphNodesCount][graphNodesCount];
-
-        //initialize distances with edge weights or infinity when edge doesn't exist
-        for (int i = 0; i < graphNodesCount; i++) {
-            for (int j = 0; j < graphNodesCount; j++) {
-                if (i == j) {
-                    shortestPathsDistances[i][j] = 0.0;
+        for (GraphNode i : graphNodes) {
+            for (GraphNode j : graphNodes) {
+                if (i.equals(j)) {
+                    putValueToMap(i, j, 0.0, shortestPathsDistances);
                 } else {
-                    double edgeWeight = getEdgeWeight(graphNodes.get(i), graphNodes.get(j), nodeToEdgesIncidenceMap);
+                    double edgeWeight = getEdgeWeight(i, j, nodeToEdgesIncidenceMap);
                     if (edgeWeight > 0) {
-                        shortestPathsDistances[i][j] = edgeWeight;
+                        putValueToMap(i, j, edgeWeight, shortestPathsDistances);
+
                     } else {
-                        shortestPathsDistances[i][j] = Double.MAX_VALUE;
+                        putValueToMap(i, j, Double.MAX_VALUE, shortestPathsDistances);
+
                     }
                 }
             }
         }
-
-        //find shortest paths distances
-        for (int k = 0; k < graphNodesCount; k++) {
-            for (int i = 0; i < graphNodesCount; i++) {
-                for (int j = 0; j < graphNodesCount; j++) {
-                    if (shortestPathsDistances[i][j] > shortestPathsDistances[i][k] + shortestPathsDistances[k][j]) {
-                        shortestPathsDistances[i][j] = shortestPathsDistances[i][k] + shortestPathsDistances[k][j];
+        for (GraphNode k : graphNodes) {
+            for (GraphNode i : graphNodes) {
+                for (GraphNode j : graphNodes) {
+                    if (shortestPathsDistances.get(i.getId()).get(j.getId()) >
+                            shortestPathsDistances.get(i.getId()).get(k.getId())
+                                    + shortestPathsDistances.get(k.getId()).get(j.getId())) {
+                        shortestPathsDistances.get(i.getId()).put(j.getId(),
+                                shortestPathsDistances.get(i.getId()).get(k.getId())
+                                        + shortestPathsDistances.get(k.getId()).get(j.getId()));
                     }
                 }
             }
         }
 
         return shortestPathsDistances;
+    }
+
+    private void putValueToMap(GraphNode i,
+                               GraphNode j,
+                               double value,
+                               Map<Long, Map<Long, Double>> shortestPathsDistances) {
+        Long iId = i.getId();
+        Map<Long, Double> currentNodeShortestPathsDistance = shortestPathsDistances.get(iId);
+        if (currentNodeShortestPathsDistance == null) {
+            shortestPathsDistances.put(iId, new HashMap<>());
+            currentNodeShortestPathsDistance = shortestPathsDistances.get(iId);
+        }
+        currentNodeShortestPathsDistance.put(j.getId(), value);
     }
 
     private boolean shouldGraphEdgeBeDeleted(List<GraphNode> graphNodesFromConnectedComponent, GraphEdge graphEdge) {
@@ -141,21 +152,6 @@ public class GraphService {
     private boolean shouldGraphNodeBeKept(List<GraphNode> graphNodesFromConnectedComponent,
                                           List<GraphEdge> graphEdgesList, GraphNode graphNode) {
         return graphNodesFromConnectedComponent.contains(graphNode) && !graphEdgesList.isEmpty();
-    }
-
-    private GraphNode getNodeForId(Long nodeId, Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap) {
-        return nodeToEdgesIncidenceMap.keySet().stream()
-                .filter(graphNode -> graphNode.getId().equals(nodeId))
-                .findAny()
-                .orElse(null);
-    }
-
-    private NodeDTO getCrossingWithId(List<NodeDTO> nodeDTOS, Long nodeId) {
-        return nodeDTOS.stream()
-                .filter(nodeDTO -> nodeDTO.getGeographicalNodeDTO().getId().equals(nodeId))
-                .findAny()
-                .orElseThrow(() -> new IllegalStateException("Cannot find Crossing for GraphNode with given id: "
-                        + nodeId));
     }
 
     private double getEdgeWeight(GraphNode graphNode1, GraphNode graphNode2,

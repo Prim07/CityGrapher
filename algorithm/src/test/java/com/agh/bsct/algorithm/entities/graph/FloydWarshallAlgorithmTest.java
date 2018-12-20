@@ -1,12 +1,10 @@
 package com.agh.bsct.algorithm.entities.graph;
 
 import com.agh.bsct.algorithm.services.entities.graph.GraphService;
+import com.agh.bsct.algorithm.services.entities.graphdata.GraphDataService;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 import static com.agh.bsct.algorithm.entities.graph.GraphInitializer.SRC_TEST_RESOURCES_PATH;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 class FloydWarshallAlgorithmTest {
 
     private final GraphInitializer graphInitializer = new GraphInitializer();
-    private final GraphService graphService = new GraphService();
+    private final GraphService graphService = new GraphService(new GraphDataService());
 
     @Test
     void shouldBeTheSameWhenMilocinIsCalculatedMultipleTimes() {
@@ -42,27 +40,19 @@ class FloydWarshallAlgorithmTest {
         var graph = graphInitializer.initGraph(filename);
 
         var shortestPathsDistancesToCompare = graphService.calculateShortestPathsDistances(graph);
-        var shortestPathsDistancesListToCompare = convert2DArrayToList(shortestPathsDistancesToCompare);
 
         int loopCount = 1000;
         for (int i = 0; i < loopCount; i++) {
             var shortestPathsDistances = graphService.calculateShortestPathsDistances(graph);
-            var shortestPathsDistancesList = convert2DArrayToList(shortestPathsDistances);
 
-            for (List<Double> distances : shortestPathsDistancesList) {
-                for (Double distance : distances) {
+            for (Map<Long, Double> currentNodeShortestPathsDistance : shortestPathsDistances.values()) {
+                for (Double distance : currentNodeShortestPathsDistance.values()) {
                     assertNotEquals(Double.MAX_VALUE, distance);
                 }
             }
-            assertEquals(shortestPathsDistancesListToCompare.size(), shortestPathsDistancesList.size());
-            assertEquals(shortestPathsDistancesListToCompare, shortestPathsDistancesList);
-        }
-    }
 
-    private List<List<Double>> convert2DArrayToList(Double[][] shortestPathsDistances) {
-        return Arrays.stream(shortestPathsDistances)
-                .map(doubles -> Arrays.stream(doubles).collect(Collectors.toList()))
-                .map(ArrayList::new)
-                .collect(Collectors.toList());
+            assertEquals(shortestPathsDistancesToCompare.size(), shortestPathsDistances.size());
+            assertEquals(shortestPathsDistancesToCompare, shortestPathsDistances);
+        }
     }
 }
