@@ -137,12 +137,19 @@ public class GraphService {
         for (GraphNode k : graphNodes) {
             for (GraphNode i : graphNodes) {
                 for (GraphNode j : graphNodes) {
-                    if (shortestPathsDistances.get(i.getId()).get(j.getId()) >
-                            shortestPathsDistances.get(i.getId()).get(k.getId())
-                                    + shortestPathsDistances.get(k.getId()).get(j.getId())) {
-                        shortestPathsDistances.get(i.getId()).put(j.getId(),
-                                shortestPathsDistances.get(i.getId()).get(k.getId())
-                                        + shortestPathsDistances.get(k.getId()).get(j.getId()));
+
+                    Long iNodeId = i.getId();
+                    Long jNodeId = j.getId();
+                    Long kNodeId = k.getId();
+
+                    Double shortestDistanceFromINodeToJNode = shortestPathsDistances.get(iNodeId).get(jNodeId);
+                    Double shortestDistanceFromINodeKNode = shortestPathsDistances.get(iNodeId).get(kNodeId);
+                    Double shortestDistanceFromKNodeToJNode = shortestPathsDistances.get(kNodeId).get(jNodeId);
+
+                    if (shortestDistanceFromINodeToJNode >
+                            shortestDistanceFromINodeKNode + shortestDistanceFromKNodeToJNode) {
+                        shortestPathsDistances.get(iNodeId).put(jNodeId,
+                                shortestDistanceFromINodeKNode + shortestDistanceFromKNodeToJNode);
                     }
                 }
             }
