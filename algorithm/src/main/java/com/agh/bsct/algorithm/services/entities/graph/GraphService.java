@@ -28,6 +28,27 @@ public class GraphService {
 
         var nodeToEdgesIncidenceMapCopy = new HashMap<GraphNode, List<GraphEdge>>();
 
+        removeNodesNotIncludedInBCC(nodeToEdgesIncidenceMap, graphNodesFromConnectedComponent, nodeToEdgesIncidenceMapCopy);
+
+        graph.setNodeToEdgesIncidenceMap(nodeToEdgesIncidenceMapCopy);
+
+        var graphDataDTO = algorithmTask.getGraphDataDTO();
+        graphDataService.replaceGraphWithItsBiggestCommonComponent(graphDataDTO, graphNodesFromConnectedComponent);
+    }
+
+    public void replaceGraphWithItsBiggestConnectedComponent(Graph graph) {
+        var nodeToEdgesIncidenceMap = graph.getIncidenceMap();
+
+        var graphNodesFromConnectedComponent = findBiggestConnectedComponent(nodeToEdgesIncidenceMap);
+
+        var nodeToEdgesIncidenceMapCopy = new HashMap<GraphNode, List<GraphEdge>>();
+
+        removeNodesNotIncludedInBCC(nodeToEdgesIncidenceMap, graphNodesFromConnectedComponent, nodeToEdgesIncidenceMapCopy);
+
+        graph.setNodeToEdgesIncidenceMap(nodeToEdgesIncidenceMapCopy);
+    }
+
+    private void removeNodesNotIncludedInBCC(Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap, List<GraphNode> graphNodesFromConnectedComponent, HashMap<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMapCopy) {
         for (Map.Entry<GraphNode, List<GraphEdge>> entry : nodeToEdgesIncidenceMap.entrySet()) {
             var graphEdgesList = entry.getValue();
             graphEdgesList.removeIf(graphEdge -> shouldGraphEdgeBeDeleted(graphNodesFromConnectedComponent, graphEdge));
@@ -37,11 +58,6 @@ public class GraphService {
                 nodeToEdgesIncidenceMapCopy.put(graphNode, graphEdgesList);
             }
         }
-
-        graph.setNodeToEdgesIncidenceMap(nodeToEdgesIncidenceMapCopy);
-
-        var graphDataDTO = algorithmTask.getGraphDataDTO();
-        graphDataService.replaceGraphWithItsBiggestCommonComponent(graphDataDTO, graphNodesFromConnectedComponent);
     }
 
     public List<GraphNode> findBiggestConnectedComponent(Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap) {

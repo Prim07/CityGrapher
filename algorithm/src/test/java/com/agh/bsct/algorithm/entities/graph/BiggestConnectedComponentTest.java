@@ -42,7 +42,7 @@ class BiggestConnectedComponentTest {
         Map<GraphNode, List<GraphEdge>> incidenceMap = graph.getIncidenceMap();
         var biggestCommonComponentToCompare = graphService.findBiggestConnectedComponent(incidenceMap);
 
-        int loopCount = 1000;
+        int loopCount = 100;
         for (int i = 0; i < loopCount; i++) {
             var biggestCommonComponent = graphService.findBiggestConnectedComponent(incidenceMap);
 
