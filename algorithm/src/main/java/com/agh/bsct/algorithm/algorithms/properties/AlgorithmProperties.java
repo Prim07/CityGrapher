@@ -9,10 +9,10 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.constraints.NotNull;
 
 @Data
+@Validated
 @Configuration
 @ConfigurationProperties(prefix = "algorithm-app")
 @PropertySource("classpath:algorithm-app.properties")
-@Validated
 public class AlgorithmProperties {
 
     /**
