@@ -3,6 +3,7 @@ package com.agh.bsct.algorithm.algorithms.writer;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class GnuplotStyleValuesWriter implements ValuesWriter {
 
@@ -31,6 +32,15 @@ public class GnuplotStyleValuesWriter implements ValuesWriter {
             System.out.println("Error while writing FileWriter: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    @SafeVarargs
+    public final <T extends Number> void writeLine(T key, T... values) {
+        String[] valuesToString = Arrays.stream(values)
+                .map(T::toString)
+                .toArray(String[]::new);
+
+        writeLine(key.toString(), valuesToString);
     }
 
     private String getGnuplotStyleFormattedLine(String key, String[] values) {
