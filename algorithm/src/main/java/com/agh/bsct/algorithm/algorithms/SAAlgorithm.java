@@ -1,5 +1,6 @@
 package com.agh.bsct.algorithm.algorithms;
 
+import com.agh.bsct.algorithm.algorithms.writer.GnuplotStyleValuesWriter;
 import com.agh.bsct.algorithm.controllers.mapper.AlgorithmTaskMapper;
 import com.agh.bsct.algorithm.entities.graph.GraphEdge;
 import com.agh.bsct.algorithm.entities.graph.GraphNode;
@@ -47,6 +48,9 @@ public class SAAlgorithm implements IAlgorithm {
         graphService.replaceGraphWithItsBiggestConnectedComponent(algorithmTask);
         final Map<Long, Map<Long, Double>> shortestPathsDistances = graphService.calculateShortestPathsDistances(algorithmTask.getGraph());
 
+        // prepare ValuesWriter (example version)
+        var valuesWriter = new GnuplotStyleValuesWriter(algorithmTask.getTaskId());
+
         // heart of calculating
         var k = 0;
         var temp = INITIAL_TEMP;
@@ -78,9 +82,13 @@ public class SAAlgorithm implements IAlgorithm {
             // update temperature
             temp = 0.99 * temp;
             k++;
+            valuesWriter.writeLine(k, temp);
         }
         System.out.println(temp);
         System.out.println(k);
+
+        //close writer resources
+        valuesWriter.closeResources();
 
         // map to algorithm result and set it
         algorithmTask.setStatus(AlgorithmCalculationStatus.SUCCESS);
