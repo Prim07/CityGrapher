@@ -1,5 +1,6 @@
 package com.agh.bsct.algorithm.algorithms;
 
+import com.agh.bsct.algorithm.algorithms.writer.GnuplotStyleValuesWriter;
 import com.agh.bsct.algorithm.controllers.mapper.AlgorithmTaskMapper;
 import com.agh.bsct.algorithm.entities.graph.GraphInitializer;
 import com.agh.bsct.algorithm.services.entities.graph.GraphService;
@@ -30,7 +31,8 @@ class SAAlgorithmTest {
 
         var graphDataService = new GraphDataService();
         var graphService = new GraphService(graphDataService);
-        var saAlgorithm = new SAAlgorithm(new AlgorithmTaskMapper(), graphService);
+        var saAlgorithm = new SAAlgorithm(new AlgorithmTaskMapper(), graphService,
+                mock(GnuplotStyleValuesWriter.class));
         this.asyncAlgorithmTaskRunner = new AsyncAlgorithmTaskRunner(saAlgorithm);
 
         var taskId = UUID.randomUUID().toString();

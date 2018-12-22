@@ -33,11 +33,16 @@ public class SAAlgorithm implements IAlgorithm {
     private AlgorithmTaskMapper algorithmTaskMapper;
     private GraphService graphService;
     private Random random;
+    private GnuplotStyleValuesWriter gnuplotStyleValuesWriter;
+
 
     @Autowired
-    public SAAlgorithm(AlgorithmTaskMapper algorithmTaskMapper, GraphService graphService) {
+    public SAAlgorithm(AlgorithmTaskMapper algorithmTaskMapper,
+                       GraphService graphService,
+                       GnuplotStyleValuesWriter gnuplotStyleValuesWriter) {
         this.algorithmTaskMapper = algorithmTaskMapper;
         this.graphService = graphService;
+        this.gnuplotStyleValuesWriter = gnuplotStyleValuesWriter;
         this.random = new Random();
     }
 
@@ -49,7 +54,7 @@ public class SAAlgorithm implements IAlgorithm {
         final Map<Long, Map<Long, Double>> shortestPathsDistances = graphService.calculateShortestPathsDistances(algorithmTask.getGraph());
 
         // prepare ValuesWriter (example version)
-        var valuesWriter = new GnuplotStyleValuesWriter(algorithmTask.getTaskId());
+        gnuplotStyleValuesWriter.initializeResources(algorithmTask.getTaskId());
 
         // heart of calculating
         var k = 0;
@@ -82,13 +87,13 @@ public class SAAlgorithm implements IAlgorithm {
             // update temperature
             temp = 0.99 * temp;
             k++;
-            valuesWriter.writeLine(k, temp);
+            gnuplotStyleValuesWriter.writeLineIfEnabled(k, temp);
         }
         System.out.println(temp);
         System.out.println(k);
 
         //close writer resources
-        valuesWriter.closeResources();
+        gnuplotStyleValuesWriter.closeResources();
 
         // map to algorithm result and set it
         algorithmTask.setStatus(AlgorithmCalculationStatus.SUCCESS);
