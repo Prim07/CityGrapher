@@ -13,7 +13,7 @@ public class GnuplotStyleValuesWriter implements ValuesWriter {
 
     private BufferedWriter writer;
 
-    private GnuplotStyleValuesWriter(String algorithmTaskId) {
+    public  GnuplotStyleValuesWriter(String algorithmTaskId) {
         try {
             var fileWriter = new FileWriter(FILENAME_PREFIX + algorithmTaskId + FILE_EXTENSION, false);
             this.writer = new BufferedWriter(fileWriter);
@@ -21,11 +21,6 @@ public class GnuplotStyleValuesWriter implements ValuesWriter {
             System.out.println("Error while creating FileWriter: " + e.getMessage());
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public ValuesWriter initialize(String algorithmTaskId) {
-        return new GnuplotStyleValuesWriter(algorithmTaskId);
     }
 
     @Override
