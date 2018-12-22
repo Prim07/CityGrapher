@@ -28,7 +28,9 @@ public class GraphService {
 
         var nodeToEdgesIncidenceMapCopy = new HashMap<GraphNode, List<GraphEdge>>();
 
-        removeNodesNotIncludedInBCC(nodeToEdgesIncidenceMap, graphNodesFromConnectedComponent, nodeToEdgesIncidenceMapCopy);
+        removeNodesNotIncludedInBCC(nodeToEdgesIncidenceMap,
+                graphNodesFromConnectedComponent,
+                nodeToEdgesIncidenceMapCopy);
 
         graph.setNodeToEdgesIncidenceMap(nodeToEdgesIncidenceMapCopy);
 
@@ -43,12 +45,16 @@ public class GraphService {
 
         var nodeToEdgesIncidenceMapCopy = new HashMap<GraphNode, List<GraphEdge>>();
 
-        removeNodesNotIncludedInBCC(nodeToEdgesIncidenceMap, graphNodesFromConnectedComponent, nodeToEdgesIncidenceMapCopy);
+        removeNodesNotIncludedInBCC(nodeToEdgesIncidenceMap,
+                graphNodesFromConnectedComponent,
+                nodeToEdgesIncidenceMapCopy);
 
         graph.setNodeToEdgesIncidenceMap(nodeToEdgesIncidenceMapCopy);
     }
 
-    private void removeNodesNotIncludedInBCC(Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap, List<GraphNode> graphNodesFromConnectedComponent, HashMap<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMapCopy) {
+    private void removeNodesNotIncludedInBCC(Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap,
+                                             List<GraphNode> graphNodesFromConnectedComponent,
+                                             HashMap<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMapCopy) {
         for (Map.Entry<GraphNode, List<GraphEdge>> entry : nodeToEdgesIncidenceMap.entrySet()) {
             var graphEdgesList = entry.getValue();
             graphEdgesList.removeIf(graphEdge -> shouldGraphEdgeBeDeleted(graphNodesFromConnectedComponent, graphEdge));
