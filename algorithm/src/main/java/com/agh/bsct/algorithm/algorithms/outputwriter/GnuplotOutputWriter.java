@@ -1,4 +1,4 @@
-package com.agh.bsct.algorithm.algorithms.writer;
+package com.agh.bsct.algorithm.algorithms.outputwriter;
 
 import com.agh.bsct.algorithm.algorithms.properties.AlgorithmProperties;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 @Component
-public class GnuplotValuesWriter implements ValuesWriter {
+public class GnuplotOutputWriter implements AlgorithmOutputWriter {
 
     private static final String FILE_NAME_PREFIX = "values_for_";
     private static final String FILE_EXTENSION = ".txt";
@@ -24,7 +24,7 @@ public class GnuplotValuesWriter implements ValuesWriter {
     private AlgorithmProperties algorithmProperties;
 
     @Autowired
-    public GnuplotValuesWriter(AlgorithmProperties algorithmProperties) {
+    public GnuplotOutputWriter(AlgorithmProperties algorithmProperties) {
         this.algorithmProperties = algorithmProperties;
 
         this.isWritingEnabled = this.algorithmProperties.getIsWritingValuesToFileEnabled();

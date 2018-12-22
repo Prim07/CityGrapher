@@ -1,6 +1,6 @@
-package com.agh.bsct.algorithm.algorithms.writer;
+package com.agh.bsct.algorithm.algorithms.outputwriter;
 
-public interface ValuesWriter {
+public interface AlgorithmOutputWriter {
 
     String OUTPUT_FILES_BASE_DIRECTORY = "written-values/";
 

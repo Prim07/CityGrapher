@@ -1,6 +1,6 @@
 package com.agh.bsct.algorithm.algorithms;
 
-import com.agh.bsct.algorithm.algorithms.writer.GnuplotValuesWriter;
+import com.agh.bsct.algorithm.algorithms.outputwriter.GnuplotOutputWriter;
 import com.agh.bsct.algorithm.controllers.mapper.AlgorithmTaskMapper;
 import com.agh.bsct.algorithm.entities.graph.GraphEdge;
 import com.agh.bsct.algorithm.entities.graph.GraphNode;
@@ -33,16 +33,16 @@ public class SAAlgorithm implements IAlgorithm {
     private AlgorithmTaskMapper algorithmTaskMapper;
     private GraphService graphService;
     private Random random;
-    private GnuplotValuesWriter gnuplotValuesWriter;
+    private GnuplotOutputWriter gnuplotOutputWriter;
 
 
     @Autowired
     public SAAlgorithm(AlgorithmTaskMapper algorithmTaskMapper,
                        GraphService graphService,
-                       GnuplotValuesWriter gnuplotValuesWriter) {
+                       GnuplotOutputWriter gnuplotOutputWriter) {
         this.algorithmTaskMapper = algorithmTaskMapper;
         this.graphService = graphService;
-        this.gnuplotValuesWriter = gnuplotValuesWriter;
+        this.gnuplotOutputWriter = gnuplotOutputWriter;
         this.random = new Random();
     }
 
@@ -53,8 +53,8 @@ public class SAAlgorithm implements IAlgorithm {
         graphService.replaceGraphWithItsBiggestConnectedComponent(algorithmTask);
         final Map<Long, Map<Long, Double>> shortestPathsDistances = graphService.calculateShortestPathsDistances(algorithmTask.getGraph());
 
-        // prepare ValuesWriter (example version)
-        gnuplotValuesWriter.initializeResources(algorithmTask.getTaskId());
+        // prepare AlgorithmOutputWriter (example version)
+        gnuplotOutputWriter.initializeResources(algorithmTask.getTaskId());
 
         // heart of calculating
         var k = 0;
@@ -88,13 +88,13 @@ public class SAAlgorithm implements IAlgorithm {
             temp = 0.99 * temp;
             k++;
 
-            gnuplotValuesWriter.writeLineIfEnabled(k, temp);
+            gnuplotOutputWriter.writeLineIfEnabled(k, temp);
         }
         System.out.println(temp);
         System.out.println(k);
 
         //close writer resources
-        gnuplotValuesWriter.closeResources();
+        gnuplotOutputWriter.closeResources();
 
         // map to algorithm result and set it
         algorithmTask.setStatus(AlgorithmCalculationStatus.SUCCESS);
