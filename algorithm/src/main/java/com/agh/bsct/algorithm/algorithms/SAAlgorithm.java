@@ -87,6 +87,7 @@ public class SAAlgorithm implements IAlgorithm {
             // update temperature
             temp = 0.99 * temp;
             k++;
+            
             gnuplotStyleValuesWriter.writeLineIfEnabled(k, temp);
         }
         System.out.println(temp);

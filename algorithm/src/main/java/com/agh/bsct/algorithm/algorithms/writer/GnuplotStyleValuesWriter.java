@@ -17,7 +17,8 @@ public class GnuplotStyleValuesWriter implements ValuesWriter {
     private static final String FILE_EXTENSION = ".txt";
     private static final Character GNUPLOT_COLUMN_SEPARATOR = ' ';
 
-    private BufferedWriter writer;
+    private BufferedWriter bufferedWriter;
+    private FileWriter fileWriter;
     private final boolean isWritingEnabled;
 
     private AlgorithmProperties algorithmProperties;
@@ -35,8 +36,8 @@ public class GnuplotStyleValuesWriter implements ValuesWriter {
             try {
                 new File(OUTPUT_FILES_BASE_DIRECTORY).mkdirs();
                 String fileName = OUTPUT_FILES_BASE_DIRECTORY + FILE_NAME_PREFIX + algorithmTaskId + FILE_EXTENSION;
-                var fileWriter = new FileWriter(fileName, false);
-                this.writer = new BufferedWriter(fileWriter);
+                this.fileWriter = new FileWriter(fileName, false);
+                this.bufferedWriter = new BufferedWriter(this.fileWriter);
             } catch (IOException e) {
                 System.out.println("Error while creating FileWriter: " + e.getMessage());
                 e.printStackTrace();
@@ -49,8 +50,8 @@ public class GnuplotStyleValuesWriter implements ValuesWriter {
         if (isWritingEnabled) {
             var lineToWrite = getGnuplotStyleFormattedLine(key, values);
             try {
-                writer.write(lineToWrite);
-                writer.newLine();
+                bufferedWriter.write(lineToWrite);
+                bufferedWriter.newLine();
             } catch (IOException e) {
                 System.out.println("Error while writing to BufferedWriter line: " + lineToWrite + ". "
                         + "Error message" + e.getMessage());
@@ -63,7 +64,8 @@ public class GnuplotStyleValuesWriter implements ValuesWriter {
     public void closeResources() {
         if (isWritingEnabled) {
             try {
-                writer.close();
+                bufferedWriter.close();
+                fileWriter.close();
             } catch (IOException e) {
                 System.out.println("Error while closing BufferedWriter: " + e.getMessage());
                 e.printStackTrace();
