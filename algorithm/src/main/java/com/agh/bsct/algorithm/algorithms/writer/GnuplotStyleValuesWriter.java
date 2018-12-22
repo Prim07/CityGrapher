@@ -13,7 +13,7 @@ public class GnuplotStyleValuesWriter implements ValuesWriter {
 
     private BufferedWriter writer;
 
-    public GnuplotStyleValuesWriter(String algorithmTaskId) {
+    private GnuplotStyleValuesWriter(String algorithmTaskId) {
         try {
             var fileWriter = new FileWriter(FILENAME_PREFIX + algorithmTaskId + FILE_EXTENSION, false);
             this.writer = new BufferedWriter(fileWriter);
@@ -24,12 +24,28 @@ public class GnuplotStyleValuesWriter implements ValuesWriter {
     }
 
     @Override
+    public ValuesWriter initialize(String algorithmTaskId) {
+        return new GnuplotStyleValuesWriter(algorithmTaskId);
+    }
+
+    @Override
     public void writeLine(String key, String... values) {
         var lineToWrite = getGnuplotStyleFormattedLine(key, values);
         try {
             writer.write(lineToWrite);
         } catch (IOException e) {
-            System.out.println("Error while writing FileWriter: " + e.getMessage());
+            System.out.println("Error while writing to BufferedWriter line: " + lineToWrite + ". "
+                    + "Error message" + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void closeResources() {
+        try {
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Error while closing BufferedWriter: " + e.getMessage());
             e.printStackTrace();
         }
     }
