@@ -28,6 +28,31 @@ public class GraphService {
 
         var nodeToEdgesIncidenceMapCopy = new HashMap<GraphNode, List<GraphEdge>>();
 
+        removeNodesNotIncludedInBCC(nodeToEdgesIncidenceMap, graphNodesFromConnectedComponent,
+                nodeToEdgesIncidenceMapCopy);
+
+        graph.setNodeToEdgesIncidenceMap(nodeToEdgesIncidenceMapCopy);
+
+        var graphDataDTO = algorithmTask.getGraphDataDTO();
+        graphDataService.replaceGraphWithItsBiggestCommonComponent(graphDataDTO, graphNodesFromConnectedComponent);
+    }
+
+    public void replaceGraphWithItsBiggestConnectedComponent(Graph graph) {
+        var nodeToEdgesIncidenceMap = graph.getIncidenceMap();
+
+        var graphNodesFromConnectedComponent = findBiggestConnectedComponent(nodeToEdgesIncidenceMap);
+
+        var nodeToEdgesIncidenceMapCopy = new HashMap<GraphNode, List<GraphEdge>>();
+
+        removeNodesNotIncludedInBCC(nodeToEdgesIncidenceMap, graphNodesFromConnectedComponent,
+                nodeToEdgesIncidenceMapCopy);
+
+        graph.setNodeToEdgesIncidenceMap(nodeToEdgesIncidenceMapCopy);
+    }
+
+    private void removeNodesNotIncludedInBCC(Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap,
+                                             List<GraphNode> graphNodesFromConnectedComponent,
+                                             HashMap<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMapCopy) {
         for (Map.Entry<GraphNode, List<GraphEdge>> entry : nodeToEdgesIncidenceMap.entrySet()) {
             var graphEdgesList = entry.getValue();
             graphEdgesList.removeIf(graphEdge -> shouldGraphEdgeBeDeleted(graphNodesFromConnectedComponent, graphEdge));
@@ -37,11 +62,6 @@ public class GraphService {
                 nodeToEdgesIncidenceMapCopy.put(graphNode, graphEdgesList);
             }
         }
-
-        graph.setNodeToEdgesIncidenceMap(nodeToEdgesIncidenceMapCopy);
-
-        var graphDataDTO = algorithmTask.getGraphDataDTO();
-        graphDataService.replaceGraphWithItsBiggestCommonComponent(graphDataDTO, graphNodesFromConnectedComponent);
     }
 
     public List<GraphNode> findBiggestConnectedComponent(Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap) {
@@ -106,23 +126,28 @@ public class GraphService {
                     double edgeWeight = getEdgeWeight(i, j, nodeToEdgesIncidenceMap);
                     if (edgeWeight > 0) {
                         putValueToMap(i, j, edgeWeight, shortestPathsDistances);
-
                     } else {
                         putValueToMap(i, j, Double.MAX_VALUE, shortestPathsDistances);
-
                     }
                 }
             }
         }
-        for (GraphNode k : graphNodes) {
-            for (GraphNode i : graphNodes) {
-                for (GraphNode j : graphNodes) {
-                    if (shortestPathsDistances.get(i.getId()).get(j.getId()) >
-                            shortestPathsDistances.get(i.getId()).get(k.getId())
-                                    + shortestPathsDistances.get(k.getId()).get(j.getId())) {
-                        shortestPathsDistances.get(i.getId()).put(j.getId(),
-                                shortestPathsDistances.get(i.getId()).get(k.getId())
-                                        + shortestPathsDistances.get(k.getId()).get(j.getId()));
+        for (var k : graphNodes) {
+            for (var i : graphNodes) {
+                for (var j : graphNodes) {
+
+                    Long iNodeId = i.getId();
+                    Long jNodeId = j.getId();
+                    Long kNodeId = k.getId();
+
+                    Double nodeIToJShortestDist = shortestPathsDistances.get(iNodeId).get(jNodeId);
+                    Double nodeIToKShortestDist = shortestPathsDistances.get(iNodeId).get(kNodeId);
+                    Double nodeKToJShortestDist = shortestPathsDistances.get(kNodeId).get(jNodeId);
+
+                    var iToKToJDist = nodeIToKShortestDist + nodeKToJShortestDist;
+
+                    if (nodeIToJShortestDist > iToKToJDist) {
+                        shortestPathsDistances.get(iNodeId).put(jNodeId, iToKToJDist);
                     }
                 }
             }

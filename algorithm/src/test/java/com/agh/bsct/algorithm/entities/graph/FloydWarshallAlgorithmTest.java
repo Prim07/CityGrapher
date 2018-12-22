@@ -19,29 +19,22 @@ class FloydWarshallAlgorithmTest {
     void shouldBeTheSameWhenMilocinIsCalculatedMultipleTimes() {
         final String filename = SRC_TEST_RESOURCES_PATH + "milocin.txt";
 
-        shouldBeTheSameWhenCalculatedMultipleTimes(filename);
+        shouldBeTheSameWhenCalculatedMultipleTimes(filename, 10);
     }
 
     @Test
     void shouldBeTheSameWhenLancutIsCalculatedMultipleTimes() {
         final String filename = SRC_TEST_RESOURCES_PATH + "lancut.txt";
 
-        shouldBeTheSameWhenCalculatedMultipleTimes(filename);
+        shouldBeTheSameWhenCalculatedMultipleTimes(filename, 3);
     }
 
-    @Test
-    void shouldBeTheSameWhenTarnowIsCalculatedMultipleTimes() {
-        final String filename = SRC_TEST_RESOURCES_PATH + "tarnow.txt";
-
-        shouldBeTheSameWhenCalculatedMultipleTimes(filename);
-    }
-
-    private void shouldBeTheSameWhenCalculatedMultipleTimes(String filename) {
+    private void shouldBeTheSameWhenCalculatedMultipleTimes(String filename, int loopCount) {
         var graph = graphInitializer.initGraph(filename);
+        graphService.replaceGraphWithItsBiggestConnectedComponent(graph);
 
         var shortestPathsDistancesToCompare = graphService.calculateShortestPathsDistances(graph);
 
-        int loopCount = 1000;
         for (int i = 0; i < loopCount; i++) {
             var shortestPathsDistances = graphService.calculateShortestPathsDistances(graph);
 
