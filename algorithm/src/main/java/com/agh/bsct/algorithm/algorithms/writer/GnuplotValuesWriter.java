@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 @Component
-public class GnuplotStyleValuesWriter implements ValuesWriter {
+public class GnuplotValuesWriter implements ValuesWriter {
 
     private static final String FILE_NAME_PREFIX = "values_for_";
     private static final String FILE_EXTENSION = ".txt";
@@ -24,7 +24,7 @@ public class GnuplotStyleValuesWriter implements ValuesWriter {
     private AlgorithmProperties algorithmProperties;
 
     @Autowired
-    public GnuplotStyleValuesWriter(AlgorithmProperties algorithmProperties) {
+    public GnuplotValuesWriter(AlgorithmProperties algorithmProperties) {
         this.algorithmProperties = algorithmProperties;
 
         this.isWritingEnabled = this.algorithmProperties.getIsWritingValuesToFileEnabled();
@@ -48,7 +48,7 @@ public class GnuplotStyleValuesWriter implements ValuesWriter {
     @Override
     public void writeLineIfEnabled(String key, String... values) {
         if (isWritingEnabled) {
-            var lineToWrite = getGnuplotStyleFormattedLine(key, values);
+            var lineToWrite = getGnuplotFormattedLine(key, values);
             try {
                 bufferedWriter.write(lineToWrite);
                 bufferedWriter.newLine();
@@ -84,7 +84,7 @@ public class GnuplotStyleValuesWriter implements ValuesWriter {
         }
     }
 
-    private String getGnuplotStyleFormattedLine(String key, String[] values) {
+    private String getGnuplotFormattedLine(String key, String[] values) {
         StringBuilder gnuplotStyleFormattedLine = new StringBuilder(key);
 
         for (var value : values) {
