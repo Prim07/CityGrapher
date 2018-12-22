@@ -126,30 +126,28 @@ public class GraphService {
                     double edgeWeight = getEdgeWeight(i, j, nodeToEdgesIncidenceMap);
                     if (edgeWeight > 0) {
                         putValueToMap(i, j, edgeWeight, shortestPathsDistances);
-
                     } else {
                         putValueToMap(i, j, Double.MAX_VALUE, shortestPathsDistances);
-
                     }
                 }
             }
         }
-        for (GraphNode k : graphNodes) {
-            for (GraphNode i : graphNodes) {
-                for (GraphNode j : graphNodes) {
+        for (var k : graphNodes) {
+            for (var i : graphNodes) {
+                for (var j : graphNodes) {
 
                     Long iNodeId = i.getId();
                     Long jNodeId = j.getId();
                     Long kNodeId = k.getId();
 
-                    Double shortestDistanceFromINodeToJNode = shortestPathsDistances.get(iNodeId).get(jNodeId);
-                    Double shortestDistanceFromINodeKNode = shortestPathsDistances.get(iNodeId).get(kNodeId);
-                    Double shortestDistanceFromKNodeToJNode = shortestPathsDistances.get(kNodeId).get(jNodeId);
+                    Double nodeIToJShortestDist = shortestPathsDistances.get(iNodeId).get(jNodeId);
+                    Double nodeIToKShortestDist = shortestPathsDistances.get(iNodeId).get(kNodeId);
+                    Double nodeKToJShortestDist = shortestPathsDistances.get(kNodeId).get(jNodeId);
 
-                    if (shortestDistanceFromINodeToJNode >
-                            shortestDistanceFromINodeKNode + shortestDistanceFromKNodeToJNode) {
-                        shortestPathsDistances.get(iNodeId).put(jNodeId,
-                                shortestDistanceFromINodeKNode + shortestDistanceFromKNodeToJNode);
+                    var iToKToJDist = nodeIToKShortestDist + nodeKToJShortestDist;
+
+                    if (nodeIToJShortestDist > iToKToJDist) {
+                        shortestPathsDistances.get(iNodeId).put(jNodeId, iToKToJDist);
                     }
                 }
             }
