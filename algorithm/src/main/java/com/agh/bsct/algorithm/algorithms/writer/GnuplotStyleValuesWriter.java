@@ -1,13 +1,14 @@
 package com.agh.bsct.algorithm.algorithms.writer;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 
 public class GnuplotStyleValuesWriter implements ValuesWriter {
 
-    private static final String FILENAME_PREFIX = "values_for_";
+    private static final String FILE_NAME_PREFIX = "values_for_";
     private static final String FILE_EXTENSION = ".txt";
     private static final Character GNUPLOT_COLUMN_SEPARATOR = ' ';
 
@@ -15,7 +16,9 @@ public class GnuplotStyleValuesWriter implements ValuesWriter {
 
     public  GnuplotStyleValuesWriter(String algorithmTaskId) {
         try {
-            var fileWriter = new FileWriter(FILENAME_PREFIX + algorithmTaskId + FILE_EXTENSION, false);
+            new File(OUTPUT_FILES_BASE_DIRECTORY).mkdirs();
+            String fileName = OUTPUT_FILES_BASE_DIRECTORY + FILE_NAME_PREFIX + algorithmTaskId + FILE_EXTENSION;
+            var fileWriter = new FileWriter(fileName, false);
             this.writer = new BufferedWriter(fileWriter);
         } catch (IOException e) {
             System.out.println("Error while creating FileWriter: " + e.getMessage());
