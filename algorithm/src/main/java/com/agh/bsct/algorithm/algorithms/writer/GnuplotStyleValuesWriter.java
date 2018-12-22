@@ -28,6 +28,7 @@ public class GnuplotStyleValuesWriter implements ValuesWriter {
         var lineToWrite = getGnuplotStyleFormattedLine(key, values);
         try {
             writer.write(lineToWrite);
+            writer.newLine();
         } catch (IOException e) {
             System.out.println("Error while writing to BufferedWriter line: " + lineToWrite + ". "
                     + "Error message" + e.getMessage());
