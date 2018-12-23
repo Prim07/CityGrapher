@@ -9,6 +9,7 @@ import com.agh.bsct.algorithm.services.algorithms.CrossingsService;
 import com.agh.bsct.algorithm.services.entities.graph.GraphService;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmCalculationStatus;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
+import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
@@ -26,8 +27,6 @@ public class SAAlgorithm implements IAlgorithm {
 
     static final String SIMULATED_ANNEALING_QUALIFIER = "simulatedAnnealingAlgorithm";
 
-    private static final int MAX_ITERATIONS = 1000000;
-    private static final double MIN_TEMP = 0.000000005;
     private static final double INITIAL_TEMP = 100000000.0;
     private static final double ALPHA = 0.9999;
 
@@ -67,19 +66,30 @@ public class SAAlgorithm implements IAlgorithm {
         // heart of calculating
         var k = 0;
         var temp = INITIAL_TEMP;
+
         Map<GraphNode, List<GraphEdge>> incidenceMap = algorithmTask.getGraph().getIncidenceMap();
+
+        //initialize collection with 100x1
+        var lastHundredChanges = initializeLastHundredChanges();
+
         List<GraphNode> acceptedState = initializeGlobalState(algorithmTask, incidenceMap);
         List<GraphNode> bestState = acceptedState;
-        double acceptedFunctionValue = algorithmFunctionsService.calculateFunctionValue(shortestPathsDistances, acceptedState);
+        double acceptedFunctionValue =
+                algorithmFunctionsService.calculateFunctionValue(shortestPathsDistances, acceptedState);
         double bestFunctionValue = acceptedFunctionValue;
 
-        while (shouldIterate(k, temp)) {
-            acceptedFunctionValue = algorithmFunctionsService.calculateFunctionValue(shortestPathsDistances, acceptedState);
+
+        while (shouldIterate(lastHundredChanges)) {
+            acceptedFunctionValue =
+                    algorithmFunctionsService.calculateFunctionValue(shortestPathsDistances, acceptedState);
             var localState = changeRandomlyState(incidenceMap, acceptedState);
-            var localFunctionValue = algorithmFunctionsService.calculateFunctionValue(shortestPathsDistances, localState);
+            var localFunctionValue =
+                    algorithmFunctionsService.calculateFunctionValue(shortestPathsDistances, localState);
             double delta = localFunctionValue - acceptedFunctionValue;
 
             if (localFunctionValue < acceptedFunctionValue) {
+                //change has been made
+                lastHundredChanges.add(1);
                 acceptedState = localState;
                 if (localFunctionValue < bestFunctionValue) {
                     bestFunctionValue = localFunctionValue;
@@ -89,7 +99,12 @@ public class SAAlgorithm implements IAlgorithm {
                 var worseResultAcceptanceProbability = random.nextDouble();
                 var p = Math.exp(-delta / temp);
                 if (worseResultAcceptanceProbability < p) {
+                    //change has been made
+                    lastHundredChanges.add(1);
                     acceptedState = localState;
+                } else {
+                    //change hasn't been made
+                    lastHundredChanges.add(0);
                 }
             }
 
@@ -99,10 +114,10 @@ public class SAAlgorithm implements IAlgorithm {
 
             gnuplotOutputWriter.writeLineIfEnabled(k, temp);
         }
-        System.out.println(temp);
-        System.out.println(k);
-        System.out.println(bestFunctionValue);
-        System.out.println(acceptedFunctionValue);
+        System.out.println("temp: " + temp);
+        System.out.println("k: " + k);
+        System.out.println("best FV: " + bestFunctionValue);
+        System.out.println("accepted FV: " + acceptedFunctionValue);
 
         //close writer resources
         gnuplotOutputWriter.closeResources();
@@ -115,9 +130,16 @@ public class SAAlgorithm implements IAlgorithm {
         algorithmTask.setAlgorithmResultDTO(fakeAlgorithmResult);
     }
 
-    private boolean shouldIterate(int k, double temp) {
-        return k < MAX_ITERATIONS
-                && temp > MIN_TEMP;
+    private CircularFifoQueue<Integer> initializeLastHundredChanges() {
+        var lastHundredChanges = new CircularFifoQueue<Integer>(100);
+        for (var i = 0; i < 100; i++) {
+            lastHundredChanges.add(1);
+        }
+        return lastHundredChanges;
+    }
+
+    private boolean shouldIterate(CircularFifoQueue<Integer> lastHundredChanges) {
+        return lastHundredChanges.stream().mapToInt(Integer::intValue).sum() > 0;
     }
 
     private ArrayList<GraphNode> changeRandomlyState(Map<GraphNode, List<GraphEdge>> incidenceMap,
