@@ -2,10 +2,8 @@ package com.agh.bsct.algorithm.services.runner.asyncrunner;
 
 import com.agh.bsct.algorithm.Algorithm;
 import com.agh.bsct.algorithm.algorithms.IAlgorithm;
-import com.agh.bsct.algorithm.algorithms.SAAlgorithm;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
@@ -18,7 +16,6 @@ public class AsyncAlgorithmTaskRunner {
 
     private static AtomicInteger THREAD_COUNT = new AtomicInteger(0);
 
-    @Qualifier(SAAlgorithm.SIMULATED_ANNEALING_QUALIFIER)
     private IAlgorithm algorithm;
 
     @Autowired
