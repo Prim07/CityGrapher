@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
+//@Primary
 @Qualifier(BFAlgorithm.BRUTE_FORCE_QUALIFIER)
 public class BFAlgorithm implements IAlgorithm {
 
@@ -48,13 +49,7 @@ public class BFAlgorithm implements IAlgorithm {
         final Map<Long, Map<Long, Double>> shortestPathsDistances =
                 graphService.calculateShortestPathsDistances(algorithmTask.getGraph());
 
-        var bestState1 = getBestStateForOneHospital(algorithmTask, shortestPathsDistances);
-        var bestState2 = getBestStateForTwoHospitals(algorithmTask, shortestPathsDistances);
-        var bestState3 = getBestStateForThreeHospitals(algorithmTask, shortestPathsDistances);
-
-        var numberOfResults = algorithmTask.getNumberOfResults();
-        var bestState = (numberOfResults.equals(1)) ? bestState1 :
-                ((numberOfResults.equals(2)) ? bestState2 : bestState3);
+        var bestState = getBestState(algorithmTask.getNumberOfResults(), algorithmTask, shortestPathsDistances);
 
         // map to algorithm result and set it
         algorithmTask.setStatus(AlgorithmCalculationStatus.SUCCESS);
@@ -63,6 +58,21 @@ public class BFAlgorithm implements IAlgorithm {
         var fakeAlgorithmResult = algorithmTaskMapper.mapToAlgorithmResultDTO(algorithmTask);
         algorithmTask.setAlgorithmResultDTO(fakeAlgorithmResult);
 
+    }
+
+    private List<GraphNode> getBestState(Integer numberOfResults, AlgorithmTask algorithmTask,
+                                         Map<Long, Map<Long, Double>> shortestPathsDistances) {
+        if (numberOfResults.equals(1)) {
+            return getBestStateForOneHospital(algorithmTask, shortestPathsDistances);
+        }
+        if (numberOfResults.equals(2)) {
+            return getBestStateForTwoHospitals(algorithmTask, shortestPathsDistances);
+        }
+        if (numberOfResults.equals(3)) {
+            return getBestStateForThreeHospitals(algorithmTask, shortestPathsDistances);
+        }
+        throw new IllegalStateException("Brute Force Algorithm cannot be applied to " + numberOfResults
+                + " requested results. Please choose 1, 2 or 3.");
     }
 
     private List<GraphNode> getBestStateForOneHospital(AlgorithmTask algorithmTask,
