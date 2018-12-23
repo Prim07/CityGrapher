@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class AlgorithmService {
+public class CrossingsService {
 
 
     public List<GeographicalNodeDTO> getGeographicalNodesForBestState(List<GraphNode> bestState,

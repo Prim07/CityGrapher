@@ -4,7 +4,7 @@ import com.agh.bsct.algorithm.controllers.mapper.AlgorithmTaskMapper;
 import com.agh.bsct.algorithm.entities.graph.GraphEdge;
 import com.agh.bsct.algorithm.entities.graph.GraphNode;
 import com.agh.bsct.algorithm.services.algorithms.AlgorithmFunctionsService;
-import com.agh.bsct.algorithm.services.algorithms.AlgorithmService;
+import com.agh.bsct.algorithm.services.algorithms.CrossingsService;
 import com.agh.bsct.algorithm.services.entities.graph.GraphService;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmCalculationStatus;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
@@ -25,18 +25,18 @@ public class BFAlgorithm implements IAlgorithm {
     static final String BRUTE_FORCE_QUALIFIER = "bruteForceAlgorithm";
 
     private AlgorithmFunctionsService algorithmFunctionsService;
-    private AlgorithmService algorithmService;
+    private CrossingsService crossingsService;
     private AlgorithmTaskMapper algorithmTaskMapper;
     private GraphService graphService;
 
 
     @Autowired
     public BFAlgorithm(AlgorithmFunctionsService algorithmFunctionsService,
-                       AlgorithmService algorithmService,
+                       CrossingsService crossingsService,
                        AlgorithmTaskMapper algorithmTaskMapper,
                        GraphService graphService) {
         this.algorithmFunctionsService = algorithmFunctionsService;
-        this.algorithmService = algorithmService;
+        this.crossingsService = crossingsService;
         this.algorithmTaskMapper = algorithmTaskMapper;
         this.graphService = graphService;
     }
@@ -54,7 +54,7 @@ public class BFAlgorithm implements IAlgorithm {
         // map to algorithm result and set it
         algorithmTask.setStatus(AlgorithmCalculationStatus.SUCCESS);
         algorithmTask.setHospitals(
-                algorithmService.getGeographicalNodesForBestState(bestState, algorithmTask.getGraphDataDTO()));
+                crossingsService.getGeographicalNodesForBestState(bestState, algorithmTask.getGraphDataDTO()));
         var fakeAlgorithmResult = algorithmTaskMapper.mapToAlgorithmResultDTO(algorithmTask);
         algorithmTask.setAlgorithmResultDTO(fakeAlgorithmResult);
 

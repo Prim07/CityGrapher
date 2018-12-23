@@ -5,7 +5,7 @@ import com.agh.bsct.algorithm.controllers.mapper.AlgorithmTaskMapper;
 import com.agh.bsct.algorithm.entities.graph.GraphEdge;
 import com.agh.bsct.algorithm.entities.graph.GraphNode;
 import com.agh.bsct.algorithm.services.algorithms.AlgorithmFunctionsService;
-import com.agh.bsct.algorithm.services.algorithms.AlgorithmService;
+import com.agh.bsct.algorithm.services.algorithms.CrossingsService;
 import com.agh.bsct.algorithm.services.entities.graph.GraphService;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmCalculationStatus;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
@@ -31,7 +31,7 @@ public class SAAlgorithm implements IAlgorithm {
     private static final double INITIAL_TEMP = 100000000.0;
 
     private AlgorithmFunctionsService algorithmFunctionsService;
-    private AlgorithmService algorithmService;
+    private CrossingsService crossingsService;
     private AlgorithmTaskMapper algorithmTaskMapper;
     private GraphService graphService;
     private Random random;
@@ -40,12 +40,12 @@ public class SAAlgorithm implements IAlgorithm {
 
     @Autowired
     public SAAlgorithm(AlgorithmFunctionsService algorithmFunctionsService,
-                       AlgorithmService algorithmService,
+                       CrossingsService crossingsService,
                        AlgorithmTaskMapper algorithmTaskMapper,
                        GraphService graphService,
                        GnuplotOutputWriter gnuplotOutputWriter) {
         this.algorithmFunctionsService = algorithmFunctionsService;
-        this.algorithmService = algorithmService;
+        this.crossingsService = crossingsService;
         this.algorithmTaskMapper = algorithmTaskMapper;
         this.graphService = graphService;
         this.gnuplotOutputWriter = gnuplotOutputWriter;
@@ -107,7 +107,7 @@ public class SAAlgorithm implements IAlgorithm {
         // map to algorithm result and set it
         algorithmTask.setStatus(AlgorithmCalculationStatus.SUCCESS);
         algorithmTask.setHospitals(
-                algorithmService.getGeographicalNodesForBestState(bestState, algorithmTask.getGraphDataDTO()));
+                crossingsService.getGeographicalNodesForBestState(bestState, algorithmTask.getGraphDataDTO()));
         var fakeAlgorithmResult = algorithmTaskMapper.mapToAlgorithmResultDTO(algorithmTask);
         algorithmTask.setAlgorithmResultDTO(fakeAlgorithmResult);
     }

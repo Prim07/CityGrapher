@@ -4,7 +4,7 @@ import com.agh.bsct.algorithm.algorithms.outputwriter.GnuplotOutputWriter;
 import com.agh.bsct.algorithm.controllers.mapper.AlgorithmTaskMapper;
 import com.agh.bsct.algorithm.entities.graph.GraphInitializer;
 import com.agh.bsct.algorithm.services.algorithms.AlgorithmFunctionsService;
-import com.agh.bsct.algorithm.services.algorithms.AlgorithmService;
+import com.agh.bsct.algorithm.services.algorithms.CrossingsService;
 import com.agh.bsct.algorithm.services.entities.graph.GraphService;
 import com.agh.bsct.algorithm.services.entities.graphdata.GraphDataService;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
@@ -33,7 +33,7 @@ class SAAlgorithmTest {
 
         var graphDataService = new GraphDataService();
         var graphService = new GraphService(graphDataService);
-        var saAlgorithm = new SAAlgorithm(new AlgorithmFunctionsService(), new AlgorithmService(),
+        var saAlgorithm = new SAAlgorithm(new AlgorithmFunctionsService(), new CrossingsService(),
                 new AlgorithmTaskMapper(), graphService, mock(GnuplotOutputWriter.class));
         this.asyncAlgorithmTaskRunner = new AsyncAlgorithmTaskRunner(saAlgorithm);
 
