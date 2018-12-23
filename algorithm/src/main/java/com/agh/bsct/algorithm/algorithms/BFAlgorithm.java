@@ -1,9 +1,9 @@
 package com.agh.bsct.algorithm.algorithms;
 
-import com.agh.bsct.algorithm.algorithms.outputwriter.GnuplotOutputWriter;
 import com.agh.bsct.algorithm.controllers.mapper.AlgorithmTaskMapper;
 import com.agh.bsct.algorithm.entities.graph.GraphEdge;
 import com.agh.bsct.algorithm.entities.graph.GraphNode;
+import com.agh.bsct.algorithm.services.algorithms.AlgorithmFunctionsService;
 import com.agh.bsct.algorithm.services.algorithms.AlgorithmService;
 import com.agh.bsct.algorithm.services.entities.graph.GraphService;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmCalculationStatus;
@@ -12,7 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -22,16 +23,18 @@ public class BFAlgorithm implements IAlgorithm {
 
     static final String BRUTE_FORCE_QUALIFIER = "bruteForceAlgorithm";
 
+    private AlgorithmFunctionsService algorithmFunctionsService;
     private AlgorithmService algorithmService;
     private AlgorithmTaskMapper algorithmTaskMapper;
     private GraphService graphService;
 
 
     @Autowired
-    public BFAlgorithm(AlgorithmService algorithmService,
+    public BFAlgorithm(AlgorithmFunctionsService algorithmFunctionsService,
+                       AlgorithmService algorithmService,
                        AlgorithmTaskMapper algorithmTaskMapper,
-                       GraphService graphService,
-                       GnuplotOutputWriter gnuplotOutputWriter) {
+                       GraphService graphService) {
+        this.algorithmFunctionsService = algorithmFunctionsService;
         this.algorithmService = algorithmService;
         this.algorithmTaskMapper = algorithmTaskMapper;
         this.graphService = graphService;
@@ -45,7 +48,7 @@ public class BFAlgorithm implements IAlgorithm {
         final Map<Long, Map<Long, Double>> shortestPathsDistances =
                 graphService.calculateShortestPathsDistances(algorithmTask.getGraph());
 
-        var bestState1 = getBestStateForOneHospitals(algorithmTask, shortestPathsDistances);
+        var bestState1 = getBestStateForOneHospital(algorithmTask, shortestPathsDistances);
         var bestState2 = getBestStateForTwoHospitals(algorithmTask, shortestPathsDistances);
         var bestState3 = getBestStateForThreeHospitals(algorithmTask, shortestPathsDistances);
 
@@ -62,42 +65,38 @@ public class BFAlgorithm implements IAlgorithm {
 
     }
 
-    private List<GraphNode> getBestStateForOneHospitals(AlgorithmTask algorithmTask, Map<Long, Map<Long, Double>> shortestPathsDistances) {
+    private List<GraphNode> getBestStateForOneHospital(AlgorithmTask algorithmTask,
+                                                       Map<Long, Map<Long, Double>> shortestPathsDistances) {
         Map<GraphNode, List<GraphEdge>> incidenceMap = algorithmTask.getGraph().getIncidenceMap();
-        List<GraphNode> acceptedState;
-        List<GraphNode> bestState = null;
-        double acceptedFunctionValue;
+        List<GraphNode> bestState = Collections.emptyList();
         double bestFunctionValue = Double.MAX_VALUE;
 
         for (var node : incidenceMap.keySet()) {
-            acceptedState = new ArrayList<>();
-            acceptedState.add(node);
-            acceptedFunctionValue =
-                    algorithmService.calculateFunctionValue(shortestPathsDistances, acceptedState);
+            List<GraphNode> acceptedState = Collections.singletonList(node);
+            var acceptedFunctionValue = algorithmFunctionsService.calculateFunctionValue(
+                    shortestPathsDistances, acceptedState);
             if (acceptedFunctionValue < bestFunctionValue) {
                 bestFunctionValue = acceptedFunctionValue;
                 bestState = acceptedState;
             }
         }
 
+        //TODO to remove and replace with gnuplot
         System.out.println("1: " + bestFunctionValue);
         return bestState;
     }
 
-    private List<GraphNode> getBestStateForTwoHospitals(AlgorithmTask algorithmTask, Map<Long, Map<Long, Double>> shortestPathsDistances) {
+    private List<GraphNode> getBestStateForTwoHospitals(AlgorithmTask algorithmTask, Map<Long,
+            Map<Long, Double>> shortestPathsDistances) {
         Map<GraphNode, List<GraphEdge>> incidenceMap = algorithmTask.getGraph().getIncidenceMap();
-        List<GraphNode> acceptedState;
-        List<GraphNode> bestState = null;
-        double acceptedFunctionValue;
+        List<GraphNode> bestState = Collections.emptyList();
         double bestFunctionValue = Double.MAX_VALUE;
 
         for (var node1 : incidenceMap.keySet()) {
             for (var node2 : incidenceMap.keySet()) {
-                acceptedState = new ArrayList<>();
-                acceptedState.add(node1);
-                acceptedState.add(node2);
-                acceptedFunctionValue =
-                        algorithmService.calculateFunctionValue(shortestPathsDistances, acceptedState);
+                List<GraphNode> acceptedState = Arrays.asList(node1, node2);
+                var acceptedFunctionValue =
+                        algorithmFunctionsService.calculateFunctionValue(shortestPathsDistances, acceptedState);
                 if (acceptedFunctionValue < bestFunctionValue) {
                     bestFunctionValue = acceptedFunctionValue;
                     bestState = acceptedState;
@@ -106,26 +105,24 @@ public class BFAlgorithm implements IAlgorithm {
 
         }
 
+        //TODO to remove and replace with gnuplot
         System.out.println("2: " + bestFunctionValue);
         return bestState;
     }
 
-    private List<GraphNode> getBestStateForThreeHospitals(AlgorithmTask algorithmTask, Map<Long, Map<Long, Double>> shortestPathsDistances) {
+    private List<GraphNode> getBestStateForThreeHospitals(AlgorithmTask algorithmTask,
+                                                          Map<Long, Map<Long, Double>> shortestPathsDistances) {
         Map<GraphNode, List<GraphEdge>> incidenceMap = algorithmTask.getGraph().getIncidenceMap();
-        List<GraphNode> acceptedState;
-        List<GraphNode> bestState = null;
-        double acceptedFunctionValue;
+        List<GraphNode> bestState = Collections.emptyList();
         double bestFunctionValue = Double.MAX_VALUE;
+
 
         for (var node1 : incidenceMap.keySet()) {
             for (var node2 : incidenceMap.keySet()) {
                 for (var node3 : incidenceMap.keySet()) {
-                    acceptedState = new ArrayList<>();
-                    acceptedState.add(node1);
-                    acceptedState.add(node2);
-                    acceptedState.add(node3);
-                    acceptedFunctionValue =
-                            algorithmService.calculateFunctionValue(shortestPathsDistances, acceptedState);
+                    List<GraphNode> acceptedState = Arrays.asList(node1, node2, node3);
+                    var acceptedFunctionValue =
+                            algorithmFunctionsService.calculateFunctionValue(shortestPathsDistances, acceptedState);
                     if (acceptedFunctionValue < bestFunctionValue) {
                         bestFunctionValue = acceptedFunctionValue;
                         bestState = acceptedState;
@@ -135,6 +132,7 @@ public class BFAlgorithm implements IAlgorithm {
             }
         }
 
+        //TODO to remove and replace with gnuplot
         System.out.println("3: " + bestFunctionValue);
         return bestState;
     }

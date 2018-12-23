@@ -4,6 +4,7 @@ import com.agh.bsct.algorithm.algorithms.outputwriter.GnuplotOutputWriter;
 import com.agh.bsct.algorithm.controllers.mapper.AlgorithmTaskMapper;
 import com.agh.bsct.algorithm.entities.graph.GraphEdge;
 import com.agh.bsct.algorithm.entities.graph.GraphNode;
+import com.agh.bsct.algorithm.services.algorithms.AlgorithmFunctionsService;
 import com.agh.bsct.algorithm.services.algorithms.AlgorithmService;
 import com.agh.bsct.algorithm.services.entities.graph.GraphService;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmCalculationStatus;
@@ -29,6 +30,7 @@ public class SAAlgorithm implements IAlgorithm {
     private static final double MIN_TEMP = 0.000000005;
     private static final double INITIAL_TEMP = 100000000.0;
 
+    private AlgorithmFunctionsService algorithmFunctionsService;
     private AlgorithmService algorithmService;
     private AlgorithmTaskMapper algorithmTaskMapper;
     private GraphService graphService;
@@ -37,10 +39,12 @@ public class SAAlgorithm implements IAlgorithm {
 
 
     @Autowired
-    public SAAlgorithm(AlgorithmService algorithmService,
+    public SAAlgorithm(AlgorithmFunctionsService algorithmFunctionsService,
+                       AlgorithmService algorithmService,
                        AlgorithmTaskMapper algorithmTaskMapper,
                        GraphService graphService,
                        GnuplotOutputWriter gnuplotOutputWriter) {
+        this.algorithmFunctionsService = algorithmFunctionsService;
         this.algorithmService = algorithmService;
         this.algorithmTaskMapper = algorithmTaskMapper;
         this.graphService = graphService;
@@ -65,13 +69,13 @@ public class SAAlgorithm implements IAlgorithm {
         Map<GraphNode, List<GraphEdge>> incidenceMap = algorithmTask.getGraph().getIncidenceMap();
         List<GraphNode> acceptedState = initializeGlobalState(algorithmTask, incidenceMap);
         List<GraphNode> bestState = acceptedState;
-        double acceptedFunctionValue = algorithmService.calculateFunctionValue(shortestPathsDistances, acceptedState);
+        double acceptedFunctionValue = algorithmFunctionsService.calculateFunctionValue(shortestPathsDistances, acceptedState);
         double bestFunctionValue = acceptedFunctionValue;
 
         while (shouldIterate(k, temp)) {
-            acceptedFunctionValue = algorithmService.calculateFunctionValue(shortestPathsDistances, acceptedState);
+            acceptedFunctionValue = algorithmFunctionsService.calculateFunctionValue(shortestPathsDistances, acceptedState);
             var localState = changeRandomlyState(incidenceMap, acceptedState);
-            var localFunctionValue = algorithmService.calculateFunctionValue(shortestPathsDistances, localState);
+            var localFunctionValue = algorithmFunctionsService.calculateFunctionValue(shortestPathsDistances, localState);
             double delta = localFunctionValue - acceptedFunctionValue;
 
             if (localFunctionValue < acceptedFunctionValue) {
