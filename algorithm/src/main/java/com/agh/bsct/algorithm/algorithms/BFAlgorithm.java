@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-//@Primary
 @Qualifier(BFAlgorithm.BRUTE_FORCE_QUALIFIER)
 public class BFAlgorithm implements IAlgorithm {
 
