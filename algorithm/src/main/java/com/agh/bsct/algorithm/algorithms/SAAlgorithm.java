@@ -29,6 +29,7 @@ public class SAAlgorithm implements IAlgorithm {
     private static final int MAX_ITERATIONS = 1000000;
     private static final double MIN_TEMP = 0.000000005;
     private static final double INITIAL_TEMP = 100000000.0;
+    private static final double ALPHA = 0.9999;
 
     private AlgorithmFunctionsService algorithmFunctionsService;
     private CrossingsService crossingsService;
@@ -93,7 +94,7 @@ public class SAAlgorithm implements IAlgorithm {
             }
 
             // update temperature
-            temp = 0.99 * temp;
+            temp = ALPHA * temp;
             k++;
 
             gnuplotOutputWriter.writeLineIfEnabled(k, temp);
