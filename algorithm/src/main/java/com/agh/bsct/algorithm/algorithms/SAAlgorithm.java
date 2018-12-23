@@ -82,6 +82,7 @@ public class SAAlgorithm implements IAlgorithm {
                 acceptedState = localState;
                 if (localFunctionValue < bestFunctionValue) {
                     bestFunctionValue = localFunctionValue;
+                    bestState = acceptedState;
                 }
             } else {
                 var worseResultAcceptanceProbability = random.nextDouble();
@@ -100,6 +101,7 @@ public class SAAlgorithm implements IAlgorithm {
         System.out.println(temp);
         System.out.println(k);
         System.out.println(bestFunctionValue);
+        System.out.println(acceptedFunctionValue);
 
         //close writer resources
         gnuplotOutputWriter.closeResources();
@@ -120,10 +122,17 @@ public class SAAlgorithm implements IAlgorithm {
     private ArrayList<GraphNode> changeRandomlyState(Map<GraphNode, List<GraphEdge>> incidenceMap,
                                                      List<GraphNode> globalState) {
         var localState = new ArrayList<>(globalState);
-        int nodeToChangeIndex = random.nextInt(localState.size());
+        var nodeToChangeIndex = random.nextInt(localState.size());
         List<GraphEdge> nodeToChangeNeighbours = incidenceMap.get(localState.get(nodeToChangeIndex));
-        GraphEdge graphEdge = nodeToChangeNeighbours.get(random.nextInt(nodeToChangeNeighbours.size()));
-        localState.set(nodeToChangeIndex, graphEdge.getEndGraphNode());
+        var graphEdge = nodeToChangeNeighbours.get(random.nextInt(nodeToChangeNeighbours.size()));
+        var endGraphNode = graphEdge.getEndGraphNode();
+        while (localState.contains(endGraphNode)) {
+            nodeToChangeIndex = random.nextInt(localState.size());
+            nodeToChangeNeighbours = incidenceMap.get(localState.get(nodeToChangeIndex));
+            graphEdge = nodeToChangeNeighbours.get(random.nextInt(nodeToChangeNeighbours.size()));
+            endGraphNode = graphEdge.getEndGraphNode();
+        }
+        localState.set(nodeToChangeIndex, endGraphNode);
         return localState;
     }
 
