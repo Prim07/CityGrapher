@@ -49,7 +49,7 @@ public class BFAlgorithm implements IAlgorithm {
         final Map<Long, Map<Long, Double>> shortestPathsDistances =
                 graphService.calculateShortestPathsDistances(algorithmTask.getGraph());
 
-        var bestState = getBestState(algorithmTask.getNumberOfResults(), algorithmTask, shortestPathsDistances);
+        var bestState = getBestState(algorithmTask, shortestPathsDistances);
 
         // map to algorithm result and set it
         algorithmTask.setStatus(AlgorithmCalculationStatus.SUCCESS);
@@ -60,24 +60,25 @@ public class BFAlgorithm implements IAlgorithm {
 
     }
 
-    private List<GraphNode> getBestState(Integer numberOfResults, AlgorithmTask algorithmTask,
+    private List<GraphNode> getBestState(AlgorithmTask algorithmTask,
                                          Map<Long, Map<Long, Double>> shortestPathsDistances) {
+        Integer numberOfResults = algorithmTask.getNumberOfResults();
+        Map<GraphNode, List<GraphEdge>> incidenceMap = algorithmTask.getGraph().getIncidenceMap();
         if (numberOfResults.equals(1)) {
-            return getBestStateForOneHospital(algorithmTask, shortestPathsDistances);
+            return getBestStateForOneHospital(incidenceMap, shortestPathsDistances);
         }
         if (numberOfResults.equals(2)) {
-            return getBestStateForTwoHospitals(algorithmTask, shortestPathsDistances);
+            return getBestStateForTwoHospitals(incidenceMap, shortestPathsDistances);
         }
         if (numberOfResults.equals(3)) {
-            return getBestStateForThreeHospitals(algorithmTask, shortestPathsDistances);
+            return getBestStateForThreeHospitals(incidenceMap, shortestPathsDistances);
         }
         throw new IllegalStateException("Brute Force Algorithm cannot be applied to " + numberOfResults
                 + " requested results. Please choose 1, 2 or 3.");
     }
 
-    private List<GraphNode> getBestStateForOneHospital(AlgorithmTask algorithmTask,
+    private List<GraphNode> getBestStateForOneHospital(Map<GraphNode, List<GraphEdge>> incidenceMap,
                                                        Map<Long, Map<Long, Double>> shortestPathsDistances) {
-        Map<GraphNode, List<GraphEdge>> incidenceMap = algorithmTask.getGraph().getIncidenceMap();
         List<GraphNode> bestState = Collections.emptyList();
         double bestFunctionValue = Double.MAX_VALUE;
 
@@ -96,9 +97,8 @@ public class BFAlgorithm implements IAlgorithm {
         return bestState;
     }
 
-    private List<GraphNode> getBestStateForTwoHospitals(AlgorithmTask algorithmTask, Map<Long,
-            Map<Long, Double>> shortestPathsDistances) {
-        Map<GraphNode, List<GraphEdge>> incidenceMap = algorithmTask.getGraph().getIncidenceMap();
+    private List<GraphNode> getBestStateForTwoHospitals(Map<GraphNode, List<GraphEdge>> incidenceMap,
+                                                        Map<Long, Map<Long, Double>> shortestPathsDistances) {
         List<GraphNode> bestState = Collections.emptyList();
         double bestFunctionValue = Double.MAX_VALUE;
 
@@ -120,9 +120,8 @@ public class BFAlgorithm implements IAlgorithm {
         return bestState;
     }
 
-    private List<GraphNode> getBestStateForThreeHospitals(AlgorithmTask algorithmTask,
+    private List<GraphNode> getBestStateForThreeHospitals(Map<GraphNode, List<GraphEdge>> incidenceMap,
                                                           Map<Long, Map<Long, Double>> shortestPathsDistances) {
-        Map<GraphNode, List<GraphEdge>> incidenceMap = algorithmTask.getGraph().getIncidenceMap();
         List<GraphNode> bestState = Collections.emptyList();
         double bestFunctionValue = Double.MAX_VALUE;
 
