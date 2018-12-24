@@ -28,10 +28,10 @@ public class OSMCityService {
         this.dataParser = dataParser;
     }
 
-    public ObjectNode getCityGraph(String cityName, Integer numberOfResults) {
+    public ObjectNode getCityGraph(String cityName, Integer numberOfResults, String algorithm) {
         var cityDataDTO = cityDataService.getCityDataDTO(cityName);
         var graphDataDTO = graphService.getGraphDataDTO(cityDataDTO);
-        var algorithmOrderDTO = new AlgorithmOrderDTO(numberOfResults, graphDataDTO);
+        var algorithmOrderDTO = new AlgorithmOrderDTO(numberOfResults, graphDataDTO, algorithm);
         return algorithmService.run(algorithmOrderDTO);
     }
 

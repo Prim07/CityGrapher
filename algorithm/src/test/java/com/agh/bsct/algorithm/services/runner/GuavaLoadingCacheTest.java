@@ -31,7 +31,8 @@ class GuavaLoadingCacheTest {
         algorithmResultCache = new GuavaLoadingCache(algorithmTaskRepository, asyncTaskRepository, graphDataMapper);
 
         GraphDataDTO graphDataDTO = new GraphDataDTO(Collections.emptyList(), Collections.emptyList());
-        algorithmOrderDTO = new AlgorithmOrderDTO(2, graphDataDTO);
+        var algorithm = "sa";
+        algorithmOrderDTO = new AlgorithmOrderDTO(2, graphDataDTO, algorithm);
     }
 
     @Test

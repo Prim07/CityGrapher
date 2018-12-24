@@ -14,6 +14,7 @@ public class AlgorithmTask {
     private final String taskId;
     private final GraphDataDTO graphDataDTO;
     private final Integer numberOfResults;
+    private final String algorithm;
     private Graph graph;
     private AlgorithmCalculationStatus status;
     private List<GeographicalNodeDTO> hospitals;
@@ -23,6 +24,7 @@ public class AlgorithmTask {
         this.taskId = taskId;
         this.graphDataDTO = algorithmOrderDTO.getGraphDataDTO();
         this.numberOfResults = algorithmOrderDTO.getNumberOfResults();
+        this.algorithm = algorithmOrderDTO.getAlgorithm();
         this.graph = graph;
         this.status = AlgorithmCalculationStatus.NOT_STARTED;
     }
@@ -37,6 +39,10 @@ public class AlgorithmTask {
 
     public Integer getNumberOfResults() {
         return numberOfResults;
+    }
+
+    public String getAlgorithm() {
+        return algorithm;
     }
 
     public Graph getGraph() {
