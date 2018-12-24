@@ -12,6 +12,7 @@ import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.Map;
 import java.util.Random;
 
 @Component
-//@Primary
+@Primary
 @Qualifier(SAAlgorithm.SIMULATED_ANNEALING_QUALIFIER)
 public class SAAlgorithm implements IAlgorithm {
 
