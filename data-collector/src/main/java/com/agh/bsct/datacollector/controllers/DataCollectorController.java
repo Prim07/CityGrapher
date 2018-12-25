@@ -29,8 +29,8 @@ public class DataCollectorController {
     @ResponseBody
     public ResponseEntity<ObjectNode> getCityGraph(@RequestParam(name = "city") String city,
                                                    @RequestParam(name = "numberOfResults") Integer numberOfResults,
-                                                   @RequestParam(name = "algorithm") String algorithm) {
-        ObjectNode cityGraph = osmCityService.getCityGraph(city, numberOfResults, algorithm);
+                                                   @RequestParam(name = "algorithmType") String algorithmType) {
+        ObjectNode cityGraph = osmCityService.getCityGraph(city, numberOfResults, algorithmType);
         return ResponseEntity.status(HttpStatus.OK).body(cityGraph);
     }
 

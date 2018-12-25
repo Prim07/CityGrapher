@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Random;
 
 @Component
-//@Primary
 @Qualifier(SAAlgorithm.SIMULATED_ANNEALING_QUALIFIER)
 public class SAAlgorithm implements IAlgorithm {
 
