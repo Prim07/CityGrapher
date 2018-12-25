@@ -18,6 +18,7 @@ public class DataParser {
     private static final String EDGES_KEY = "edges";
     private static final String ID_KEY = "id";
     private static final String IS_HOSPITAL_KEY = "isHospital";
+    private static final String IS_CROSSING_KEY = "isCrossing";
     private static final String LATITUDE_KEY = "lat";
     private static final String LONGITUDE_KEY = "lon";
     private static final String NODES_KEY = "nodes";
@@ -57,6 +58,7 @@ public class DataParser {
             jsonNode.put(ID_KEY, crossing.getGeographicalNodeDTO().getId());
             jsonNode.put(LATITUDE_KEY, crossing.getGeographicalNodeDTO().getLat());
             jsonNode.put(LONGITUDE_KEY, crossing.getGeographicalNodeDTO().getLon());
+            jsonNode.put(IS_CROSSING_KEY, crossing.getGeographicalNodeDTO().isCrossing());
             jsonNode.put(IS_HOSPITAL_KEY, hospitals.contains(crossing.getGeographicalNodeDTO()));
             jsonNodes.add(jsonNode);
         }
