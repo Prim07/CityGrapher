@@ -2,7 +2,7 @@ package com.agh.bsct.algorithm.algorithms.outputwriter;
 
 public interface AlgorithmOutputWriter {
 
-    String OUTPUT_FILES_BASE_DIRECTORY = "written-values/";
+    String OUTPUT_FILES_BASE_DIRECTORY = "algorithm/src/main/resources/written-values/";
 
     void initializeResources(String algorithmTaskId);
 
