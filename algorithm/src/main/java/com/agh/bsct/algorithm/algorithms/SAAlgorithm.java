@@ -110,7 +110,7 @@ public class SAAlgorithm implements IAlgorithm {
             temp = ALPHA * temp;
             k++;
 
-            gnuplotOutputWriter.writeLineIfEnabled(k, temp, delta, localFunctionValue, acceptedFunctionValue, bestFunctionValue);
+            gnuplotOutputWriter.writeLineIfEnabled(k, temp, Math.abs(delta), localFunctionValue, acceptedFunctionValue, bestFunctionValue);
         }
         System.out.println("temp: " + temp);
         System.out.println("k: " + k);
