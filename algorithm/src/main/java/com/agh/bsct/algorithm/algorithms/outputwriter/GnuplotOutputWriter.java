@@ -8,7 +8,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 @Component
 public class GnuplotOutputWriter implements AlgorithmOutputWriter {
@@ -16,11 +17,9 @@ public class GnuplotOutputWriter implements AlgorithmOutputWriter {
     private static final String FILE_NAME_PREFIX = "values_for_";
     private static final String FILE_EXTENSION = ".txt";
     private static final Character GNUPLOT_COLUMN_SEPARATOR = ' ';
-
+    private final boolean isWritingEnabled;
     private BufferedWriter bufferedWriter;
     private FileWriter fileWriter;
-    private final boolean isWritingEnabled;
-
     private AlgorithmProperties algorithmProperties;
 
     @Autowired
@@ -60,6 +59,16 @@ public class GnuplotOutputWriter implements AlgorithmOutputWriter {
         }
     }
 
+    private String getGnuplotFormattedLine(String key, String[] values) {
+        StringBuilder gnuplotStyleFormattedLine = new StringBuilder(key);
+
+        for (var value : values) {
+            gnuplotStyleFormattedLine.append(GNUPLOT_COLUMN_SEPARATOR).append(value);
+        }
+
+        return gnuplotStyleFormattedLine.toString();
+    }
+
     @Override
     public void closeResources() {
         if (isWritingEnabled) {
@@ -73,24 +82,38 @@ public class GnuplotOutputWriter implements AlgorithmOutputWriter {
         }
     }
 
-    @SafeVarargs
-    public final <T extends Number> void writeLineIfEnabled(T key, T... values) {
+    public final <T extends Number> void writeLineIfEnabled(T key, T temp, T delta, T localFunctionValue,
+                                                            T acceptedFunctionValue, T bestFunctionValue) {
         if (isWritingEnabled) {
-            String[] valuesToString = Arrays.stream(values)
-                    .map(T::toString)
-                    .toArray(String[]::new);
+            String[] enabledToWriteValues = getEnabledToWriteStringValues(temp, delta, localFunctionValue,
+                    acceptedFunctionValue, bestFunctionValue);
 
-            writeLineIfEnabled(key.toString(), valuesToString);
+            writeLineIfEnabled(key.toString(), enabledToWriteValues);
         }
     }
 
-    private String getGnuplotFormattedLine(String key, String[] values) {
-        StringBuilder gnuplotStyleFormattedLine = new StringBuilder(key);
+    private <T extends Number> String[] getEnabledToWriteStringValues(T temp, T delta, T localFunctionValue,
+                                                                      T acceptedFunctionValue, T bestFunctionValue) {
+        List<T> values = new LinkedList<>();
 
-        for (var value : values) {
-            gnuplotStyleFormattedLine.append(GNUPLOT_COLUMN_SEPARATOR).append(value);
+        if (algorithmProperties.getIsWritingTemperatureEnabled()) {
+            values.add(temp);
+        }
+        if (algorithmProperties.getIsWritingDeltaEnabled()) {
+            values.add(delta);
+        }
+        if (algorithmProperties.getIsWritingLocalFunctionValueEnabled()) {
+            values.add(localFunctionValue);
+        }
+        if (algorithmProperties.getIsWritingAcceptedFunctionValueEnabled()) {
+            values.add(acceptedFunctionValue);
+        }
+        if (algorithmProperties.getIsWritingBestFunctionValueEnabled()) {
+            values.add(bestFunctionValue);
         }
 
-        return gnuplotStyleFormattedLine.toString();
+        return values.stream()
+                .map(T::toString)
+                .toArray(String[]::new);
     }
 }
