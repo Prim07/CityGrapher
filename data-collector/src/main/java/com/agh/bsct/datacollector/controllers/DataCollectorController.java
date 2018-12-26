@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @CrossOrigin
 @Controller
 public class DataCollectorController {
@@ -28,8 +30,8 @@ public class DataCollectorController {
     @ResponseBody
     public ResponseEntity<ObjectNode> getCityGraph(@RequestParam(name = "city") String city,
                                                    @RequestParam(name = "numberOfResults") Integer numberOfResults,
-                                                   @RequestParam(name = "algorithmType") String algorithmType) {
-        ObjectNode cityGraph = osmCityService.getCityGraph(city, numberOfResults, algorithmType);
+                                                   @RequestParam(name = "type") Optional<String> type) {
+        ObjectNode cityGraph = osmCityService.getCityGraph(city, numberOfResults, type);
         return ResponseEntity.status(HttpStatus.OK).body(cityGraph);
     }
 
