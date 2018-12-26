@@ -67,7 +67,7 @@ public class SAAlgorithm implements IAlgorithm {
 
         Map<GraphNode, List<GraphEdge>> incidenceMap = algorithmTask.getGraph().getIncidenceMap();
 
-        //initialize collection with 100x1
+        //initialize collection with 100xtrue
         var lastHundredChanges = initializeLastHundredChanges();
 
         List<GraphNode> acceptedState = initializeGlobalState(algorithmTask, incidenceMap);
@@ -87,7 +87,7 @@ public class SAAlgorithm implements IAlgorithm {
 
             if (localFunctionValue < acceptedFunctionValue) {
                 //change has been made
-                lastHundredChanges.add(1);
+                lastHundredChanges.add(Boolean.TRUE);
                 acceptedState = localState;
                 if (localFunctionValue < bestFunctionValue) {
                     bestFunctionValue = localFunctionValue;
@@ -98,11 +98,11 @@ public class SAAlgorithm implements IAlgorithm {
                 var p = Math.exp(-delta / temp);
                 if (worseResultAcceptanceProbability < p) {
                     //change has been made
-                    lastHundredChanges.add(1);
+                    lastHundredChanges.add(Boolean.TRUE);
                     acceptedState = localState;
                 } else {
                     //change hasn't been made
-                    lastHundredChanges.add(0);
+                    lastHundredChanges.add(Boolean.FALSE);
                 }
             }
 
@@ -128,16 +128,22 @@ public class SAAlgorithm implements IAlgorithm {
         algorithmTask.setAlgorithmResultDTO(fakeAlgorithmResult);
     }
 
-    private CircularFifoQueue<Integer> initializeLastHundredChanges() {
-        var lastHundredChanges = new CircularFifoQueue<Integer>(100);
+    private CircularFifoQueue<Boolean> initializeLastHundredChanges() {
+        var lastHundredChanges = new CircularFifoQueue<Boolean>(100);
         for (var i = 0; i < 100; i++) {
-            lastHundredChanges.add(1);
+            lastHundredChanges.add(Boolean.TRUE);
         }
         return lastHundredChanges;
     }
 
-    private boolean shouldIterate(CircularFifoQueue<Integer> lastHundredChanges) {
-        return lastHundredChanges.stream().mapToInt(Integer::intValue).sum() > 0;
+    private boolean shouldIterate(CircularFifoQueue<Boolean> lastHundredChanges) {
+        for (var i = 0; i < 100; i++) {
+            if (lastHundredChanges.get(i).equals(Boolean.TRUE)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private ArrayList<GraphNode> changeRandomlyState(Map<GraphNode, List<GraphEdge>> incidenceMap,
