@@ -22,4 +22,19 @@ public class AlgorithmProperties {
     @NotNull
     private Boolean isWritingValuesToFileEnabled;
 
+    @NotNull
+    private Boolean isWritingTemperatureEnabled;
+
+    @NotNull
+    private Boolean isWritingDeltaEnabled;
+
+    @NotNull
+    private Boolean isWritingLocalFunctionValueEnabled;
+
+    @NotNull
+    private Boolean isWritingAcceptedFunctionValueEnabled;
+
+    @NotNull
+    private Boolean isWritingBestFunctionValueEnabled;
+
 }
