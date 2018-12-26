@@ -1,12 +1,6 @@
 package com.agh.bsct.algorithm.algorithms;
 
-import com.agh.bsct.algorithm.algorithms.outputwriter.GnuplotOutputWriter;
-import com.agh.bsct.algorithm.controllers.mapper.AlgorithmTaskMapper;
 import com.agh.bsct.algorithm.entities.graph.GraphInitializer;
-import com.agh.bsct.algorithm.services.algorithms.AlgorithmFunctionsService;
-import com.agh.bsct.algorithm.services.algorithms.CrossingsService;
-import com.agh.bsct.algorithm.services.entities.graph.GraphService;
-import com.agh.bsct.algorithm.services.entities.graphdata.GraphDataService;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
 import com.agh.bsct.algorithm.services.runner.asyncrunner.AsyncAlgorithmTaskRunner;
 import com.agh.bsct.api.entities.algorithmorder.AlgorithmOrderDTO;
@@ -31,14 +25,10 @@ class SAAlgorithmTest {
         var graphInitializer = new GraphInitializer();
         var graph = graphInitializer.initGraph(SRC_TEST_RESOURCES_PATH + "tarnow.txt");
 
-        var graphDataService = new GraphDataService();
-        var graphService = new GraphService(graphDataService);
-        var saAlgorithm = new SAAlgorithm(new AlgorithmFunctionsService(), new CrossingsService(),
-                new AlgorithmTaskMapper(), graphService, mock(GnuplotOutputWriter.class));
-        this.asyncAlgorithmTaskRunner = new AsyncAlgorithmTaskRunner(saAlgorithm);
-
+        IAlgorithm iAlgorithm = mock(IAlgorithm.class);
+        this.asyncAlgorithmTaskRunner = new AsyncAlgorithmTaskRunner(new AlgorithmRunner(iAlgorithm, iAlgorithm));
         var taskId = UUID.randomUUID().toString();
-        var algorithmOrderDTO = new AlgorithmOrderDTO(NUMBER_OF_RESULTS, mock(GraphDataDTO.class));
+        var algorithmOrderDTO = new AlgorithmOrderDTO(NUMBER_OF_RESULTS, mock(GraphDataDTO.class), "sa");
         this.algorithmTask = new AlgorithmTask(taskId, algorithmOrderDTO, graph);
     }
 

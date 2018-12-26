@@ -17,9 +17,13 @@ public class AlgorithmOrderDTO {
     @NotNull
     private GraphDataDTO graphDataDTO;
 
-    public AlgorithmOrderDTO(Integer numberOfResults, GraphDataDTO graphDataDTO) {
+    @NotNull
+    private String algorithmType;
+
+    public AlgorithmOrderDTO(Integer numberOfResults, GraphDataDTO graphDataDTO, String algorithmType) {
         this.numberOfResults = numberOfResults;
         this.graphDataDTO = graphDataDTO;
+        this.algorithmType = algorithmType;
     }
 
     @Override
