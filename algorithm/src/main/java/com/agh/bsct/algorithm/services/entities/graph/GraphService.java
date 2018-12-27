@@ -20,7 +20,20 @@ public class GraphService {
         this.graphDataService = graphDataService;
     }
 
-    public void replaceGraphWithItsBiggestConnectedComponent(AlgorithmTask algorithmTask) {
+    public void replaceGraphWithItsBiggestConnectedComponent(Graph graph) {
+        var nodeToEdgesIncidenceMap = graph.getIncidenceMap();
+
+        var graphNodesFromConnectedComponent = findBiggestConnectedComponent(nodeToEdgesIncidenceMap);
+
+        var nodeToEdgesIncidenceMapCopy = new HashMap<GraphNode, List<GraphEdge>>();
+
+        removeNodesNotIncludedInBCC(nodeToEdgesIncidenceMap, graphNodesFromConnectedComponent,
+                nodeToEdgesIncidenceMapCopy);
+
+        graph.setNodeToEdgesIncidenceMap(nodeToEdgesIncidenceMapCopy);
+    }
+
+    private void replaceGraphWithItsBiggestConnectedComponent(AlgorithmTask algorithmTask) {
         var graph = algorithmTask.getGraph();
         var nodeToEdgesIncidenceMap = graph.getIncidenceMap();
 
@@ -35,19 +48,6 @@ public class GraphService {
 
         var graphDataDTO = algorithmTask.getGraphDataDTO();
         graphDataService.replaceGraphWithItsBiggestCommonComponent(graphDataDTO, graphNodesFromConnectedComponent);
-    }
-
-    public void replaceGraphWithItsBiggestConnectedComponent(Graph graph) {
-        var nodeToEdgesIncidenceMap = graph.getIncidenceMap();
-
-        var graphNodesFromConnectedComponent = findBiggestConnectedComponent(nodeToEdgesIncidenceMap);
-
-        var nodeToEdgesIncidenceMapCopy = new HashMap<GraphNode, List<GraphEdge>>();
-
-        removeNodesNotIncludedInBCC(nodeToEdgesIncidenceMap, graphNodesFromConnectedComponent,
-                nodeToEdgesIncidenceMapCopy);
-
-        graph.setNodeToEdgesIncidenceMap(nodeToEdgesIncidenceMapCopy);
     }
 
     private void removeNodesNotIncludedInBCC(Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap,
@@ -156,7 +156,7 @@ public class GraphService {
         return shortestPathsDistances;
     }
 
-    public Map<Long, Map<Long, Double>> getShortestPathDistances(AlgorithmTask algorithmTask) {
+    public Map<Long, Map<Long, Double>> getShortestPathsDistances(AlgorithmTask algorithmTask) {
         replaceGraphWithItsBiggestConnectedComponent(algorithmTask);
         return calculateShortestPathsDistances(algorithmTask.getGraph());
     }

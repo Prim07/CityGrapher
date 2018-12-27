@@ -54,7 +54,7 @@ public class SAAlgorithm implements IAlgorithm {
     public void run(AlgorithmTask algorithmTask) {
         algorithmTask.setStatus(AlgorithmCalculationStatus.CALCULATING);
         
-        final var shortestPathsDistances = graphService.getShortestPathDistances(algorithmTask);
+        final var shortestPathsDistances = graphService.getShortestPathsDistances(algorithmTask);
         final var incidenceMap = algorithmTask.getGraph().getIncidenceMap();
 
         var numberOfIterations = 0;

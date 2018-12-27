@@ -42,21 +42,19 @@ public class BFAlgorithm implements IAlgorithm {
 
     @Override
     public void run(AlgorithmTask algorithmTask) {
-        // prepare properly graph
         algorithmTask.setStatus(AlgorithmCalculationStatus.CALCULATING);
-        graphService.replaceGraphWithItsBiggestConnectedComponent(algorithmTask);
-        final Map<Long, Map<Long, Double>> shortestPathsDistances =
-                graphService.calculateShortestPathsDistances(algorithmTask.getGraph());
+
+        final var shortestPathsDistances = graphService.getShortestPathsDistances(algorithmTask);
 
         var bestState = getBestState(algorithmTask, shortestPathsDistances);
 
-        // map to algorithm result and set it
-        algorithmTask.setStatus(AlgorithmCalculationStatus.SUCCESS);
-        algorithmTask.setHospitals(
-                crossingsService.getGeographicalNodesForBestState(bestState, algorithmTask.getGraphDataDTO()));
-        var fakeAlgorithmResult = algorithmTaskMapper.mapToAlgorithmResultDTO(algorithmTask);
-        algorithmTask.setAlgorithmResultDTO(fakeAlgorithmResult);
+        var hospitals = crossingsService.getGeographicalNodesForBestState(bestState, algorithmTask.getGraphDataDTO());
+        var algorithmResultDTO = algorithmTaskMapper.mapToAlgorithmResultDTO(algorithmTask);
 
+        algorithmTask.setHospitals(hospitals);
+        algorithmTask.setAlgorithmResultDTO(algorithmResultDTO);
+
+        algorithmTask.setStatus(AlgorithmCalculationStatus.SUCCESS);
     }
 
     private List<GraphNode> getBestState(AlgorithmTask algorithmTask,
@@ -91,8 +89,6 @@ public class BFAlgorithm implements IAlgorithm {
             }
         }
 
-        //TODO to remove and replace with gnuplot
-        System.out.println("1: " + bestFunctionValue);
         return bestState;
     }
 
@@ -114,8 +110,6 @@ public class BFAlgorithm implements IAlgorithm {
 
         }
 
-        //TODO to remove and replace with gnuplot
-        System.out.println("2: " + bestFunctionValue);
         return bestState;
     }
 
@@ -140,8 +134,6 @@ public class BFAlgorithm implements IAlgorithm {
             }
         }
 
-        //TODO to remove and replace with gnuplot
-        System.out.println("3: " + bestFunctionValue);
         return bestState;
     }
 
