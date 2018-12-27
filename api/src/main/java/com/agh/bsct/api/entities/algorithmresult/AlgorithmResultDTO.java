@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Builder
@@ -32,5 +33,21 @@ public class AlgorithmResultDTO {
         this.status = status;
         this.graphData = graphData;
         this.hospitals = hospitals;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AlgorithmResultDTO that = (AlgorithmResultDTO) o;
+        return Objects.equals(taskId, that.taskId) &&
+                Objects.equals(status, that.status) &&
+                Objects.equals(graphData, that.graphData) &&
+                Objects.equals(hospitals, that.hospitals);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(taskId, status, graphData, hospitals);
     }
 }

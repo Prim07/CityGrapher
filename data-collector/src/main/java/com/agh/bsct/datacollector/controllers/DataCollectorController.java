@@ -9,13 +9,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @CrossOrigin
 @Controller
 public class DataCollectorController {
 
     private static final String DATA_COLLECTOR_PATH = "/dataCollector";
     private static final String GET_CITY_GRAPH_PATH = "/cityGraph";
-    private static final String GET_CITY_DATA_PATH = "/cityData";
     private static final String GET_ALGORITHM_RESULT_PATH = "/algorithmResult/";
 
     private final OSMCityService osmCityService;
@@ -28,8 +29,9 @@ public class DataCollectorController {
     @GetMapping(DATA_COLLECTOR_PATH + GET_CITY_GRAPH_PATH)
     @ResponseBody
     public ResponseEntity<ObjectNode> getCityGraph(@RequestParam(name = "city") String city,
-                                                   @RequestParam(name = "numberOfResults") Integer numberOfResults) {
-        ObjectNode cityGraph = osmCityService.getCityGraph(city, numberOfResults);
+                                                   @RequestParam(name = "numberOfResults") Integer numberOfResults,
+                                                   @RequestParam(name = "type") Optional<String> type) {
+        ObjectNode cityGraph = osmCityService.getCityGraph(city, numberOfResults, type);
         return ResponseEntity.status(HttpStatus.OK).body(cityGraph);
     }
 

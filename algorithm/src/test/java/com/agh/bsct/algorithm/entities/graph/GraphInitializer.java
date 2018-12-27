@@ -8,11 +8,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class GraphInitializer {
+public class GraphInitializer {
+
+    public static final String SRC_TEST_RESOURCES_PATH = "src/test/resources/";
 
     private Map<String, Graph> filenameToGraph = new HashMap<>();
 
-    Graph initGraph(String filename) {
+    public Graph initGraph(String filename) {
         if (!filenameToGraph.containsKey(filename)) {
             var graph = loadGraphFromFile(filename);
             filenameToGraph.put(filename, graph);
@@ -31,7 +33,7 @@ class GraphInitializer {
             String linesForOneMapElement = null;
             while (line != null) {
 
-                if (line.matches("\\s+")) {
+                if (line.equals("") || line.matches("\\s+")) {
                     String[] stringIds = linesForOneMapElement.split("\\s+");
 
                     GraphNode graphNode = null;
@@ -52,7 +54,7 @@ class GraphInitializer {
                     nodeToEdgesIncidenceMap.put(graphNode, graphEdges);
 
                 } else {
-                    linesForOneMapElement = (linesForOneMapElement == null) ? line : (linesForOneMapElement + line);
+                    linesForOneMapElement = (linesForOneMapElement == null) ? line : (linesForOneMapElement + " " + line);
                 }
 
                 line = reader.readLine();

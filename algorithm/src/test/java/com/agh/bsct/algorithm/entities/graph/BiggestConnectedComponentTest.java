@@ -1,19 +1,19 @@
 package com.agh.bsct.algorithm.entities.graph;
 
-import com.agh.bsct.algorithm.services.entities.graph.GraphService;
+import com.agh.bsct.algorithm.services.graph.GraphService;
+import com.agh.bsct.algorithm.services.graphdata.GraphDataService;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
 
+import static com.agh.bsct.algorithm.entities.graph.GraphInitializer.SRC_TEST_RESOURCES_PATH;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BiggestConnectedComponentTest {
 
-    private static final String SRC_TEST_RESOURCES_PATH = "src/test/resources/";
-
     private final GraphInitializer graphInitializer = new GraphInitializer();
-    private final GraphService graphService = new GraphService();
+    private final GraphService graphService = new GraphService(new GraphDataService());
 
     @Test
     void shouldBeTheSameWhenMilocinIsCalculatedMultipleTimes() {
@@ -42,7 +42,7 @@ class BiggestConnectedComponentTest {
         Map<GraphNode, List<GraphEdge>> incidenceMap = graph.getIncidenceMap();
         var biggestCommonComponentToCompare = graphService.findBiggestConnectedComponent(incidenceMap);
 
-        int loopCount = 1000;
+        int loopCount = 100;
         for (int i = 0; i < loopCount; i++) {
             var biggestCommonComponent = graphService.findBiggestConnectedComponent(incidenceMap);
 

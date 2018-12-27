@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -23,4 +24,17 @@ public class NodeDTO {
         this.weight = weight;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NodeDTO nodeDTO = (NodeDTO) o;
+        return Objects.equals(geographicalNodeDTO, nodeDTO.geographicalNodeDTO) &&
+                Objects.equals(weight, nodeDTO.weight);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(geographicalNodeDTO, weight);
+    }
 }
