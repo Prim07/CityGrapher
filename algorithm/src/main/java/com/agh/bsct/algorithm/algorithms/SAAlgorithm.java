@@ -25,11 +25,11 @@ public class SAAlgorithm implements IAlgorithm {
 
     static final String SIMULATED_ANNEALING_QUALIFIER = "simulatedAnnealingAlgorithm";
 
-    private static final double INITIAL_TEMP = 500000.0;
+    private static final double INITIAL_TEMPERATURE = 500000.0;
     private static final double ALPHA = 0.9999;
     private static final int QUEUE_SIZE = 100;
 
-    private AlgorithmFunctionsService algorithmFunctionsService;
+    private AlgorithmFunctionsService functionsService;
     private CrossingsService crossingsService;
     private AlgorithmTaskMapper algorithmTaskMapper;
     private GraphService graphService;
@@ -37,12 +37,12 @@ public class SAAlgorithm implements IAlgorithm {
     private Random random;
 
     @Autowired
-    public SAAlgorithm(AlgorithmFunctionsService algorithmFunctionsService,
+    public SAAlgorithm(AlgorithmFunctionsService functionsService,
                        CrossingsService crossingsService,
                        AlgorithmTaskMapper algorithmTaskMapper,
                        GraphService graphService,
                        GnuplotOutputWriter gnuplotOutputWriter) {
-        this.algorithmFunctionsService = algorithmFunctionsService;
+        this.functionsService = functionsService;
         this.crossingsService = crossingsService;
         this.algorithmTaskMapper = algorithmTaskMapper;
         this.graphService = graphService;
@@ -52,89 +52,122 @@ public class SAAlgorithm implements IAlgorithm {
 
     @Override
     public void run(AlgorithmTask algorithmTask) {
-        // prepare properly graph
         algorithmTask.setStatus(AlgorithmCalculationStatus.CALCULATING);
-        graphService.replaceGraphWithItsBiggestConnectedComponent(algorithmTask);
-        final Map<Long, Map<Long, Double>> shortestPathsDistances =
-                graphService.calculateShortestPathsDistances(algorithmTask.getGraph());
+        
+        final var shortestPathsDistances = getShortestPathDistances(algorithmTask);
+        final var incidenceMap = algorithmTask.getGraph().getIncidenceMap();
 
-        // prepare AlgorithmOutputWriter (example version)
+        var numberOfIterations = 0;
+        var temperature = INITIAL_TEMPERATURE;
+
+        var acceptedState = initializeGlobalState(algorithmTask, incidenceMap);
+        var bestState = acceptedState;
+        var acceptedFunctionValue = functionsService.calculateFunctionValue(shortestPathsDistances, acceptedState);
+        var bestFunctionValue = acceptedFunctionValue;
+        
+        var latestChanges = initializeLatestChanges();
+
         gnuplotOutputWriter.initializeResources(algorithmTask.getTaskId());
 
-        // heart of calculating
-        var k = 0;
-        var temp = INITIAL_TEMP;
-
-        Map<GraphNode, List<GraphEdge>> incidenceMap = algorithmTask.getGraph().getIncidenceMap();
-
-        //initialize collection with 100xtrue
-        var lastHundredChanges = initializeLastHundredChanges();
-
-        List<GraphNode> acceptedState = initializeGlobalState(algorithmTask, incidenceMap);
-        List<GraphNode> bestState = acceptedState;
-        double acceptedFunctionValue =
-                algorithmFunctionsService.calculateFunctionValue(shortestPathsDistances, acceptedState);
-        double bestFunctionValue = acceptedFunctionValue;
-
-
-        while (shouldIterate(lastHundredChanges)) {
-            acceptedFunctionValue =
-                    algorithmFunctionsService.calculateFunctionValue(shortestPathsDistances, acceptedState);
+        while (shouldIterate(latestChanges)) {
             var localState = changeRandomlyState(incidenceMap, acceptedState);
-            var localFunctionValue =
-                    algorithmFunctionsService.calculateFunctionValue(shortestPathsDistances, localState);
+            var localFunctionValue = functionsService.calculateFunctionValue(shortestPathsDistances, localState);
             double delta = localFunctionValue - acceptedFunctionValue;
 
-            if (localFunctionValue < acceptedFunctionValue) {
-                //change has been made
-                lastHundredChanges.add(Boolean.TRUE);
+            if (isBetterStateFound(acceptedFunctionValue, localFunctionValue)) {
+                latestChanges.add(Boolean.TRUE);
                 acceptedState = localState;
-                if (localFunctionValue < bestFunctionValue) {
-                    bestFunctionValue = localFunctionValue;
+                acceptedFunctionValue = localFunctionValue;
+                if (isAcceptedStateBetterThanBestState(acceptedFunctionValue, bestFunctionValue)) {
+                    bestFunctionValue = acceptedFunctionValue;
                     bestState = acceptedState;
                 }
             } else {
                 var worseResultAcceptanceProbability = random.nextDouble();
-                var p = Math.exp(-delta / temp);
-                if (worseResultAcceptanceProbability < p) {
-                    //change has been made
-                    lastHundredChanges.add(Boolean.TRUE);
+                var acceptanceProbability = Math.exp(-delta / temperature);
+                if (shouldWorseChangeBeApplied(worseResultAcceptanceProbability, acceptanceProbability)) {
+                    latestChanges.add(Boolean.TRUE);
                     acceptedState = localState;
+                    acceptedFunctionValue = localFunctionValue;
                 } else {
-                    //change hasn't been made
-                    lastHundredChanges.add(Boolean.FALSE);
+                    latestChanges.add(Boolean.FALSE);
                 }
             }
 
-            // update temperature
-            temp = ALPHA * temp;
-            k++;
+            gnuplotOutputWriter.writeLineIfEnabled(numberOfIterations, temperature, Math.abs(delta), localFunctionValue,
+                    acceptedFunctionValue, bestFunctionValue);
 
-            gnuplotOutputWriter.writeLineIfEnabled(k, temp, Math.abs(delta), localFunctionValue, acceptedFunctionValue,
-                    bestFunctionValue);
+            temperature = ALPHA * temperature;
+            numberOfIterations++;
         }
-        System.out.println("temp: " + temp);
-        System.out.println("k: " + k);
+
+        gnuplotOutputWriter.closeResources();
+
+        //TODO PP to remove after setting algorithm params
+        System.out.println("temperature: " + temperature);
+        System.out.println("numberOfIterations: " + numberOfIterations);
         System.out.println("best FV: " + bestFunctionValue);
         System.out.println("accepted FV: " + acceptedFunctionValue);
 
-        //close writer resources
-        gnuplotOutputWriter.closeResources();
+        var hospitals = crossingsService.getGeographicalNodesForBestState(bestState, algorithmTask.getGraphDataDTO());
+        var algorithmResultDTO = algorithmTaskMapper.mapToAlgorithmResultDTO(algorithmTask);
 
-        // map to algorithm result and set it
+        algorithmTask.setHospitals(hospitals);
+        algorithmTask.setAlgorithmResultDTO(algorithmResultDTO);
+
         algorithmTask.setStatus(AlgorithmCalculationStatus.SUCCESS);
-        algorithmTask.setHospitals(
-                crossingsService.getGeographicalNodesForBestState(bestState, algorithmTask.getGraphDataDTO()));
-        var fakeAlgorithmResult = algorithmTaskMapper.mapToAlgorithmResultDTO(algorithmTask);
-        algorithmTask.setAlgorithmResultDTO(fakeAlgorithmResult);
     }
 
-    private CircularFifoQueue<Boolean> initializeLastHundredChanges() {
+    private Map<Long, Map<Long, Double>> getShortestPathDistances(AlgorithmTask algorithmTask) {
+        graphService.replaceGraphWithItsBiggestConnectedComponent(algorithmTask);
+        return graphService.calculateShortestPathsDistances(algorithmTask.getGraph());
+    }
+
+    private List<GraphNode> initializeGlobalState(AlgorithmTask algorithmTask,
+                                                  Map<GraphNode, List<GraphEdge>> incidenceMap) {
+        var graphNodesList = new ArrayList<>(incidenceMap.keySet());
+        var numberOfResults = algorithmTask.getNumberOfResults();
+        var globalState = new ArrayList<GraphNode>(numberOfResults);
+
+        for (var i = 0; i < numberOfResults; ++i) {
+            int chosenNodeId = random.nextInt(algorithmTask.getGraph().getIncidenceMap().size());
+            while (globalState.contains(graphNodesList.get(chosenNodeId))) {
+                chosenNodeId = random.nextInt(algorithmTask.getGraph().getIncidenceMap().size());
+            }
+            globalState.add(i, graphNodesList.get(chosenNodeId));
+        }
+
+        return globalState;
+    }
+
+    private CircularFifoQueue<Boolean> initializeLatestChanges() {
         var lastHundredChanges = new CircularFifoQueue<Boolean>(QUEUE_SIZE);
+
         for (var i = 0; i < QUEUE_SIZE; i++) {
             lastHundredChanges.add(Boolean.TRUE);
         }
+
         return lastHundredChanges;
+    }
+
+    private ArrayList<GraphNode> changeRandomlyState(Map<GraphNode, List<GraphEdge>> incidenceMap,
+                                                     List<GraphNode> globalState) {
+        var localState = new ArrayList<>(globalState);
+        var nodeToChangeIndex = random.nextInt(localState.size());
+        var nodeToChangeNeighbours = incidenceMap.get(localState.get(nodeToChangeIndex));
+        var graphEdge = nodeToChangeNeighbours.get(random.nextInt(nodeToChangeNeighbours.size()));
+        var endGraphNode = graphEdge.getEndGraphNode();
+
+        while (localState.contains(endGraphNode)) {
+            nodeToChangeIndex = random.nextInt(localState.size());
+            nodeToChangeNeighbours = incidenceMap.get(localState.get(nodeToChangeIndex));
+            graphEdge = nodeToChangeNeighbours.get(random.nextInt(nodeToChangeNeighbours.size()));
+            endGraphNode = graphEdge.getEndGraphNode();
+        }
+
+        localState.set(nodeToChangeIndex, endGraphNode);
+
+        return localState;
     }
 
     private boolean shouldIterate(CircularFifoQueue<Boolean> lastHundredChanges) {
@@ -147,39 +180,16 @@ public class SAAlgorithm implements IAlgorithm {
         return false;
     }
 
-    private ArrayList<GraphNode> changeRandomlyState(Map<GraphNode, List<GraphEdge>> incidenceMap,
-                                                     List<GraphNode> globalState) {
-        var localState = new ArrayList<>(globalState);
-        var nodeToChangeIndex = random.nextInt(localState.size());
-        List<GraphEdge> nodeToChangeNeighbours = incidenceMap.get(localState.get(nodeToChangeIndex));
-        var graphEdge = nodeToChangeNeighbours.get(random.nextInt(nodeToChangeNeighbours.size()));
-        var endGraphNode = graphEdge.getEndGraphNode();
-        while (localState.contains(endGraphNode)) {
-            nodeToChangeIndex = random.nextInt(localState.size());
-            nodeToChangeNeighbours = incidenceMap.get(localState.get(nodeToChangeIndex));
-            graphEdge = nodeToChangeNeighbours.get(random.nextInt(nodeToChangeNeighbours.size()));
-            endGraphNode = graphEdge.getEndGraphNode();
-        }
-        localState.set(nodeToChangeIndex, endGraphNode);
-        return localState;
+    private boolean isBetterStateFound(double acceptedFunctionValue, double localFunctionValue) {
+        return localFunctionValue < acceptedFunctionValue;
     }
 
-    private List<GraphNode> initializeGlobalState(AlgorithmTask algorithmTask,
-                                                  Map<GraphNode, List<GraphEdge>> incidenceMap) {
-        ArrayList<GraphNode> graphNodesList = new ArrayList<>(incidenceMap.keySet());
+    private boolean isAcceptedStateBetterThanBestState(double acceptedFunctionValue, double bestFunctionValue) {
+        return acceptedFunctionValue < bestFunctionValue;
+    }
 
-        Integer numberOfResults = algorithmTask.getNumberOfResults();
-        List<GraphNode> globalState = new ArrayList<>(numberOfResults);
-
-        for (var i = 0; i < numberOfResults; ++i) {
-            int chosenNodeId = random.nextInt(algorithmTask.getGraph().getIncidenceMap().size());
-            while (globalState.contains(graphNodesList.get(chosenNodeId))) {
-                chosenNodeId = random.nextInt(algorithmTask.getGraph().getIncidenceMap().size());
-            }
-            globalState.add(i, graphNodesList.get(chosenNodeId));
-        }
-
-        return globalState;
+    private boolean shouldWorseChangeBeApplied(double worseResultAcceptanceProbability, double acceptanceProbability) {
+        return worseResultAcceptanceProbability < acceptanceProbability;
     }
 
 }
