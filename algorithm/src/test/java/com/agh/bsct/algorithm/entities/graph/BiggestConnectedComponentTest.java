@@ -1,7 +1,7 @@
 package com.agh.bsct.algorithm.entities.graph;
 
-import com.agh.bsct.algorithm.services.entities.graph.GraphService;
-import com.agh.bsct.algorithm.services.entities.graphdata.GraphDataService;
+import com.agh.bsct.algorithm.services.graph.GraphService;
+import com.agh.bsct.algorithm.services.graphdata.GraphDataService;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

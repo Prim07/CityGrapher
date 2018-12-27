@@ -1,9 +1,9 @@
-package com.agh.bsct.algorithm.services.entities.graph;
+package com.agh.bsct.algorithm.services.graph;
 
 import com.agh.bsct.algorithm.entities.graph.Graph;
 import com.agh.bsct.algorithm.entities.graph.GraphEdge;
 import com.agh.bsct.algorithm.entities.graph.GraphNode;
-import com.agh.bsct.algorithm.services.entities.graphdata.GraphDataService;
+import com.agh.bsct.algorithm.services.graphdata.GraphDataService;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.agh.bsct.algorithm.services.entities.graphdata;
+package com.agh.bsct.algorithm.services.graphdata;
 
 import com.agh.bsct.algorithm.entities.graph.GraphNode;
 import com.agh.bsct.api.entities.graphdata.EdgeDTO;

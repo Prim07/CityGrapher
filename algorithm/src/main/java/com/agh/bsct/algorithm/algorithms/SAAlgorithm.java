@@ -5,7 +5,7 @@ import com.agh.bsct.algorithm.entities.graph.GraphEdge;
 import com.agh.bsct.algorithm.entities.graph.GraphNode;
 import com.agh.bsct.algorithm.services.algorithms.AlgorithmFunctionsService;
 import com.agh.bsct.algorithm.services.algorithms.CrossingsService;
-import com.agh.bsct.algorithm.services.entities.graph.GraphService;
+import com.agh.bsct.algorithm.services.graph.GraphService;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmCalculationStatus;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
