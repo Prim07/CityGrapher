@@ -27,6 +27,7 @@ public class SAAlgorithm implements IAlgorithm {
 
     private static final double INITIAL_TEMP = 100000000.0;
     private static final double ALPHA = 0.9999;
+    private static final int QUEUE_SIZE = 100;
 
     private AlgorithmFunctionsService algorithmFunctionsService;
     private CrossingsService crossingsService;
@@ -129,15 +130,15 @@ public class SAAlgorithm implements IAlgorithm {
     }
 
     private CircularFifoQueue<Boolean> initializeLastHundredChanges() {
-        var lastHundredChanges = new CircularFifoQueue<Boolean>(100);
-        for (var i = 0; i < 100; i++) {
+        var lastHundredChanges = new CircularFifoQueue<Boolean>(QUEUE_SIZE);
+        for (var i = 0; i < QUEUE_SIZE; i++) {
             lastHundredChanges.add(Boolean.TRUE);
         }
         return lastHundredChanges;
     }
 
     private boolean shouldIterate(CircularFifoQueue<Boolean> lastHundredChanges) {
-        for (var i = 0; i < 100; i++) {
+        for (var i = 0; i < QUEUE_SIZE; i++) {
             if (lastHundredChanges.get(i).equals(Boolean.TRUE)) {
                 return true;
             }
