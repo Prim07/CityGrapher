@@ -54,7 +54,7 @@ public class SAAlgorithm implements IAlgorithm {
     public void run(AlgorithmTask algorithmTask) {
         algorithmTask.setStatus(AlgorithmCalculationStatus.CALCULATING);
         
-        final var shortestPathsDistances = getShortestPathDistances(algorithmTask);
+        final var shortestPathsDistances = graphService.getShortestPathDistances(algorithmTask);
         final var incidenceMap = algorithmTask.getGraph().getIncidenceMap();
 
         var numberOfIterations = 0;
@@ -116,11 +116,6 @@ public class SAAlgorithm implements IAlgorithm {
         algorithmTask.setAlgorithmResultDTO(algorithmResultDTO);
 
         algorithmTask.setStatus(AlgorithmCalculationStatus.SUCCESS);
-    }
-
-    private Map<Long, Map<Long, Double>> getShortestPathDistances(AlgorithmTask algorithmTask) {
-        graphService.replaceGraphWithItsBiggestConnectedComponent(algorithmTask);
-        return graphService.calculateShortestPathsDistances(algorithmTask.getGraph());
     }
 
     private List<GraphNode> initializeGlobalState(AlgorithmTask algorithmTask,

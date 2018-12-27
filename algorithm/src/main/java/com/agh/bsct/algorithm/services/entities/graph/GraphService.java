@@ -156,6 +156,11 @@ public class GraphService {
         return shortestPathsDistances;
     }
 
+    public Map<Long, Map<Long, Double>> getShortestPathDistances(AlgorithmTask algorithmTask) {
+        replaceGraphWithItsBiggestConnectedComponent(algorithmTask);
+        return calculateShortestPathsDistances(algorithmTask.getGraph());
+    }
+
     private void putValueToMap(GraphNode i,
                                GraphNode j,
                                double value,
