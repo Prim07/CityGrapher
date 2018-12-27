@@ -25,7 +25,7 @@ public class SAAlgorithm implements IAlgorithm {
 
     static final String SIMULATED_ANNEALING_QUALIFIER = "simulatedAnnealingAlgorithm";
 
-    private static final double INITIAL_TEMP = 100000000.0;
+    private static final double INITIAL_TEMP = 500000.0;
     private static final double ALPHA = 0.9999;
     private static final int QUEUE_SIZE = 100;
 
@@ -33,9 +33,8 @@ public class SAAlgorithm implements IAlgorithm {
     private CrossingsService crossingsService;
     private AlgorithmTaskMapper algorithmTaskMapper;
     private GraphService graphService;
-    private Random random;
     private GnuplotOutputWriter gnuplotOutputWriter;
-
+    private Random random;
 
     @Autowired
     public SAAlgorithm(AlgorithmFunctionsService algorithmFunctionsService,
@@ -111,7 +110,8 @@ public class SAAlgorithm implements IAlgorithm {
             temp = ALPHA * temp;
             k++;
 
-            gnuplotOutputWriter.writeLineIfEnabled(k, temp, Math.abs(delta), localFunctionValue, acceptedFunctionValue, bestFunctionValue);
+            gnuplotOutputWriter.writeLineIfEnabled(k, temp, Math.abs(delta), localFunctionValue, acceptedFunctionValue,
+                    bestFunctionValue);
         }
         System.out.println("temp: " + temp);
         System.out.println("k: " + k);
