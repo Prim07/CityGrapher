@@ -1,6 +1,5 @@
 package com.agh.bsct.algorithm.algorithms;
 
-import com.agh.bsct.algorithm.controllers.mapper.AlgorithmTaskMapper;
 import com.agh.bsct.algorithm.entities.graph.GraphEdge;
 import com.agh.bsct.algorithm.entities.graph.GraphNode;
 import com.agh.bsct.algorithm.services.algorithms.AlgorithmFunctionsService;
@@ -25,18 +24,15 @@ public class BFAlgorithm implements IAlgorithm {
 
     private AlgorithmFunctionsService algorithmFunctionsService;
     private CrossingsService crossingsService;
-    private AlgorithmTaskMapper algorithmTaskMapper;
     private GraphService graphService;
 
 
     @Autowired
     public BFAlgorithm(AlgorithmFunctionsService algorithmFunctionsService,
                        CrossingsService crossingsService,
-                       AlgorithmTaskMapper algorithmTaskMapper,
                        GraphService graphService) {
         this.algorithmFunctionsService = algorithmFunctionsService;
         this.crossingsService = crossingsService;
-        this.algorithmTaskMapper = algorithmTaskMapper;
         this.graphService = graphService;
     }
 

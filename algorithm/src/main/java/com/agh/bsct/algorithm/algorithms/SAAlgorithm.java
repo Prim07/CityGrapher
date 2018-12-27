@@ -1,7 +1,6 @@
 package com.agh.bsct.algorithm.algorithms;
 
 import com.agh.bsct.algorithm.algorithms.outputwriter.GnuplotOutputWriter;
-import com.agh.bsct.algorithm.controllers.mapper.AlgorithmTaskMapper;
 import com.agh.bsct.algorithm.entities.graph.GraphEdge;
 import com.agh.bsct.algorithm.entities.graph.GraphNode;
 import com.agh.bsct.algorithm.services.algorithms.AlgorithmFunctionsService;
@@ -31,7 +30,6 @@ public class SAAlgorithm implements IAlgorithm {
 
     private AlgorithmFunctionsService functionsService;
     private CrossingsService crossingsService;
-    private AlgorithmTaskMapper algorithmTaskMapper;
     private GraphService graphService;
     private GnuplotOutputWriter gnuplotOutputWriter;
     private Random random;
@@ -39,12 +37,10 @@ public class SAAlgorithm implements IAlgorithm {
     @Autowired
     public SAAlgorithm(AlgorithmFunctionsService functionsService,
                        CrossingsService crossingsService,
-                       AlgorithmTaskMapper algorithmTaskMapper,
                        GraphService graphService,
                        GnuplotOutputWriter gnuplotOutputWriter) {
         this.functionsService = functionsService;
         this.crossingsService = crossingsService;
-        this.algorithmTaskMapper = algorithmTaskMapper;
         this.graphService = graphService;
         this.gnuplotOutputWriter = gnuplotOutputWriter;
         this.random = new Random();
