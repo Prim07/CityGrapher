@@ -49,7 +49,6 @@ public class BFAlgorithm implements IAlgorithm {
         var bestState = getBestState(algorithmTask, shortestPathsDistances);
 
         var hospitals = crossingsService.getGeographicalNodesForBestState(bestState, algorithmTask.getGraphDataDTO());
-
         algorithmTask.setHospitals(hospitals);
 
         algorithmTask.setStatus(AlgorithmCalculationStatus.SUCCESS);

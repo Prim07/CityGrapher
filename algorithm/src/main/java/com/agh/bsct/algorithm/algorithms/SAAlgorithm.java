@@ -110,7 +110,6 @@ public class SAAlgorithm implements IAlgorithm {
         System.out.println("accepted FV: " + acceptedFunctionValue);
 
         var hospitals = crossingsService.getGeographicalNodesForBestState(bestState, algorithmTask.getGraphDataDTO());
-
         algorithmTask.setHospitals(hospitals);
 
         algorithmTask.setStatus(AlgorithmCalculationStatus.SUCCESS);
