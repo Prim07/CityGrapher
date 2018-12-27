@@ -26,7 +26,7 @@ public class SAAlgorithm implements IAlgorithm {
 
     private static final double INITIAL_TEMPERATURE = 500000.0;
     private static final double ALPHA = 0.9999;
-    private static final int QUEUE_SIZE = 100;
+    private static final int QUEUE_SIZE = 50;
 
     private AlgorithmFunctionsService functionsService;
     private CrossingsService crossingsService;
