@@ -23,6 +23,7 @@ import java.util.concurrent.ExecutionException;
 public class AlgorithmController {
 
     private static final String ALGORITHM_PATH = "algorithm/";
+    private static final String TASK_ID_URI_PARAM = "{taskId}";
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -35,7 +36,7 @@ public class AlgorithmController {
         this.algorithmTaskMapper = algorithmTaskMapper;
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = ALGORITHM_PATH + "{taskId}")
+    @RequestMapping(method = RequestMethod.GET, value = ALGORITHM_PATH + TASK_ID_URI_PARAM)
     public ResponseEntity<AlgorithmResultDTO> getResults(@PathVariable String taskId) {
         try {
             AlgorithmTask task = algorithmRunnerService.get(taskId);
@@ -51,7 +52,7 @@ public class AlgorithmController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = ALGORITHM_PATH + "{taskId}")
+    @RequestMapping(method = RequestMethod.DELETE, value = ALGORITHM_PATH + TASK_ID_URI_PARAM)
     public ResponseEntity<ObjectNode> cancelAlgorithmTask(@PathVariable String taskId) {
         algorithmRunnerService.cancel(taskId);
         return getSuccessfulResponseForCancelledAlgorithmTask(taskId);
