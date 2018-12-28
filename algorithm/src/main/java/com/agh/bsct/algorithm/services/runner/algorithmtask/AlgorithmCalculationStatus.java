@@ -5,7 +5,6 @@ public enum AlgorithmCalculationStatus {
     NOT_STARTED,
     CALCULATING,
     SUCCESS,
-    FAILED,
     CANCELLED
 
 }
