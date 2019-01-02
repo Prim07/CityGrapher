@@ -126,10 +126,8 @@ public class StreetsJoinerService {
 
     private List<Long> joinNodesConnectedInFirstPositions(List<Long> orderedJoinedNodes,
                                                           List<Long> candidateNodesToJoin) {
-        Collections.reverse(candidateNodesToJoin);
-        var orderedJoinedNodesCopy = new ArrayList<>(orderedJoinedNodes);
-        orderedJoinedNodes = new ArrayList<>(candidateNodesToJoin);
-        orderedJoinedNodes.addAll(orderedJoinedNodesCopy);
+        Collections.reverse(orderedJoinedNodes);
+        orderedJoinedNodes.addAll(candidateNodesToJoin);
         return orderedJoinedNodes;
     }
 
