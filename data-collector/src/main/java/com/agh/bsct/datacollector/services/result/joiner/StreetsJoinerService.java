@@ -131,9 +131,6 @@ public class StreetsJoinerService {
         orderedJoinedNodes = new ArrayList<>(candidateNodesToJoin);
         orderedJoinedNodes.addAll(orderedJoinedNodesCopy);
         return orderedJoinedNodes;
-        //TODO AK niby kod to samo robi, ale zwraca lekko różne wyniki. Sprawdziłbym też inne metody join...
-        /*Collections.reverse(orderedJoinedNodes);
-        orderedJoinedNodes.addAll(candidateNodesToJoin);*/
     }
 
     private List<Long> joinNodesConnectedByFirstCandidateAndLastOrdered(List<Long> orderedJoinedNodes,

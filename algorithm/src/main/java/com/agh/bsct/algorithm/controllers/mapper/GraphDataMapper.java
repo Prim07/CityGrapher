@@ -20,7 +20,6 @@ public class GraphDataMapper {
         return new Graph(nodeToEdgesIncidenceMap);
     }
 
-    //TODO AK compare after merge with original version
     private Map<GraphNode, List<GraphEdge>> createIncidenceMap(GraphDataDTO graphData) {
         Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap = new HashMap<>();
 

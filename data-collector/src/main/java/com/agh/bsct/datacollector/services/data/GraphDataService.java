@@ -71,7 +71,6 @@ public class GraphDataService {
     }
 
     private List<NodeDTO> calculateNodeWeights(List<GeographicalNodeDTO> nodes) {
-        //TODO sprawdzić czas wykonania i porównać z czymś szybszym, np. zwykłym forem
         return nodes.stream()
                 .map(this::getCrossingWithNodeWeight)
                 .collect(Collectors.toList());

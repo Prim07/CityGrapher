@@ -8,7 +8,7 @@ import java.util.Set;
  * tag values, bounding boxes, etc.
  *
  * @see <a href="http://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL#Filters">
- *                http://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL#Filters</a>
+ * http://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL#Filters</a>
  */
 public class OverpassFilterQuery extends AbstractOverpassSubQuery {
     private boolean separateNext;
@@ -49,7 +49,7 @@ public class OverpassFilterQuery extends AbstractOverpassSubQuery {
 
     /**
      * Appends the string <i>node</i> to the current query.
-     * 
+     *
      * @return the current query object
      */
     public OverpassFilterQuery node() {
@@ -99,11 +99,9 @@ public class OverpassFilterQuery extends AbstractOverpassSubQuery {
      * A convenience method filtering the output for a single amenity.
      * It's equivalent to calling {@link #tag(String, String)} with ("amenity", amenity)
      *
-     * @see #amenities(Set)
-     *
      * @param amenity the filter value
-     *
      * @return the current query object
+     * @see #amenities(Set)
      */
     public OverpassFilterQuery amenity(String amenity) {
         builder.equals("amenity", amenity);
@@ -114,9 +112,8 @@ public class OverpassFilterQuery extends AbstractOverpassSubQuery {
     /**
      * A convenience method filtering the output for multiple amenities.
      * It's equivalent to calling {@link #tagMultiple(String, Set)} with ("amenity", amenities)
-     * 
-     * @param amenities the filter values
      *
+     * @param amenities the filter values
      * @return the current query object
      */
     public OverpassFilterQuery amenities(Set<String> amenities) {
@@ -129,7 +126,6 @@ public class OverpassFilterQuery extends AbstractOverpassSubQuery {
      * Adds a <i>["name"]</i> filter tag to the current query.
      *
      * @param name the filter name
-     *
      * @return the current query object
      */
     public OverpassFilterQuery tag(String name) {
@@ -140,10 +136,9 @@ public class OverpassFilterQuery extends AbstractOverpassSubQuery {
 
     /**
      * Adds a <i>["name"=value]</i> filter tag to the current query.
-     * 
-     * @param name the filter name
-     * @param value the filter value
      *
+     * @param name  the filter name
+     * @param value the filter value
      * @return the current query object
      */
     public OverpassFilterQuery tag(String name, String value) {
@@ -153,12 +148,12 @@ public class OverpassFilterQuery extends AbstractOverpassSubQuery {
     }
 
 
-    /** This code is added to original code from github
+    /**
+     * This code is added to original code from github
      * Adds a <i>["name"~value]</i> filter tag to the current query.
      *
-     * @param name the filter name
+     * @param name  the filter name
      * @param value the filter value
-     *
      * @return the current query object
      */
     public OverpassFilterQuery tagLike(String name, String value) {
@@ -170,10 +165,9 @@ public class OverpassFilterQuery extends AbstractOverpassSubQuery {
     /**
      * Adds a <i>["name"~{value1}|{value2}|{value3}|...|{valueN}]</i> filter tag to the current query
      * to add a filter matching for any of the given values.
-     * 
-     * @param name the filter name
-     * @param values the filter value
      *
+     * @param name   the filter name
+     * @param values the filter value
      * @return the current query object
      */
     public OverpassFilterQuery tagMultiple(String name, Set<String> values) {
@@ -184,10 +178,9 @@ public class OverpassFilterQuery extends AbstractOverpassSubQuery {
 
     /**
      * Adds a <i>["name"!=value]</i> filter tag to the current query.
-     * 
-     * @param name the filter name
-     * @param value the filter value
      *
+     * @param name  the filter name
+     * @param value the filter value
      * @return the current query object
      */
     public OverpassFilterQuery tagNot(String name, String value) {
@@ -199,9 +192,8 @@ public class OverpassFilterQuery extends AbstractOverpassSubQuery {
     /**
      * Adds a <i>["name"~value]</i> filter tag to the current query.
      *
-     * @param name the filter name
+     * @param name  the filter name
      * @param value the filter value
-     *
      * @return the current query object
      */
     public OverpassFilterQuery tagRegex(String name, String value) {
@@ -213,9 +205,8 @@ public class OverpassFilterQuery extends AbstractOverpassSubQuery {
     /**
      * Adds a <i>["name"!~value]</i> filter tag to the current query.
      *
-     * @param name the filter name
+     * @param name  the filter name
      * @param value the filter value
-     *
      * @return the current query object
      */
     public OverpassFilterQuery tagRegexNot(String name, String value) {
@@ -231,7 +222,6 @@ public class OverpassFilterQuery extends AbstractOverpassSubQuery {
      * @param westernLon  the western longitude
      * @param northernLat the northern latitude
      * @param easternLon  the eastern longitude
-     *
      * @return the current query object
      */
     public OverpassFilterQuery boundingBox(double southernLat, double westernLon, double northernLat, double easternLon) {
@@ -256,8 +246,8 @@ public class OverpassFilterQuery extends AbstractOverpassSubQuery {
      * Adds a <i>(around:radius, centerLat, centerLon)</i> around radius with center filter to the current query.
      *
      * @param radius in meters around the specified center
-     * @param lat latitude of the center coordinate
-     * @param lon longitude of the center coordinate
+     * @param lat    latitude of the center coordinate
+     * @param lon    longitude of the center coordinate
      * @return the current query object
      */
     public OverpassFilterQuery around(double radius, double lat, double lon) {
@@ -267,18 +257,16 @@ public class OverpassFilterQuery extends AbstractOverpassSubQuery {
     }
 
     /*
-    * Here starts modifications of original code from github.
-    */
+     * Here starts modifications of original code from github.
+     */
 
     /**
      * Appends given key value to the current query without applying separator.
      * Convenient for adding some key at the end of the tag
      *
      * @param key the key value
-     *
      * @return the current query object
      */
-    //TODO AK is it really good method name? It's strictly with the: http://overpass-turbo.eu/s/Cyd in the way filter to add (area) in braces. Verify that method with docuemntation and eventually rename it from "Key" to sth else
     public OverpassFilterQuery forKey(String key) {
         builder.append("(" + key + ")");
 

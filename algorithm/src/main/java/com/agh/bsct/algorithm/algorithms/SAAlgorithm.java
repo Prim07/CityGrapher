@@ -49,7 +49,7 @@ public class SAAlgorithm implements IAlgorithm {
     @Override
     public void run(AlgorithmTask algorithmTask) {
         algorithmTask.setStatus(AlgorithmCalculationStatus.CALCULATING);
-        
+
         final var shortestPathsDistances = graphService.getShortestPathsDistances(algorithmTask);
         final var incidenceMap = algorithmTask.getGraph().getIncidenceMap();
 
@@ -60,7 +60,7 @@ public class SAAlgorithm implements IAlgorithm {
         var bestState = acceptedState;
         var acceptedFunctionValue = functionsService.calculateFunctionValue(shortestPathsDistances, acceptedState);
         var bestFunctionValue = acceptedFunctionValue;
-        
+
         var latestChanges = initializeLatestChanges();
 
         gnuplotOutputWriter.initializeResources(algorithmTask.getTaskId());
@@ -98,12 +98,6 @@ public class SAAlgorithm implements IAlgorithm {
         }
 
         gnuplotOutputWriter.closeResources();
-
-        //TODO PP to remove after setting algorithm params
-        System.out.println("temperature: " + temperature);
-        System.out.println("numberOfIterations: " + numberOfIterations);
-        System.out.println("best FV: " + bestFunctionValue);
-        System.out.println("accepted FV: " + acceptedFunctionValue);
 
         var hospitals = crossingsService.getGeographicalNodesForBestState(bestState, algorithmTask.getGraphDataDTO());
         algorithmTask.setHospitals(hospitals);
