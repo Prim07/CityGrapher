@@ -31,7 +31,7 @@ class FloydWarshallAlgorithmTest {
 
     private void shouldBeTheSameWhenCalculatedMultipleTimes(String filename, int loopCount) {
         var graph = graphInitializer.initGraph(filename);
-        graphService.replaceGraphWithItsBiggestConnectedComponent(graph);
+        graphService.replaceGraphWithItsLargestConnectedComponent(graph);
 
         var shortestPathsDistancesToCompare = graphService.calculateShortestPathsDistances(graph);
 

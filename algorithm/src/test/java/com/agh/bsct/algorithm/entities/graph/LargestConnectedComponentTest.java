@@ -10,7 +10,7 @@ import java.util.Map;
 import static com.agh.bsct.algorithm.entities.graph.GraphInitializer.SRC_TEST_RESOURCES_PATH;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class BiggestConnectedComponentTest {
+class LargestConnectedComponentTest {
 
     private final GraphInitializer graphInitializer = new GraphInitializer();
     private final GraphService graphService = new GraphService(new GraphDataService());
@@ -40,14 +40,14 @@ class BiggestConnectedComponentTest {
         var graph = graphInitializer.initGraph(filename);
 
         Map<GraphNode, List<GraphEdge>> incidenceMap = graph.getIncidenceMap();
-        var biggestCommonComponentToCompare = graphService.findBiggestConnectedComponent(incidenceMap);
+        var largestConnectedComponentToCompare = graphService.findLargestConnectedComponent(incidenceMap);
 
         int loopCount = 100;
         for (int i = 0; i < loopCount; i++) {
-            var biggestCommonComponent = graphService.findBiggestConnectedComponent(incidenceMap);
+            var largestConnectedComponent = graphService.findLargestConnectedComponent(incidenceMap);
 
-            assertEquals(biggestCommonComponentToCompare.size(), biggestCommonComponent.size());
-            assertEquals(biggestCommonComponentToCompare, biggestCommonComponent);
+            assertEquals(largestConnectedComponentToCompare.size(), largestConnectedComponent.size());
+            assertEquals(largestConnectedComponentToCompare, largestConnectedComponent);
         }
     }
 }

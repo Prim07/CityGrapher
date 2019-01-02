@@ -20,37 +20,37 @@ public class GraphService {
         this.graphDataService = graphDataService;
     }
 
-    public void replaceGraphWithItsBiggestConnectedComponent(Graph graph) {
+    public void replaceGraphWithItsLargestConnectedComponent(Graph graph) {
         var nodeToEdgesIncidenceMap = graph.getIncidenceMap();
 
-        var graphNodesFromConnectedComponent = findBiggestConnectedComponent(nodeToEdgesIncidenceMap);
+        var graphNodesFromConnectedComponent = findLargestConnectedComponent(nodeToEdgesIncidenceMap);
 
         var nodeToEdgesIncidenceMapCopy = new HashMap<GraphNode, List<GraphEdge>>();
 
-        removeNodesNotIncludedInBCC(nodeToEdgesIncidenceMap, graphNodesFromConnectedComponent,
+        removeNodesNotIncludedInLCC(nodeToEdgesIncidenceMap, graphNodesFromConnectedComponent,
                 nodeToEdgesIncidenceMapCopy);
 
         graph.setNodeToEdgesIncidenceMap(nodeToEdgesIncidenceMapCopy);
     }
 
-    private void replaceGraphWithItsBiggestConnectedComponent(AlgorithmTask algorithmTask) {
+    private void replaceGraphWithItsLargestConnectedComponent(AlgorithmTask algorithmTask) {
         var graph = algorithmTask.getGraph();
         var nodeToEdgesIncidenceMap = graph.getIncidenceMap();
 
-        var graphNodesFromConnectedComponent = findBiggestConnectedComponent(nodeToEdgesIncidenceMap);
+        var graphNodesFromConnectedComponent = findLargestConnectedComponent(nodeToEdgesIncidenceMap);
 
         var nodeToEdgesIncidenceMapCopy = new HashMap<GraphNode, List<GraphEdge>>();
 
-        removeNodesNotIncludedInBCC(nodeToEdgesIncidenceMap, graphNodesFromConnectedComponent,
+        removeNodesNotIncludedInLCC(nodeToEdgesIncidenceMap, graphNodesFromConnectedComponent,
                 nodeToEdgesIncidenceMapCopy);
 
         graph.setNodeToEdgesIncidenceMap(nodeToEdgesIncidenceMapCopy);
 
         var graphDataDTO = algorithmTask.getGraphDataDTO();
-        graphDataService.replaceGraphWithItsBiggestCommonComponent(graphDataDTO, graphNodesFromConnectedComponent);
+        graphDataService.replaceGraphWithItsLargestConnectedComponent(graphDataDTO, graphNodesFromConnectedComponent);
     }
 
-    private void removeNodesNotIncludedInBCC(Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap,
+    private void removeNodesNotIncludedInLCC(Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap,
                                              List<GraphNode> graphNodesFromConnectedComponent,
                                              HashMap<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMapCopy) {
         for (Map.Entry<GraphNode, List<GraphEdge>> entry : nodeToEdgesIncidenceMap.entrySet()) {
@@ -64,7 +64,7 @@ public class GraphService {
         }
     }
 
-    public List<GraphNode> findBiggestConnectedComponent(Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap) {
+    public List<GraphNode> findLargestConnectedComponent(Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap) {
         var graphNodesSet = nodeToEdgesIncidenceMap.keySet();
         var graphNodesList = new ArrayList<>(graphNodesSet);
 
@@ -107,8 +107,8 @@ public class GraphService {
             }
         }
 
-        int biggestCCId = getBiggestCCId(graphNodesSize, nodesComponentIds, currentComponentId);
-        return getBiggestCCGraphNodes(graphNodesList, graphNodesSize, nodesComponentIds, biggestCCId);
+        int largestCCId = getLargestCCId(graphNodesSize, nodesComponentIds, currentComponentId);
+        return getLargestCCGraphNodes(graphNodesList, graphNodesSize, nodesComponentIds, largestCCId);
 
     }
 
@@ -157,7 +157,7 @@ public class GraphService {
     }
 
     public Map<Long, Map<Long, Double>> getShortestPathsDistances(AlgorithmTask algorithmTask) {
-        replaceGraphWithItsBiggestConnectedComponent(algorithmTask);
+        replaceGraphWithItsLargestConnectedComponent(algorithmTask);
         return calculateShortestPathsDistances(algorithmTask.getGraph());
     }
 
@@ -192,20 +192,20 @@ public class GraphService {
         return graphEdgeToFind != null ? graphEdgeToFind.getWeight() : -1;
     }
 
-    private ArrayList<GraphNode> getBiggestCCGraphNodes(ArrayList<GraphNode> graphNodesList, int graphNodesSize,
-                                                        Integer[] nodesComponentIds, int biggestConnectedComponentId) {
-        var graphNodesFromBiggestCC = new ArrayList<GraphNode>();
+    private ArrayList<GraphNode> getLargestCCGraphNodes(ArrayList<GraphNode> graphNodesList, int graphNodesSize,
+                                                        Integer[] nodesComponentIds, int largestConnectedComponentId) {
+        var graphNodesFromLargestCC = new ArrayList<GraphNode>();
         for (int j = 0; j < graphNodesSize; j++) {
-            if (nodesComponentIds[j] == biggestConnectedComponentId) {
-                graphNodesFromBiggestCC.add(graphNodesList.get(j));
+            if (nodesComponentIds[j] == largestConnectedComponentId) {
+                graphNodesFromLargestCC.add(graphNodesList.get(j));
             }
         }
-        return graphNodesFromBiggestCC;
+        return graphNodesFromLargestCC;
     }
 
-    private int getBiggestCCId(int graphNodesSize, Integer[] nodesComponentIds, int numberOfComponents) {
-        var biggestConnectedComponentId = 0;
-        var biggestConnectedComponentSize = 0;
+    private int getLargestCCId(int graphNodesSize, Integer[] nodesComponentIds, int numberOfComponents) {
+        var largestConnectedComponentId = 0;
+        var largestConnectedComponentSize = 0;
         for (int i = 1; i <= numberOfComponents; i++) {
             var connectedComponentSize = 0;
             for (int j = 0; j < graphNodesSize; j++) {
@@ -213,12 +213,12 @@ public class GraphService {
                     connectedComponentSize++;
                 }
             }
-            if (connectedComponentSize > biggestConnectedComponentSize) {
-                biggestConnectedComponentId = i;
-                biggestConnectedComponentSize = connectedComponentSize;
+            if (connectedComponentSize > largestConnectedComponentSize) {
+                largestConnectedComponentId = i;
+                largestConnectedComponentSize = connectedComponentSize;
             }
         }
-        return biggestConnectedComponentId;
+        return largestConnectedComponentId;
     }
 
 }

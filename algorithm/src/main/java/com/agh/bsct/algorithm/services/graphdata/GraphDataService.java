@@ -10,20 +10,20 @@ import java.util.List;
 @Service
 public class GraphDataService {
 
-    public void replaceGraphWithItsBiggestCommonComponent(GraphDataDTO graphData,
-                                                          List<GraphNode> biggestConnectedComponentNodes) {
+    public void replaceGraphWithItsLargestConnectedComponent(GraphDataDTO graphData,
+                                                             List<GraphNode> largestConnectedComponentNodes) {
         //we don't have to remove anything from nodes collection because we want to draw only edges
         var edges = graphData.getEdgeDTOS();
-        edges.removeIf(edge -> !shouldEdgeBeKept(edge, biggestConnectedComponentNodes));
+        edges.removeIf(edge -> !shouldEdgeBeKept(edge, largestConnectedComponentNodes));
     }
 
-    private boolean shouldEdgeBeKept(EdgeDTO edge, List<GraphNode> biggestConnectedComponentNodes) {
+    private boolean shouldEdgeBeKept(EdgeDTO edge, List<GraphNode> largestConnectedComponentNodes) {
         List<Long> nodesIds = edge.getStreetDTO().getNodesIds();
-        return shouldNodeBeKept(nodesIds.get(0), biggestConnectedComponentNodes)
-                && shouldNodeBeKept(nodesIds.get(nodesIds.size() - 1), biggestConnectedComponentNodes);
+        return shouldNodeBeKept(nodesIds.get(0), largestConnectedComponentNodes)
+                && shouldNodeBeKept(nodesIds.get(nodesIds.size() - 1), largestConnectedComponentNodes);
     }
 
-    private boolean shouldNodeBeKept(Long id, List<GraphNode> biggestConnectedComponentNodes) {
-        return biggestConnectedComponentNodes.stream().anyMatch(graphNode -> graphNode.getId().equals(id));
+    private boolean shouldNodeBeKept(Long id, List<GraphNode> largestConnectedComponentNodes) {
+        return largestConnectedComponentNodes.stream().anyMatch(graphNode -> graphNode.getId().equals(id));
     }
 }
