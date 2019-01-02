@@ -38,7 +38,7 @@ public class GnuplotOutputWriter implements AlgorithmOutputWriter {
                 this.fileWriter = new FileWriter(fileName, false);
                 this.bufferedWriter = new BufferedWriter(this.fileWriter);
             } catch (IOException e) {
-                System.out.println("Error while creating FileWriter: " + e.getMessage());
+                System.err.println("Error while creating FileWriter: " + e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -52,7 +52,7 @@ public class GnuplotOutputWriter implements AlgorithmOutputWriter {
                 bufferedWriter.write(lineToWrite);
                 bufferedWriter.newLine();
             } catch (IOException e) {
-                System.out.println("Error while writing to BufferedWriter line: " + lineToWrite + ". "
+                System.err.println("Error while writing to BufferedWriter line: " + lineToWrite + ". "
                         + "Error message" + e.getMessage());
                 e.printStackTrace();
             }
@@ -76,7 +76,7 @@ public class GnuplotOutputWriter implements AlgorithmOutputWriter {
                 bufferedWriter.close();
                 fileWriter.close();
             } catch (IOException e) {
-                System.out.println("Error while closing BufferedWriter: " + e.getMessage());
+                System.err.println("Error while closing BufferedWriter: " + e.getMessage());
                 e.printStackTrace();
             }
         }
