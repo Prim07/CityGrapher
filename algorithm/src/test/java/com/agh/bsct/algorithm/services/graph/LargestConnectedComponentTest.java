@@ -1,13 +1,13 @@
-package com.agh.bsct.algorithm.entities.graph;
+package com.agh.bsct.algorithm.services.graph;
 
-import com.agh.bsct.algorithm.services.graph.GraphService;
+import com.agh.bsct.algorithm.services.graph.initializer.GraphInitializer;
 import com.agh.bsct.algorithm.services.graphdata.GraphDataService;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
 
-import static com.agh.bsct.algorithm.entities.graph.GraphInitializer.SRC_TEST_RESOURCES_PATH;
+import static com.agh.bsct.algorithm.services.graph.initializer.GraphInitializer.SRC_TEST_RESOURCES_PATH;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class LargestConnectedComponentTest {

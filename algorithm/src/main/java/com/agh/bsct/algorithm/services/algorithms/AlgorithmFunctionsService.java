@@ -1,6 +1,6 @@
 package com.agh.bsct.algorithm.services.algorithms;
 
-import com.agh.bsct.algorithm.entities.graph.GraphNode;
+import com.agh.bsct.algorithm.services.graph.GraphNode;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,10 +1,10 @@
 package com.agh.bsct.algorithm.algorithms;
 
 import com.agh.bsct.algorithm.algorithms.outputwriter.GnuplotOutputWriter;
-import com.agh.bsct.algorithm.entities.graph.GraphEdge;
-import com.agh.bsct.algorithm.entities.graph.GraphNode;
 import com.agh.bsct.algorithm.services.algorithms.AlgorithmFunctionsService;
 import com.agh.bsct.algorithm.services.algorithms.CrossingsService;
+import com.agh.bsct.algorithm.services.graph.GraphEdge;
+import com.agh.bsct.algorithm.services.graph.GraphNode;
 import com.agh.bsct.algorithm.services.graph.GraphService;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmCalculationStatus;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;

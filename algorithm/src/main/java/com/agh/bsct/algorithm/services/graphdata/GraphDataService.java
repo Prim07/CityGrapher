@@ -1,6 +1,6 @@
 package com.agh.bsct.algorithm.services.graphdata;
 
-import com.agh.bsct.algorithm.entities.graph.GraphNode;
+import com.agh.bsct.algorithm.services.graph.GraphNode;
 import com.agh.bsct.api.entities.graphdata.EdgeDTO;
 import com.agh.bsct.api.entities.graphdata.GraphDataDTO;
 import org.springframework.stereotype.Service;

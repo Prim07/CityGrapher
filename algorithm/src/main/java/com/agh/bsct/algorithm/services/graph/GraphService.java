@@ -1,8 +1,5 @@
 package com.agh.bsct.algorithm.services.graph;
 
-import com.agh.bsct.algorithm.entities.graph.Graph;
-import com.agh.bsct.algorithm.entities.graph.GraphEdge;
-import com.agh.bsct.algorithm.entities.graph.GraphNode;
 import com.agh.bsct.algorithm.services.graphdata.GraphDataService;
 import com.agh.bsct.algorithm.services.runner.algorithmtask.AlgorithmTask;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +17,7 @@ public class GraphService {
         this.graphDataService = graphDataService;
     }
 
-    public void replaceGraphWithItsLargestConnectedComponent(Graph graph) {
+    void replaceGraphWithItsLargestConnectedComponent(Graph graph) {
         var nodeToEdgesIncidenceMap = graph.getIncidenceMap();
 
         var graphNodesFromConnectedComponent = findLargestConnectedComponent(nodeToEdgesIncidenceMap);
@@ -64,7 +61,7 @@ public class GraphService {
         }
     }
 
-    public List<GraphNode> findLargestConnectedComponent(Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap) {
+    List<GraphNode> findLargestConnectedComponent(Map<GraphNode, List<GraphEdge>> nodeToEdgesIncidenceMap) {
         var graphNodesSet = nodeToEdgesIncidenceMap.keySet();
         var graphNodesList = new ArrayList<>(graphNodesSet);
 
@@ -112,7 +109,7 @@ public class GraphService {
 
     }
 
-    public Map<Long, Map<Long, Double>> calculateShortestPathsDistances(Graph graph) {
+    Map<Long, Map<Long, Double>> calculateShortestPathsDistances(Graph graph) {
         var nodeToEdgesIncidenceMap = graph.getIncidenceMap();
 
         var graphNodes = new ArrayList<>(nodeToEdgesIncidenceMap.keySet());

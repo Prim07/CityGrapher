@@ -1,4 +1,8 @@
-package com.agh.bsct.algorithm.entities.graph;
+package com.agh.bsct.algorithm.services.graph.initializer;
+
+import com.agh.bsct.algorithm.services.graph.Graph;
+import com.agh.bsct.algorithm.services.graph.GraphEdge;
+import com.agh.bsct.algorithm.services.graph.GraphNode;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
